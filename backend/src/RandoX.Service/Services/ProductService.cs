@@ -169,8 +169,15 @@ namespace RandoX.Service.Services
                 CartId = cart.Id,
                 ProductId = Guid.Parse(productId)
             };
+            if(product.PromotionId != null)
+            {
+                cart.TotalAmount = cart.TotalAmount + product.Price * product.Promotion.DiscountValue;
+            }
+            else
+            {
+                cart.TotalAmount = cart.TotalAmount + product.Price;
+            }
 
-            cart.TotalAmount = cart.TotalAmount + product.Price;
             await _cartRepository.UpdateCartAsync(cart);
 
             var a = await _productRepository.AddProductToCartAsync(cartProduct);

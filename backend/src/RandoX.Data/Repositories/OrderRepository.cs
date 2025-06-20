@@ -25,5 +25,6 @@ namespace RandoX.Data.Repositories
         {
             return await Entities.Where(a => a.IsDeleted != true).FirstOrDefaultAsync(o => o.Id == Guid.Parse(orderId));
         }
+
     }
 }
