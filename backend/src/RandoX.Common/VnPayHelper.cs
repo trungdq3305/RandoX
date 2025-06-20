@@ -228,30 +228,36 @@ namespace RandoX.Common
         }
         private async Task CreatePendingTransactionAsync(string orderId, decimal amount)
         {
-            using var scope = _serviceScopeFactory.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<randox_dbContext>();
-
-            var transaction = new Transaction
+            try
             {
-                Id = Guid.Parse(orderId), // Sử dụng OrderId làm TransactionId
-                Amount = amount,
-                Description = "VNPay - Đang chờ thanh toán",
-                TransactionStatusId = Guid.Parse("9c13c916-38a5-11f0-b8f3-06cb1c8b9843"), // ID của status pending trong bảng TransactionStatus
-                //PaymentTypeId = "vnpay", // ID của payment type VNPay
-                PaymentLocation = true, // Online payment
-                CreatedAt = DateTime.Now
-            };
+                using var scope = _serviceScopeFactory.CreateScope();
+                var dbContext = scope.ServiceProvider.GetRequiredService<randox_dbContext>();
 
-            dbContext.Transactions.Add(transaction);
-            await dbContext.SaveChangesAsync();
+                var transaction = new Transaction
+                {
+                    Id = Guid.Parse(orderId), // Sử dụng OrderId làm TransactionId
+                    Amount = amount,
+                    Description = "VNPay - Đang chờ thanh toán",
+                    TransactionStatusId = Guid.Parse("342EFC9C-A6EB-45D9-AC43-E64A3FB8C36E"), // ID của status pending trong bảng TransactionStatus
+                                                                                              //PaymentTypeId = "vnpay", // ID của payment type VNPay
+                    PaymentLocation = true, // Online payment
+                    CreatedAt = DateTime.Now
+                };
+
+                dbContext.Transactions.Add(transaction);
+                await dbContext.SaveChangesAsync();
+            } catch (Exception ex) {
+                throw new Exception(ex.ToString());
+                    }
+            
         }
 
         private string GetTransactionStatusId(string responseCode)
         {
             return responseCode switch
             {
-                "00" => "9c13ccf6-38a5-11f0-b8f3-06cb1c8b9843", // ID của status success
-                _ => "9c13cba0-38a5-11f0-b8f3-06cb1c8b9843" // ID của status fail
+                "00" => "B7165764-E3D5-41D8-A265-E6AC2414FD28", // ID của status success
+                _ => "64DCB6F8-92FC-4E6E-BD62-A78F350DD708" // ID của status fail
             };
         }
     }

@@ -14,6 +14,7 @@ namespace RandoX.Data.Interfaces
         Task<ProductSet> GetProductSetByIdAsync(string id);
         Task<ProductSet> UpdateProductSetAsync(ProductSet productSet);
         Task<ProductSet> DeleteProductSetAsync(string id);
+        Task<CartProduct> AddSetToCartAsync(CartProduct cartProduct);
     }
 
 }

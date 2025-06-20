@@ -37,7 +37,6 @@ namespace RandoX.Data.Repositories
         {
             var product = await Entities
                 .Include(p => p.Manufacturer)
-                .Include(p => p.ProductSet)
                 .Include(p => p.Promotion)
                 .Include(p => p.Category)
                 .Where(a => a.IsDeleted != true)

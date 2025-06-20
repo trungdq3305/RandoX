@@ -22,7 +22,7 @@ namespace RandoX.Data.Repositories
         }
         public async Task<Account?> GetAccount(string email, string password)
         {
-            var user = await Entities.FirstOrDefaultAsync(u => u.Email == email);
+            var user = await Entities.FirstOrDefaultAsync(u => u.Email == email && u.Status == 1);
             if (user == null)
                 return null;
 

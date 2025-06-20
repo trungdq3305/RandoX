@@ -21,7 +21,13 @@ public partial class CartProduct
 
     public bool? IsDeleted { get; set; }
 
+    public int? Amount { get; set; }
+
+    public Guid? ProductSetId { get; set; }
+
     public virtual Cart Cart { get; set; }
 
     public virtual Product Product { get; set; }
+
+    public virtual ProductSet ProductSet { get; set; }
 }

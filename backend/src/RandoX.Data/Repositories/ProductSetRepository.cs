@@ -57,6 +57,12 @@ namespace RandoX.Data.Repositories
             }
             return productSet;
         }
+        public async Task<CartProduct> AddSetToCartAsync(CartProduct cartProduct)
+        {
+            _context.CartProducts.Add(cartProduct);
+            await _uow.SaveChangesAsync();
+            return cartProduct;
+        }
     }
 
 }

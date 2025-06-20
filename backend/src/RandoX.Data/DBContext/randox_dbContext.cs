@@ -205,6 +205,9 @@ public partial class randox_dbContext : DbContext
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
                 .HasColumnName("id");
+            entity.Property(e => e.Amount)
+                .HasDefaultValue(1)
+                .HasColumnName("amount");
             entity.Property(e => e.CartId).HasColumnName("cart_id");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
@@ -217,6 +220,7 @@ public partial class randox_dbContext : DbContext
                 .HasDefaultValue(false)
                 .HasColumnName("is_deleted");
             entity.Property(e => e.ProductId).HasColumnName("product_id");
+            entity.Property(e => e.ProductSetId).HasColumnName("product_set_id");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
@@ -229,6 +233,10 @@ public partial class randox_dbContext : DbContext
             entity.HasOne(d => d.Product).WithMany(p => p.CartProducts)
                 .HasForeignKey(d => d.ProductId)
                 .HasConstraintName("FK__cart_prod__produ__56E8E7AB");
+
+            entity.HasOne(d => d.ProductSet).WithMany(p => p.CartProducts)
+                .HasForeignKey(d => d.ProductSetId)
+                .HasConstraintName("FK_cart_product_product_set");
         });
 
         modelBuilder.Entity<Category>(entity =>
@@ -445,7 +453,6 @@ public partial class randox_dbContext : DbContext
                 .IsRequired()
                 .HasMaxLength(255)
                 .HasColumnName("product_name");
-            entity.Property(e => e.ProductSetId).HasColumnName("product_set_id");
             entity.Property(e => e.PromotionId).HasColumnName("promotion_id");
             entity.Property(e => e.Quantity).HasColumnName("quantity");
             entity.Property(e => e.UpdatedAt)
@@ -460,10 +467,6 @@ public partial class randox_dbContext : DbContext
             entity.HasOne(d => d.Manufacturer).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ManufacturerId)
                 .HasConstraintName("FK__product__manufac__4C6B5938");
-
-            entity.HasOne(d => d.ProductSet).WithMany(p => p.Products)
-                .HasForeignKey(d => d.ProductSetId)
-                .HasConstraintName("FK__product__product__4D5F7D71");
 
             entity.HasOne(d => d.Promotion).WithMany(p => p.Products)
                 .HasForeignKey(d => d.PromotionId)
@@ -495,6 +498,7 @@ public partial class randox_dbContext : DbContext
             entity.Property(e => e.Price)
                 .HasColumnType("decimal(12, 2)")
                 .HasColumnName("price");
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
             entity.Property(e => e.ProductSetName)
                 .HasMaxLength(255)
                 .HasColumnName("product_set_name");
@@ -505,6 +509,10 @@ public partial class randox_dbContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("updated_at");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.ProductSets)
+                .HasForeignKey(d => d.ProductId)
+                .HasConstraintName("FK_product_set_product_id");
 
             entity.HasOne(d => d.Promotion).WithMany(p => p.ProductSets)
                 .HasForeignKey(d => d.PromotionId)
