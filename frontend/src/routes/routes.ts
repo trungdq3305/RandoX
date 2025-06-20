@@ -51,7 +51,9 @@
 // import Blog from '../Pages/Blogs/Blog'
 // import ForgotPassword from '../Pages/Profile/ForgotPassword'
 
+import Homepage from '../components/Home/HomePage'
 import LoginRegisterLayout from '../layout/LoginRegisterLayout'
+import MainLayout from '../layout/MainLayout'
 import Login from '../pages/Login/Login'
 import type { LayoutRoute } from '../types/routes'
 
@@ -67,6 +69,16 @@ const routes: LayoutRoute[] = [
       //   path: '/register',
       //   component: Register,
       // },
+    ],
+  },
+  {
+    layout: MainLayout,
+    data: [
+      {
+        path: '/',
+        component: Homepage,
+        exact: true,
+      },
     ],
   },
 ]
