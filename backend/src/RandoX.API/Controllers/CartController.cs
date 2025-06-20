@@ -45,5 +45,21 @@ namespace RandoX.API.Controllers
             var response = await _cartService.GetAllInCartAsync(pageNumber, pageSize, user.Id.ToString());
             return Ok(response);
         }
+
+        [HttpGet("refresh-amount")]
+        public async Task<IActionResult> Refresh()
+        {
+            var identity = this.HttpContext.User.Identity as ClaimsIdentity;
+
+            if (identity == null || !identity.IsAuthenticated)
+                return Unauthorized("Bạn chưa đăng nhập");
+
+            var claims = identity.Claims;
+            var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            var user = await _accountService.GetAccountByEmailAsync(email);
+
+            var response = await _cartService.RefreshCartTotalAmountAsync(user.Id.ToString());
+            return Ok(response);
+        }
     }
 }

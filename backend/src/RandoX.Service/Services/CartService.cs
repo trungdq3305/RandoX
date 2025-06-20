@@ -35,7 +35,7 @@ namespace RandoX.Service.Services
                     return ApiResponse<CartProduct>.Failure("Cartproduct not found");
                 }
 
-                cart.TotalAmount = cart.TotalAmount - category.Product.Price * category.Amount + category.Product.Price * amount;
+                cart.TotalAmount = cart.TotalAmount - category.Product.Price * category.Product.Promotion.DiscountValue * category.Amount + category.Product.Price * category.Product.Promotion.DiscountValue * amount;
                 await _cartRepository.UpdateCartAsync(cart);
 
                 category.Amount = amount;
@@ -59,7 +59,6 @@ namespace RandoX.Service.Services
                 var response = new CartResponse
                 {
                     Id = Guid.Parse(cartId),
-                    TotalAmount = cart.TotalAmount,
                     CartProducts = categories
                 };
                 return ApiResponse<CartResponse>.Success(response, "success");
@@ -67,6 +66,48 @@ namespace RandoX.Service.Services
             catch (Exception)
             {
                 return ApiResponse<CartResponse>.Failure("Fail to get cart");
+            }
+        }
+
+        public async Task<ApiResponse<decimal>> RefreshCartTotalAmountAsync(string cartId)
+        {
+            try
+            {
+                var cartproducts = await _cartRepository.GetAllInCartAsync(cartId);
+                var cart = await _accountRepository.GetCartByUserIdAsync(cartId);
+                decimal total = 0;
+                foreach (var product in cartproducts)
+                {
+                    if (product.ProductId != null && product.ProductSetId == null) 
+                    {
+                        if(product.Product.PromotionId != null)
+                        {
+                            total = (decimal)(total + product.Product.Price * product.Product.Promotion.DiscountValue);
+                        }
+                        else
+                        {
+                            total = (decimal)(total + product.Product.Price);
+                        }
+
+                    }
+                    else
+                    {
+                        if (product.ProductSet.PromotionId != null)
+                        {
+                            total = (decimal)(total + product.ProductSet.Price * product.ProductSet.Promotion.DiscountValue);
+                        }
+                        else
+                        {
+                            total = (decimal)(total + product.ProductSet.Price);
+                        }
+                    }
+                    
+                }
+                return ApiResponse<decimal>.Success(total, "success");
+            }
+            catch (Exception)
+            {
+                return ApiResponse<decimal>.Failure("Fail to refresh");
             }
         }
     }
