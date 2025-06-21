@@ -185,11 +185,13 @@ CREATE TABLE product_set (
     quantity INT,
     price DECIMAL(12,2),
     promotion_id UNIQUEIDENTIFIER,
+    product_id UNIQUEIDENTIFIER,  -- Thêm cột product_id để liên kết với product
     created_at DATETIME DEFAULT GETDATE(),
     updated_at DATETIME DEFAULT GETDATE(),
     deleted_at DATETIME NULL,
     is_deleted BIT DEFAULT 0,
-    FOREIGN KEY (promotion_id) REFERENCES promotion(id)
+    FOREIGN KEY (promotion_id) REFERENCES promotion(id),
+    FOREIGN KEY (product_id) REFERENCES product(id)  -- Thêm ràng buộc khóa ngoại
 );
 
 CREATE TABLE category (
@@ -227,14 +229,22 @@ CREATE TABLE product (
 CREATE TABLE cart_product (
     id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     product_id UNIQUEIDENTIFIER,
+    product_set_id UNIQUEIDENTIFIER,
     cart_id UNIQUEIDENTIFIER,
+    amount INT DEFAULT 1 CHECK (amount >= 0),
     created_at DATETIME DEFAULT GETDATE(),
     updated_at DATETIME DEFAULT GETDATE(),
     deleted_at DATETIME NULL,
     is_deleted BIT DEFAULT 0,
     FOREIGN KEY (cart_id) REFERENCES cart(id),
-    FOREIGN KEY (product_id) REFERENCES product(id)
+    FOREIGN KEY (product_id) REFERENCES product(id),
+    FOREIGN KEY (product_set_id) REFERENCES product_set(id),
+    CONSTRAINT CHK_CartProduct_OneOfProductIdOrProductSetId CHECK (
+        (product_id IS NOT NULL AND product_set_id IS NULL) OR
+        (product_id IS NULL AND product_set_id IS NOT NULL)
+    )
 );
+
 
 CREATE TABLE address (
     id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
@@ -623,5 +633,4 @@ BEGIN
     FROM image t
     INNER JOIN inserted i ON t.id = i.id;
 END;
-
 

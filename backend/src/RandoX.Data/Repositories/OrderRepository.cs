@@ -25,5 +25,11 @@ namespace RandoX.Data.Repositories
         {
             return await Entities.Where(a => a.IsDeleted != true).FirstOrDefaultAsync(o => o.Id == Guid.Parse(orderId));
         }
+        public async Task<Order> CreateOrderAsync(Order order)
+        {
+            Entities.Add(order);
+            await _uow.SaveChangesAsync();
+            return order;
+        }
     }
 }

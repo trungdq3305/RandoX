@@ -19,8 +19,6 @@ public partial class Product
 
     public Guid? ManufacturerId { get; set; }
 
-    public Guid? ProductSetId { get; set; }
-
     public Guid? PromotionId { get; set; }
 
     public Guid? CategoryId { get; set; }
@@ -41,7 +39,7 @@ public partial class Product
 
     public virtual Manufacturer Manufacturer { get; set; }
 
-    public virtual ProductSet ProductSet { get; set; }
+    public virtual ICollection<ProductSet> ProductSets { get; set; } = new List<ProductSet>();
 
     public virtual Promotion Promotion { get; set; }
 }

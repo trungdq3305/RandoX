@@ -29,7 +29,11 @@ public partial class ProductSet
 
     public bool? IsDeleted { get; set; }
 
-    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+    public Guid? ProductId { get; set; }
+
+    public virtual ICollection<CartProduct> CartProducts { get; set; } = new List<CartProduct>();
+
+    public virtual Product Product { get; set; }
 
     public virtual Promotion Promotion { get; set; }
 }

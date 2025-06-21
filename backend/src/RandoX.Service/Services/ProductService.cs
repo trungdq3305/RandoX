@@ -19,10 +19,14 @@ namespace RandoX.Service.Services
     {
         private readonly IProductRepository _productRepository;
         private readonly IAccountRepository _accountRepository;
-        public ProductService(IProductRepository productRepository, IAccountRepository accountRepository)
+        private readonly ICartRepository _cartRepository;
+        private readonly ICartService _cartService;
+        public ProductService(IProductRepository productRepository, IAccountRepository accountRepository, ICartRepository cartRepository, ICartService cartService)
         {
             _productRepository = productRepository;
             _accountRepository = accountRepository;
+            _cartRepository = cartRepository;
+            _cartService = cartService;
         }
         public async Task<ApiResponse<PaginationResult<Product>>> GetAllProductsAsync(int pageNumber, int pageSize)
         {
@@ -117,34 +121,16 @@ namespace RandoX.Service.Services
             }
         }
 
-        public async Task<ApiResponse<Product>> UpdateSetProToProductAsync(string id, string setId, string proId)
+        public async Task<ApiResponse<Product>> UpdateProToProductAsync(string id, string proId)
         {
             try
             {
                 Product product = await _productRepository.GetProductByIdAsync(id);
-                if (setId != null)
-                {
-                    product.ProductSetId = Guid.Parse(setId);
-                }
+
                 if (proId != null)
                 {
-                    var pros = await _productRepository.GetAllProductsAsync();
-                    int flag = 0;
-                    foreach (var item in pros)
-                    {
-                        if (item.ProductSetId == Guid.Parse(setId) ) 
-                        { 
-                            flag++;
-                        }
-                    }
-                    if (flag == 0)
-                    {
                         product.PromotionId = Guid.Parse(proId);
-                    }
-                    else
-                    {
-                        return ApiResponse<Product>.Failure("Set already hasve product");
-                    }
+
                 }
 
                 await _productRepository.UpdateProductAsync(product);
@@ -178,13 +164,17 @@ namespace RandoX.Service.Services
         public async Task<ApiResponse<CartProduct>> AddProductToCartAsync(string userId, string productId)
         {
             var cart = await _accountRepository.GetCartByUserIdAsync(userId);
+            var product = await _productRepository.GetProductByIdAsync(productId);
             var cartProduct = new CartProduct
             {
                 Id = Guid.NewGuid(),
                 CartId = cart.Id,
                 ProductId = Guid.Parse(productId)
             };
-            
+            await _cartService.RefreshCartTotalAmountAsync(userId);
+
+            await _cartRepository.UpdateCartAsync(cart);
+
             var a = await _productRepository.AddProductToCartAsync(cartProduct);
             return ApiResponse<CartProduct>.Success(a, "success");
         }

@@ -1,26 +1,12 @@
-import React from 'react'
-import { Row, Col } from 'antd'
-import Logo from '../../assets/Logo.png'
-// import { LoadingOutlined } from '@ant-design/icons'
-// import Introduction from '../Introduction/introduction'
-// import type { Service } from '../../types/service'
-// import { useGetServiceListQuery } from '../../features/service/serviceAPI'
-// import ServiceCardSlider from '../ServiceSlider/serviceSlider'
-// import Content from '../Content/content'
-
-// interface ServiceListResponse {
-//   data: {
-//     data: Service[]
-//   }
-//   isLoading: boolean
-// }
-
+import React from 'react';
+import Content from '../Content/content';
+import { LoadingOutlined } from '@ant-design/icons';
+import products from '../../data/products.json'; // Assuming you have a products.json file with product data
+import ProductsCardSlider from '../productSlider/productSlider';
+import auctions from '../../data/auction.json'
+import AuctionSlider from '../auctionSlider/auctionSlider';
 const Homepage: React.FC = () => {
-  // const { data, isLoading } = useGetServiceListQuery<ServiceListResponse>({
-  //   pageNumber: 1,
-  //   pageSize: 5,
-  // })
-  // const dataService = data?.data
+
   return (
     <div
       style={{
@@ -31,7 +17,6 @@ const Homepage: React.FC = () => {
         alignItems: 'center',
       }}
     >
-      {/* Container */}
       <div
         style={{
           width: '100%',
@@ -40,27 +25,55 @@ const Homepage: React.FC = () => {
           margin: '0 auto',
         }}
       >
-        {/* Gioi thieu */}
-        <Row gutter={[24, 24]} align='middle' style={{ marginBottom: '48px' }}>
-          <Col xs={24} md={12}></Col>
-          <Col xs={24} md={12}>
-            <img
-              src={Logo || '/placeholder.svg'}
-              alt=''
-              style={{
-                width: '100%',
-                borderRadius: '8px',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-              }}
-            />
-          </Col>
-        </Row>
+        <div style={{ marginBottom: '48px' }}>
+          <Content
+            title='CÁC SẢN PHẨM'
+            btnContent='Xem thêm'
+            linkURL='/sessions'
+          />
+          {
+            products.length < 0 ? (
 
-        {/* Danh sach dich vu */}
-        <div style={{ marginBottom: '48px' }}></div>
+              <LoadingOutlined
+                style={{
+                  fontSize: '50px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '30vh',
+                }}
+              />
+            ) : (
+              <ProductsCardSlider products={products || []} />
+            )
+          }
+        </div>
+        <div style={{ marginBottom: '48px' }}>
+          <Content
+            title='CÁC PHIÊN ĐẤU GIÁ'
+            btnContent='Xem thêm'
+            linkURL='/sessions'
+          />
+          {
+            auctions.length < 0 ? (
+
+              <LoadingOutlined
+                style={{
+                  fontSize: '50px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '30vh',
+                }}
+              />
+            ) : (
+              <AuctionSlider auctions={auctions || []} />
+            )
+          }
+        </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Homepage
+export default Homepage;

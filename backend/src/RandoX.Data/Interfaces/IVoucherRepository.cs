@@ -9,6 +9,9 @@ namespace RandoX.Data.Interfaces
 {
     public interface IVoucherRepository
     {
+        Task<Voucher> CreateVoucherAsync(Voucher voucher);
         Task<IEnumerable<Voucher>> GetAllVouchersAsync();
+        Task<Voucher> GetVoucherByIdAsync(string id);
+        Task<Voucher> UpdateVoucherAsync(Voucher voucher);
     }
 }

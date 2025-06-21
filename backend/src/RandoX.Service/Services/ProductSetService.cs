@@ -16,10 +16,15 @@ namespace RandoX.Service.Services
     public class ProductSetService : IProductSetService
     {
         private readonly IProductSetRepository _productSetRepository;
-
-        public ProductSetService(IProductSetRepository productSetRepository)
+        private readonly IAccountRepository _accountRepository;
+        private readonly ICartRepository _cartRepository;
+        private readonly ICartService _cartService;
+        public ProductSetService(IProductSetRepository productSetRepository, IAccountRepository accountRepository, ICartRepository cartRepository, ICartService cartService)
         {
             _productSetRepository = productSetRepository;
+            _accountRepository = accountRepository;
+            _cartRepository = cartRepository;
+            _cartService = cartService;
         }
 
         public async Task<ApiResponse<PaginationResult<ProductSet>>> GetAllProductSetsAsync(int pageNumber, int pageSize)
@@ -149,6 +154,22 @@ namespace RandoX.Service.Services
             {
                 return ApiResponse<ProductSet>.Failure("Fail to delete promotion ");
             }
+        }
+        public async Task<ApiResponse<CartProduct>> AddSetToCartAsync(string userId, string setId)
+        {
+            var cart = await _accountRepository.GetCartByUserIdAsync(userId);
+            var set = await _productSetRepository.GetProductSetByIdAsync(setId);
+            var cartProduct = new CartProduct
+            {
+                Id = Guid.NewGuid(),
+                CartId = cart.Id,
+                ProductSetId = Guid.Parse(setId)
+            };
+            await _cartService.RefreshCartTotalAmountAsync(userId);
+
+            await _cartRepository.UpdateCartAsync(cart);
+            var a = await _productSetRepository.AddSetToCartAsync(cartProduct);
+            return ApiResponse<CartProduct>.Success(a, "success");
         }
     }
 
