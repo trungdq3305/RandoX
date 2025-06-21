@@ -29,15 +29,11 @@ namespace RandoX.Service.Services
             try
             {
                 var category = await _cartRepository.GetCartProductByIdAsync(id);
-                var cart = await _accountRepository.GetCartByUserIdAsync(cartId);
                 if (category == null)
                 {
                     return ApiResponse<CartProduct>.Failure("Cartproduct not found");
                 }
-
-                cart.TotalAmount = cart.TotalAmount - category.Product.Price * category.Product.Promotion.DiscountValue * category.Amount + category.Product.Price * category.Product.Promotion.DiscountValue * amount;
-                await _cartRepository.UpdateCartAsync(cart);
-
+                await RefreshCartTotalAmountAsync(cartId);
                 category.Amount = amount;
                 await _cartRepository.UpdateCartProductAsync(category);
 
