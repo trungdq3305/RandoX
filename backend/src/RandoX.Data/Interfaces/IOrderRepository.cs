@@ -10,5 +10,6 @@ namespace RandoX.Data.Interfaces
     public interface IOrderRepository
     {
         Task<Order> GetOrderByIdAsync(string orderId);
+        Task<Order> CreateOrderAsync(Order order);
     }
 }
