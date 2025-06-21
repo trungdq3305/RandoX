@@ -18,11 +18,13 @@ namespace RandoX.Service.Services
         private readonly IProductSetRepository _productSetRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly ICartRepository _cartRepository;
-        public ProductSetService(IProductSetRepository productSetRepository, IAccountRepository accountRepository, ICartRepository cartRepository)
+        private readonly ICartService _cartService;
+        public ProductSetService(IProductSetRepository productSetRepository, IAccountRepository accountRepository, ICartRepository cartRepository, ICartService cartService)
         {
             _productSetRepository = productSetRepository;
             _accountRepository = accountRepository;
             _cartRepository = cartRepository;
+            _cartService = cartService;
         }
 
         public async Task<ApiResponse<PaginationResult<ProductSet>>> GetAllProductSetsAsync(int pageNumber, int pageSize)
@@ -163,16 +165,8 @@ namespace RandoX.Service.Services
                 CartId = cart.Id,
                 ProductSetId = Guid.Parse(setId)
             };
-            if (set.PromotionId != null)
-            {
-                cart.TotalAmount = cart.TotalAmount + set.Price * set.Promotion.DiscountValue;
-            }
-            else
-            {
-                cart.TotalAmount = cart.TotalAmount + set.Price;
-            }
+            await _cartService.RefreshCartTotalAmountAsync(userId);
 
-            
             await _cartRepository.UpdateCartAsync(cart);
             var a = await _productSetRepository.AddSetToCartAsync(cartProduct);
             return ApiResponse<CartProduct>.Success(a, "success");
