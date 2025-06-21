@@ -65,7 +65,7 @@ const AuctionSlider: React.FC<AuctionCardSliderProps> = ({ auctions }) => {
                     {truncateName(auction.name, 20)}
                   </p>
                   <p>
-                    <span style={{ color: '#f5222d', fontWeight: 'bold', fontSize: '16px' }}>
+                    <span style={{ color: '#9E9E9E', fontWeight: 'bold', fontSize: '16px' }}>
                       Initial price: {auction.initialPrice.toLocaleString('vi-VN')} đ
                     </span>
                   </p>
