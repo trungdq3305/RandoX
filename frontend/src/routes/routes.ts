@@ -54,6 +54,8 @@
 import Homepage from '../components/Home/HomePage'
 import LoginRegisterLayout from '../layout/LoginRegisterLayout'
 import MainLayout from '../layout/MainLayout'
+import BlindBox from '../pages/BlindBox/BlindBox'
+import BlindBoxDetailPage from '../pages/BlindBox/BlindBoxDetailPage'
 import Login from '../pages/Login/Login'
 import type { LayoutRoute } from '../types/routes'
 
@@ -78,6 +80,14 @@ const routes: LayoutRoute[] = [
         path: '/',
         component: Homepage,
         exact: true,
+      },
+      {
+        path: '/blind-box',
+        component: BlindBox,
+      },
+      {
+        path: '/blind-box/:id',
+        component: BlindBoxDetailPage,
       },
     ],
   },

@@ -61,11 +61,11 @@ const Navbar: React.FC = () => {
               />
             </div>
             <Space size='large'>
-              <Link href='#' className='main-nav-link'>
+              <Link href='/blind-box' className='main-nav-link'>
                 Blind box
               </Link>
               <Link href='#' className='main-nav-link'>
-                Vòng quay may mắn
+                Vòng quay may mắn 
               </Link>
               <Link href='#' className='main-nav-link'>
                 Đấu giá
