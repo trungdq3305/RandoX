@@ -4,10 +4,10 @@ import Cookies from 'js-cookie'
 import { useNavigate } from 'react-router-dom'
 const { Content } = Layout
 import { useEffect } from 'react'
-import AppFooter from './Footer/Footer'
-import AppHeader from './Header/Header'
-import Navbar from './Navbar/Navbar'
-
+import Navbar from '../Navbar/Navbar'
+import AppFooter from '../Footer/Footer'
+import CustomHeader from '../Header/Header'
+import './MainLayout.css'
 function MainLayout() {
   const navigate = useNavigate()
 
@@ -27,18 +27,12 @@ function MainLayout() {
 
   return (
     <Layout
-      style={{
-        minHeight: '100vh',
-        overflow: 'hidden',
-      }}
+      className='main-layout'
     >
       <Navbar />
-      <AppHeader />
+      <CustomHeader />
       <Content
-        style={{
-          padding: '50px',
-          paddingTop: '30px',
-        }}
+        className='main-content'
       >
         <Outlet />
       </Content>
