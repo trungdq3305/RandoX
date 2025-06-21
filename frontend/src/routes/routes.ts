@@ -53,7 +53,7 @@
 
 import Homepage from '../components/Home/HomePage'
 import LoginRegisterLayout from '../layout/LoginRegisterLayout'
-import MainLayout from '../layout/MainLayout'
+import MainLayout from '../layout/MainLayout/MainLayout'
 import Login from '../pages/Login/Login'
 import type { LayoutRoute } from '../types/routes'
 
