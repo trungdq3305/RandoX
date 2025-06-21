@@ -1,53 +1,68 @@
 import React from 'react'
-import { Layout, Typography, Col, Row } from 'antd'
+import { Layout, Row, Col, Typography } from 'antd'
 
 const { Footer } = Layout
-const { Text } = Typography
+const { Title, Text } = Typography
 
 const AppFooter: React.FC = () => {
   return (
     <Footer
       style={{
-        textAlign: 'center',
-        background: '#1890ff',
-        padding: '20px 50px',
+        background: 'linear-gradient(to bottom, #1e90ff, #2596be)',
+        color: 'white',
+        padding: '50px 80px',
       }}
     >
-      <Row gutter={16}>
-        <Col
-          span={12}
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-          }}
-        >
-          <Text strong>
-            <h1 style={{ color: '#ffffff' }}>ADN</h1>
-          </Text>{' '}
-          <Text style={{ color: '#ffffff' }}>
-            © {new Date().getFullYear()} - Hệ thống trung tâm xét nghiệm ADN
-            hàng đầu
-          </Text>
-          <br />
-          <Text type='secondary' style={{ color: '#ffffff' }}>
-            An toàn - Uy tín - Chất lượng hàng đầu Việt Nam
-          </Text>
-          <br />
-          <Text type='secondary' style={{ color: '#ffffff' }}>
-            Email: adn@gamil.com | SĐT: 0916306945
-          </Text>
+      <Row justify="space-between" gutter={[32, 32]}>
+        {/* Cột 1: Logo + liên hệ */}
+        <Col xs={24} md={6}>
+          <img src="/Logo.png" alt="RandoX" height={50} />
+          <div style={{ marginTop: 16 }}>
+            <p style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ color: 'red', marginRight: 8 }}>📞</span>
+              <Text style={{ color: 'white' }}>xxxxxxxxxx</Text>
+            </p>
+            <p style={{ display: 'flex', alignItems: 'center' }}>
+              <span style={{ marginRight: 8 }}>📧</span>
+              <Text style={{ color: 'white' }}>RandoX@gmail.com</Text>
+            </p>
+          </div>
         </Col>
-        <Col span={12}>
-          <iframe
-            src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.610010498175!2d106.8076943152967!3d10.841127592277624!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752731176b07b1%3A0xb752b24b379bae5e!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBGUFQgVFAuIEhDTQ!5e0!3m2!1svi!2s!4v1680286377326!5m2!1svi!2s'
-            width='100%'
-            height='200'
-            style={{ border: 0 }}
-            allowFullScreen={false}
-            loading='lazy'
-            referrerPolicy='no-referrer-when-downgrade'
-          />
+
+        {/* Cột 2: Chính sách */}
+        <Col xs={24} md={6}>
+          <Title level={4} style={{ color: 'white' }}>Chính sách</Title>
+          <ul style={{ listStyle: 'none', padding: 0, color: 'white' }}>
+            <li>Chính sách bảo mật</li>
+            <li>Chính sách vận chuyển</li>
+            <li>Chính sách đổi trả</li>
+          </ul>
+        </Col>
+
+        {/* Cột 3: Quy chế */}
+        <Col xs={24} md={6}>
+          <Title level={4} style={{ color: 'white' }}>Quy chế hoạt động</Title>
+          <ul style={{ listStyle: 'none', padding: 0, color: 'white' }}>
+            <li>Hướng dẫn giao hàng</li>
+            <li>Hướng dẫn thanh toán</li>
+            <li>Hướng dẫn đấu giá</li>
+            <li>Điều khoản dịch vụ</li>
+          </ul>
+        </Col>
+
+        {/* Cột 4: Thanh toán + vận chuyển */}
+        <Col xs={24} md={6}>
+          <Title level={4} style={{ color: 'white' }}>Thanh toán</Title>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <img src="/src/assets/vnpay.jpg" alt="vnpay" height={30} />
+            <img src="/src/assets/cash.jpg" alt="cash" height={30} />
+          </div>
+          <Title level={4} style={{ color: 'white', marginTop: 20 }}>Đơn vị vận chuyển</Title>
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <img src="/src/assets/spx.png" alt="spx" height={30} />
+            <img src="/src/assets/jt.png" alt="jt" height={30} />
+            <img src="/src/assets/viettel.jpg" alt="viettel" height={30} />
+          </div>
         </Col>
       </Row>
     </Footer>
