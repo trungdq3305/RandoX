@@ -1,0 +1,136 @@
+.random-wheel-container {
+
+  justify-content: center;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.tab-header {
+  display: flex;
+  gap: 20px;
+  font-size: 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.tab-header span {
+  border-bottom: 2px solid transparent;
+  padding-bottom: 4px;
+}
+
+.tab-header .active {
+  font-weight: bold;
+  border-bottom: 2px solid black;
+}
+
+.wheel-content {
+  display: flex;
+  justify-content: space-between; /* căn đều 2 box */
+  gap: 40px;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.wheel-box {
+  flex: 1;
+  aspect-ratio: 1 / 1;
+  max-width: 500px;
+  background-color: white !important;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
+  text-align: center;
+  margin: 40px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* nút random ở dưới cùng */
+  align-items: center;
+}
+
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 cột đều nhau */
+  gap: 50px;
+  width: 100%;
+  justify-items: center;
+  align-items: center;
+  flex: 1; /* chiếm phần lớn không gian */
+}
+
+.item-grid img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+
+
+
+.detail-button {
+  position: absolute;
+  top: 15px;
+  right: 10px;
+  background-color: #79aaff !important;
+  color: black;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.character-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 40px;
+}
+
+.character-grid img {
+  width: 60px;
+  height: 60px;
+}
+
+.random-button {
+  margin-top: 20px;
+  background-color: #79aaff !important;
+  border: none;
+  padding: 15px 40px;
+  color: black;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.history-content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* ✅ Không kéo button theo chiều cao cha */
+  gap: 40px;
+  background: linear-gradient(to bottom, #e9f2ff, #bddfff);
+  padding: 60px;
+  border-radius: 16px;
+  min-height: 100vh;
+}
+
+
+.history-detail-button,
+.history-list-button {
+  background-color: #79aaff !important;
+  border: none;
+  padding: 16px 0;
+  color: black;
+  border-radius: 30px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 45%; /* hoặc 48% để chừa khoảng giữa */
+  font-weight: bold;
+}
+
+.background {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #ffeaf5, #cfe7ff);
+  padding: 30px;
+}

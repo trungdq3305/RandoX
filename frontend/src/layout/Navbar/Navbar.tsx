@@ -64,7 +64,7 @@ const Navbar: React.FC = () => {
               <Link href='#' className='main-nav-link'>
                 Blind box
               </Link>
-              <Link href='#' className='main-nav-link'>
+              <Link href='/RandomWheel' className='main-nav-link'>
                 Vòng quay may mắn
               </Link>
               <Link href='#' className='main-nav-link'>
