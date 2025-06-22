@@ -52,9 +52,11 @@
 // import ForgotPassword from '../Pages/Profile/ForgotPassword'
 
 import Homepage from '../components/Home/HomePage'
+import CustomerLayout from '../layout/CustomerLayout/CustomerLayout'
 import LoginRegisterLayout from '../layout/LoginRegisterLayout'
 import MainLayout from '../layout/MainLayout/MainLayout'
 import Login from '../pages/Login/Login'
+import RandomWheel from '../pages/RandomWheel/RandomWheel'
 import type { LayoutRoute } from '../types/routes'
 
 const routes: LayoutRoute[] = [
@@ -77,6 +79,16 @@ const routes: LayoutRoute[] = [
       {
         path: '/',
         component: Homepage,
+        exact: true,
+      },
+    ],
+  },
+  {
+    layout: CustomerLayout,
+    data: [
+      {
+        path: '/RandomWheel',
+        component: RandomWheel,
         exact: true,
       },
     ],
