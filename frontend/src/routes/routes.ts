@@ -5,6 +5,7 @@ import MainLayout from '../layout/MainLayout/MainLayout'
 import Login from '../pages/Login/Login'
 import ProductDetail from '../pages/ProductDetail/productDetail'
 import RandomWheel from '../pages/RandomWheel/RandomWheel'
+import SessionDetail from '../pages/SessionDetail/sessionDetail'
 import type { LayoutRoute } from '../types/routes'
 
 const routes: LayoutRoute[] = [
@@ -37,6 +38,16 @@ const routes: LayoutRoute[] = [
       {
         path: '/products/:id',
         component: ProductDetail,
+        exact: true,
+      },
+    ],
+  },
+  {
+    layout: CustomerLayout,
+    data: [
+      {
+        path: '/sessions/:id',
+        component: SessionDetail,
         exact: true,
       },
     ],

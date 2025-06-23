@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Button, InputNumber } from 'antd';
+import { Button, InputNumber } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import './productDetail.css';
 import products from '../../data/products.json';
