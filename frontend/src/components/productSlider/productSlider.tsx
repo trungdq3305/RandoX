@@ -2,16 +2,22 @@ import React from 'react'
 import './productSlider.css'
 import { Card, Carousel } from 'antd'
 import type { Products } from '../../types/product'
+import { useNavigate } from 'react-router-dom'
 
 interface ProductCardSliderProps {
   products: Products[]
 }
 
 const ProductsCardSlider: React.FC<ProductCardSliderProps> = ({ products }) => {
+  const navigate = useNavigate(); // Initialize navigate hook
+
   const truncateName = (name: string, maxLength: number) => {
     return name.length > maxLength ? name.substring(0, maxLength) + '...' : name;
   };
 
+  const handleCardClick = (id: string | number) => {
+    navigate(`/products/${id}`); // Navigate to product details page
+  };
   return (
     <Carousel
       autoplay
@@ -44,7 +50,9 @@ const ProductsCardSlider: React.FC<ProductCardSliderProps> = ({ products }) => {
               borderRadius: '20px',
               boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
               position: 'relative',
+              cursor: 'pointer',
             }}
+            onClick={() => handleCardClick(product.id)} // Add click handler
           >
             {product.stock === 0 && (
               <div style={{
