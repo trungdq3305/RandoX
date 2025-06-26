@@ -21,7 +21,7 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Build with dotnet
-        run: dotnet build backend/RandoX.sln --configuration Release
+        run: dotnet build backend/src/RandoX.sln --configuration Release
 
       - name: dotnet publish
         run: dotnet publish backend/src/RandoX.API/RandoX.API.csproj -c Release -o publish
@@ -31,6 +31,7 @@ jobs:
         with:
           name: dotnet-api
           path: publish
+
 
   deploy:
     runs-on: windows-latest
