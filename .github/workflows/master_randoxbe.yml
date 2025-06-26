@@ -53,10 +53,16 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_8D5A23E18EA64374BFEBC81565532FBD }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_421E4142C18742EAA2A6622B1C0DD931 }}
 
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: dotnet-api
+          path: dotnet-api
+
       - name: Deploy to Azure Web App
-        id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'randoxbe'
           slot-name: 'Production'
-          package: ./dotnet-api
+          package: dotnet-api
+
