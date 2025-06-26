@@ -59,4 +59,4 @@ jobs:
         with:
           app-name: 'randoxbe'
           slot-name: 'Production'
-          package: dotnet-api
+          package: ./dotnet-api
