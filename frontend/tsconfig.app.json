@@ -5,7 +5,11 @@
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
-    "skipLibCheck": true,
+    "types": [
+      "node", 
+      "jest",
+      "d3-array" // Thêm vào đây
+    ],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
