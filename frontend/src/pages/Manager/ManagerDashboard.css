@@ -1,3 +1,6 @@
+/* =================== FONT GOOGLE =================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
 /* =================== NỀN VÀ FONT =================== */
 .manager-dashboard {
   padding: 20px;
@@ -172,9 +175,11 @@
 .stock-badge.high {
   color: #4caf50;
 }
+
 .stock-badge.medium {
   color: #ff9800;
 }
+
 .stock-badge.low {
   color: #f44336;
 }
@@ -190,10 +195,12 @@
   background: #e8f5e9;
   color: #4caf50;
 }
+
 .status-badge.out_of_stock {
   background: #fff3e0;
   color: #ff9800;
 }
+
 .status-badge.discontinued {
   background: #ffebee;
   color: #f44336;
@@ -217,6 +224,3 @@
   background: #f1f1f1;
   transform: scale(1.1);
 }
-
-/* =================== FONT GOOGLE =================== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
