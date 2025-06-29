@@ -35,7 +35,7 @@ namespace RandoX.API.Controllers
 
             var token = GenerateJSONWebToken(user.Result);
 
-            return Ok(token);
+            return Ok(new { data = jwtToken });
         }
 
         private string GenerateJSONWebToken(Account systemUserAccount)
