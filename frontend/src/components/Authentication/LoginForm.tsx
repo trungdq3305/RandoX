@@ -24,35 +24,34 @@ export const LoginForm = () => {
   const validateInput = (value: string) => {
     if (!value) return Promise.reject('Vui lòng nhập email!')
     if (/^\d{10}$/.test(value)) return Promise.resolve()
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return Promise.resolve()
-    return Promise.reject('Email không hợp lệ!')
+    // if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return Promise.resolve()
+    // return Promise.reject('Email không hợp lệ!')
   }
 
   const handleSubmit = async (values: { email?: string; password: string }) => {
-    // try {
-    //   const response = await login({
-    //     email: values.email || '',
-    //     password: values.password,
-    //   }).unwrap()
+    try {
+      const response = await login({
+        email: values.email || '',
+        password: values.password,
+      }).unwrap()
+      console.log(response)
+      const token = response.data
 
-    //   const token = response.data?.[0]?.accessToken
-
-    //   if (token) {
-    //     Cookies.set('userToken', token, { expires: 7 })
-    //     navigate('/')
-    //   } else {
-    //     notification.error({
-    //       message: 'Lỗi phản hồi',
-    //       description: 'Không tìm thấy accessToken trong phản hồi từ server.',
-    //     })
-    //   }
-    // } catch (error: any) {
-    //   notification.error({
-    //     message: 'Đăng nhập thất bại',
-    //     description: error?.data?.message || 'Đã xảy ra lỗi không xác định',
-    //   })
-    // }
-    console.log('Hello')
+      if (token) {
+        Cookies.set('UserToken', token, { expires: 7 })
+        navigate('/')
+      } else {
+        notification.error({
+          message: 'Lỗi phản hồi',
+          description: 'Không tìm thấy accessToken trong phản hồi từ server.',
+        })
+      }
+    } catch (error: any) {
+      notification.error({
+        message: 'Đăng nhập thất bại',
+        description: error?.data?.message || 'Đã xảy ra lỗi không xác định',
+      })
+    }
   }
 
   return (
@@ -72,7 +71,7 @@ export const LoginForm = () => {
     >
       <Form.Item
         name='email'
-        rules={[{ validator: (_, value) => validateInput(value) }]}
+      // rules={[{ validator: (_, value) => validateInput(value) }]}
       >
         <Input
           placeholder='Email'
