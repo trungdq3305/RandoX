@@ -161,7 +161,7 @@ namespace RandoX.Service.Services
             }
         }
 
-        public async Task<ApiResponse<CartProduct>> AddProductToCartAsync(string userId, string productId)
+        public async Task<ApiResponse<CartProduct>> AddProductToCartAsync(string userId, string productId, int amount)
         {
             var cart = await _accountRepository.GetCartByUserIdAsync(userId);
             var product = await _productRepository.GetProductByIdAsync(productId);
@@ -169,7 +169,8 @@ namespace RandoX.Service.Services
             {
                 Id = Guid.NewGuid(),
                 CartId = cart.Id,
-                ProductId = Guid.Parse(productId)
+                ProductId = Guid.Parse(productId),
+                Amount = amount
             };
             await _cartService.RefreshCartTotalAmountAsync(userId);
 
