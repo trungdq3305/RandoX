@@ -27,9 +27,10 @@ namespace RandoX.Data.Repositories
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
             var products = await Entities.Where(a => a.IsDeleted != true)
-                //.Include(p => p.Manufacturer)
-                //.Include(p => p.ProductSet)
-                //.Include(p => p.Promotion)
+                .Include(p => p.Manufacturer)
+                .Include(p => p.ProductSets)
+                .Include(p => p.Promotion)
+                .Include(p => p.Category)
                 .ToListAsync();
             return products;
         }
@@ -39,6 +40,7 @@ namespace RandoX.Data.Repositories
                 .Include(p => p.Manufacturer)
                 .Include(p => p.Promotion)
                 .Include(p => p.Category)
+                .Include(p => p.ProductSets)
                 .Where(a => a.IsDeleted != true)
                 .FirstOrDefaultAsync(p => p.Id == Guid.Parse(id));
             return product;

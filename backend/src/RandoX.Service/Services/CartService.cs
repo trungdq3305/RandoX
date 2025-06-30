@@ -18,10 +18,14 @@ namespace RandoX.Service.Services
     {
         private readonly ICartRepository _cartRepository;
         private readonly IAccountRepository _accountRepository;
-        public CartService(ICartRepository cartRepository, IAccountRepository accountRepository)
+        private readonly IProductRepository _productRepository;
+        private readonly IProductSetRepository _productSetRepository;
+        public CartService(ICartRepository cartRepository, IAccountRepository accountRepository, IProductRepository productRepository, IProductSetRepository productSetRepository)
         {
             _cartRepository = cartRepository;
             _accountRepository = accountRepository;
+            _productRepository = productRepository;
+            _productSetRepository = productSetRepository;
         }
 
         public async Task<ApiResponse<CartProduct>> UpdateCartProductAmountAsync(string id, int amount, string cartId)
@@ -51,18 +55,30 @@ namespace RandoX.Service.Services
                 var cartProducts = await _cartRepository.GetAllInCartAsync(cartId);
                 var cart = await _accountRepository.GetCartByUserIdAsync(cartId);
 
-                var cartProductDtos = cartProducts.Select(cp => new CartProductDto
+                var cartProductDtos = new List<CartProductDto>();
+
+                foreach (var cp in cartProducts)
                 {
-                    Id = cp.Id,
-                    ProductId = cp.ProductId,
-                    CartId = cp.CartId,
-                    CreatedAt = cp.CreatedAt,
-                    UpdatedAt = cp.UpdatedAt,
-                    DeletedAt = cp.DeletedAt,
-                    IsDeleted = cp.IsDeleted,
-                    Amount = cp.Amount,
-                    ProductSetId = cp.ProductSetId
-                });
+                    var dto = new CartProductDto
+                    {
+                        Id = cp.Id,
+                        Amount = cp.Amount
+                    };
+
+                    if (cp.ProductId != null)
+                    {
+                        var product = await _productRepository.GetProductByIdAsync(cp.ProductId.ToString());
+                        dto.ProductName = product?.ProductName;
+                    }
+
+                    if (cp.ProductSetId != null)
+                    {
+                        var productSet = await _productSetRepository.GetProductSetByIdAsync(cp.ProductSetId.ToString());
+                        dto.ProductSetName = productSet?.ProductSetName;
+                    }
+
+                    cartProductDtos.Add(dto);
+                }
 
                 var response = new CartResponse
                 {
@@ -77,6 +93,7 @@ namespace RandoX.Service.Services
                 return ApiResponse<CartResponse>.Failure("Fail to get cart");
             }
         }
+
 
 
         public async Task<ApiResponse<decimal>> RefreshCartTotalAmountAsync(string cartId)
