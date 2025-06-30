@@ -1,4 +1,5 @@
-﻿using RandoX.Data.Entities;
+﻿using RandoX.Common;
+using RandoX.Data.Entities;
 using RandoX.Data.Models;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,6 @@ namespace RandoX.Service.Interfaces
     {
         Task<Order> GetOrderByIdAsync(string orderId);
         Task<ApiResponse<Order>> CreateOrderAsync(string cartId, decimal shippingCost, string voucherId);
+
     }
 }

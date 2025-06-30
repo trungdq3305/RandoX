@@ -31,5 +31,17 @@ namespace RandoX.Data.Repositories
             await _uow.SaveChangesAsync();
             return order;
         }
+
+        public Task<IEnumerable<Order>> GetAllSuccessOrderAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        //public async Task<IEnumerable<Order>> GetAllSuccessOrderAsync()
+        //{
+        //    var orders = await Entities.Where(a => a.IsDeleted != true)
+        //       .ToListAsync();
+        //    return products
+        //}
     }
 }

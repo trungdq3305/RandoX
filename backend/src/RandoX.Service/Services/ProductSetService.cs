@@ -155,7 +155,7 @@ namespace RandoX.Service.Services
                 return ApiResponse<ProductSet>.Failure("Fail to delete promotion ");
             }
         }
-        public async Task<ApiResponse<CartProduct>> AddSetToCartAsync(string userId, string setId)
+        public async Task<ApiResponse<CartProduct>> AddSetToCartAsync(string userId, string setId, int amount)
         {
             var cart = await _accountRepository.GetCartByUserIdAsync(userId);
             var set = await _productSetRepository.GetProductSetByIdAsync(setId);
@@ -163,7 +163,8 @@ namespace RandoX.Service.Services
             {
                 Id = Guid.NewGuid(),
                 CartId = cart.Id,
-                ProductSetId = Guid.Parse(setId)
+                ProductSetId = Guid.Parse(setId),
+                Amount = amount 
             };
             await _cartService.RefreshCartTotalAmountAsync(userId);
 

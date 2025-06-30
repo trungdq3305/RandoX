@@ -66,7 +66,7 @@ namespace RandoX.API.Controllers
         }
 
         [HttpPost("add-to-cart")]
-        public async Task<IActionResult> AddSettoCart(string setId)
+        public async Task<IActionResult> AddSettoCart(string setId, int amount)
         {
             var identity = this.HttpContext.User.Identity as ClaimsIdentity;
 
@@ -77,7 +77,7 @@ namespace RandoX.API.Controllers
             var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
             var user = await _accountService.GetAccountByEmailAsync(email);
 
-            var productResponse = await _productSetService.AddSetToCartAsync(user.Id.ToString(), setId);
+            var productResponse = await _productSetService.AddSetToCartAsync(user.Id.ToString(), setId, amount);
             return Ok(productResponse);
         }
     }
