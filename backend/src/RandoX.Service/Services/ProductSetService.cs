@@ -27,33 +27,60 @@ namespace RandoX.Service.Services
             _cartService = cartService;
         }
 
-        public async Task<ApiResponse<PaginationResult<ProductSet>>> GetAllProductSetsAsync(int pageNumber, int pageSize)
+        public async Task<ApiResponse<PaginationResult<ProductSetDetailDto>>> GetAllProductSetsAsync(int pageNumber, int pageSize)
         {
             try
             {
                 var productSets = await _productSetRepository.GetAllProductSetsAsync();
-                var paginatedResult = new PaginationResult<ProductSet>(productSets.ToList(), productSets.Count(), pageNumber, pageSize);
-                return ApiResponse<PaginationResult<ProductSet>>.Success(paginatedResult, "Successfully retrieved product sets.");
+
+                var productSetDtos = productSets.Select(MapToDto).ToList();
+                var paginatedResult = new PaginationResult<ProductSetDetailDto>(productSetDtos, productSetDtos.Count, pageNumber, pageSize);
+
+                return ApiResponse<PaginationResult<ProductSetDetailDto>>.Success(paginatedResult, "Successfully retrieved product sets.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return ApiResponse<PaginationResult<ProductSet>>.Failure("Failed to retrieve product sets.");
+                return ApiResponse<PaginationResult<ProductSetDetailDto>>.Failure("Failed to retrieve product sets.");
             }
         }
 
-        public async Task<ApiResponse<ProductSet>> GetProductSetByIdAsync(string id)
+
+        public async Task<ApiResponse<ProductSetDetailDto>> GetProductSetByIdAsync(string id)
         {
             try
             {
                 var productSet = await _productSetRepository.GetProductSetByIdAsync(id);
-                return ApiResponse<ProductSet>.Success(productSet, "Successfully retrieved product set.");
+
+                if (productSet == null)
+                    return ApiResponse<ProductSetDetailDto>.Failure("Product set not found");
+
+                var dto = MapToDto(productSet);
+                return ApiResponse<ProductSetDetailDto>.Success(dto, "Successfully retrieved product set.");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return ApiResponse<ProductSet>.Failure("Failed to retrieve product set.");
+                return ApiResponse<ProductSetDetailDto>.Failure("Failed to retrieve product set.");
             }
         }
 
+        private ProductSetDetailDto MapToDto(ProductSet productSet)
+        {
+            return new ProductSetDetailDto
+            {
+                Id = productSet.Id,
+                ProductSetName = productSet.ProductSetName,
+                Description = productSet.Description,
+                SetQuantity = productSet.SetQuantity,
+                Quantity = productSet.Quantity,
+                Price = productSet.Price,
+
+                PromotionEvent = productSet.Promotion?.Event,
+                PercentageDiscountValue = productSet.Promotion?.PercentageDiscountValue,
+                DiscountValue = productSet.Promotion?.DiscountValue,
+
+                ProductName = productSet.Product?.ProductName
+            };
+        }
         public async Task<ApiResponse<ProductSet>> CreateProductSetAsync(ProductSetRequest productSetRequest)
         {
             try
@@ -66,6 +93,7 @@ namespace RandoX.Service.Services
                     SetQuantity = productSetRequest.SetQuantity,
                     Quantity = productSetRequest.Quantity,
                     Price = productSetRequest.Price,
+                    ProductId = productSetRequest.ProductId,
                 };
 
                 await _productSetRepository.CreateProductSetAsync(productSet);
