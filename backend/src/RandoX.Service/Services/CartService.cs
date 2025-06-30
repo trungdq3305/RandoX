@@ -99,6 +99,8 @@ namespace RandoX.Service.Services
                     }
                     
                 }
+                cart.TotalAmount = total;
+                await _cartRepository.UpdateCartAsync(cart);
                 return ApiResponse<decimal>.Success(total, "success");
             }
             catch (Exception)

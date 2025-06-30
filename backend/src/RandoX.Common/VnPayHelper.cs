@@ -196,6 +196,31 @@ namespace RandoX.Common
                 }
 
                 await dbContext.SaveChangesAsync();
+
+                var order = await dbContext.Orders.Include(x => x.Cart).FirstOrDefaultAsync(x => x.Id == transaction.Id);
+                var cartProducts = await dbContext.CartProducts.Where(x => x.CartId == order.CartId).ToListAsync();
+                if (order == null || order.CartId == null)
+                {
+                    _logger.LogWarning("Không tìm thấy đơn hàng hoặc CartId null cho transaction: {TransactionId}", transaction.Id);
+                    
+                }
+                foreach (var item in cartProducts)
+                {
+                    if(item.ProductId != null)
+                    {
+                        var product = await dbContext.Products.FirstOrDefaultAsync(x => x.Id == item.ProductId);
+                        product.Quantity = product.Quantity - item.Amount;
+                        dbContext.Products.Update(product);
+                    }
+                    else
+                    {
+                        var set = await dbContext.ProductSets.FirstOrDefaultAsync(x => x.Id == item.ProductSetId);
+                        set.Quantity = set.Quantity - item.Amount;
+                        dbContext.ProductSets.Update(set);
+                        
+                    }
+                }
+                await dbContext.SaveChangesAsync();
                 _logger.LogInformation("Cập nhật trạng thái transaction thành công: {TransactionId}, ResponseCode: {ResponseCode}",
                     callback.vnp_TxnRef, callback.vnp_ResponseCode);
             }
