@@ -28,6 +28,7 @@ namespace RandoX.Service
             service.AddTransient<ICartService, CartService>();
             service.AddTransient<IVoucherService, VoucherService>();
             service.AddTransient<IOrderService, OrderService>();
+            service.AddTransient<IPromotionService, PromotionService>();
             return service;
         }
     }

@@ -12,8 +12,8 @@ namespace RandoX.Service.Interfaces
 {
     public interface IProductService
     {
-        Task<ApiResponse<PaginationResult<Product>>> GetAllProductsAsync(int pageNumber, int pageSize);
-        Task<ApiResponse<Product>> GetProductByIdAsync(string id);
+        Task<ApiResponse<PaginationResult<ProductDetailDto>>> GetAllProductsAsync(int pageNumber, int pageSize);
+        Task<ApiResponse<ProductDetailDto>> GetProductByIdAsync(string id);
         Task<ApiResponse<ProductRequest>> CreateProductAsync(ProductRequest productRequest);
         Task<ApiResponse<ProductRequest>> UpdateProductAsync(string id, ProductRequest productRequest);
         Task<ApiResponse<Product>> DeleteProductAsync(string id);
