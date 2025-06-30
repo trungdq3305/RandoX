@@ -10,6 +10,6 @@ namespace RandoX.Data.Models.CartModel
     public class CartResponse
     {
         public Guid Id { get; set; }
-        public IEnumerable<CartProduct> CartProducts { get; set; }
+        public IEnumerable<CartProductDto> CartProducts { get; set; }
     }
 }

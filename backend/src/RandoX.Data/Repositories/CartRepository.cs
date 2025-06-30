@@ -41,5 +41,10 @@ namespace RandoX.Data.Repositories
         {
             return await _context.CartProducts.Include(a => a.Product).ThenInclude(a => a.Promotion).Where(a => a.IsDeleted != true && a.CartId == Guid.Parse(cartId)).ToListAsync();
         }
+        public async Task UpdateCartProductsAsync(IEnumerable<CartProduct> cartProducts)
+        {
+            _context.CartProducts.UpdateRange(cartProducts);
+            await _context.SaveChangesAsync();
+        }
     }
 }

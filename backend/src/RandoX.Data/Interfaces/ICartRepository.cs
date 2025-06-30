@@ -13,5 +13,6 @@ namespace RandoX.Data.Interfaces
         Task<Cart> UpdateCartAsync(Cart cart);
         Task<CartProduct> GetCartProductByIdAsync(string id);
         Task<IEnumerable<CartProduct>> GetAllInCartAsync(string cartId);
+        Task UpdateCartProductsAsync(IEnumerable<CartProduct> cartProducts);
     }
 }
