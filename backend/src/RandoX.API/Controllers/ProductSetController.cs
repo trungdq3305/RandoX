@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace RandoX.API.Controllers
 {
-    [Authorize]
+    
     public class ProductSetController : BaseAPIController
     {
         private readonly IProductSetService _productSetService;
@@ -33,6 +33,7 @@ namespace RandoX.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateProductSet([FromBody] ProductSetRequest productSetRequest)
         {
             var response = await _productSetService.CreateProductSetAsync(productSetRequest);
@@ -40,6 +41,7 @@ namespace RandoX.API.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> UpdateProductSet(string id, [FromBody] ProductSetRequest productSetRequest)
         {
             var response = await _productSetService.UpdateProductSetAsync(id, productSetRequest);
@@ -47,6 +49,7 @@ namespace RandoX.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteProductSet(string id)
         {
             var response = await _productSetService.DeleteProductSetAsync(id);
