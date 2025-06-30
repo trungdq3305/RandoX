@@ -1,5 +1,4 @@
 import { Form, Input, Button, notification } from 'antd'
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
 import { useLoginMutation } from '../../features/auth/authApi'
@@ -7,25 +6,13 @@ import { useLoginMutation } from '../../features/auth/authApi'
 export const LoginForm = () => {
   const [form] = Form.useForm()
   const [login, { isLoading }] = useLoginMutation()
-  const [, setInputType] = useState<'email' | null>(null)
   const navigate = useNavigate()
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.trim()
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-      setInputType('email')
-      form.setFieldsValue({ email: value })
-    } else {
-      setInputType(null)
-      form.setFieldsValue({ email: '' })
-    }
-  }
 
   const validateInput = (value: string) => {
     if (!value) return Promise.reject('Vui lòng nhập email!')
     if (/^\d{10}$/.test(value)) return Promise.resolve()
-    // if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return Promise.resolve()
-    // return Promise.reject('Email không hợp lệ!')
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return Promise.resolve()
+    return Promise.reject('Email không hợp lệ!')
   }
 
   const handleSubmit = async (values: { email?: string; password: string }) => {
@@ -38,7 +25,7 @@ export const LoginForm = () => {
       const token = response.data
 
       if (token) {
-        Cookies.set('UserToken', token, { expires: 7 })
+        Cookies.set('userToken', token, { expires: 7 })
         navigate('/')
       } else {
         notification.error({
@@ -71,7 +58,7 @@ export const LoginForm = () => {
     >
       <Form.Item
         name='email'
-      // rules={[{ validator: (_, value) => validateInput(value) }]}
+        rules={[{ validator: (_, value) => validateInput(value) }]}
       >
         <Input
           placeholder='Email'

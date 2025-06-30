@@ -1,12 +1,28 @@
 import React from 'react';
 import Content from '../Content/content';
 import { LoadingOutlined } from '@ant-design/icons';
-import products from '../../data/products.json'; // Assuming you have a products.json file with product data
 import ProductsCardSlider from '../productSlider/productSlider';
 import auctions from '../../data/auction.json'
 import AuctionSlider from '../auctionSlider/auctionSlider';
-const Homepage: React.FC = () => {
+import { useGetProductListQuery } from '../../features/product/productAPI';
+import type { Products } from '../../types/product';
 
+interface ProductListResponse {
+  data: {
+    data: {
+      items: Products[]
+    }
+  }
+  isLoading: boolean
+}
+
+const Homepage: React.FC = () => {
+  const { data, isLoading } = useGetProductListQuery<ProductListResponse>({
+    pageNumber: 1,
+    pageSize: 5,
+  })
+  const productList = data?.data?.items || null;
+  console.log(productList)
   return (
     <div
       style={{
@@ -32,7 +48,7 @@ const Homepage: React.FC = () => {
             linkURL='/sessions'
           />
           {
-            products.length < 0 ? (
+            isLoading ? (
 
               <LoadingOutlined
                 style={{
@@ -44,7 +60,7 @@ const Homepage: React.FC = () => {
                 }}
               />
             ) : (
-              <ProductsCardSlider products={products || []} />
+              <ProductsCardSlider products={productList || []} />
             )
           }
         </div>
