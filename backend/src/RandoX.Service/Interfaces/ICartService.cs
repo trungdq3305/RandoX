@@ -15,5 +15,7 @@ namespace RandoX.Service.Interfaces
         Task<ApiResponse<CartProduct>> UpdateCartProductAmountAsync(string id, int amount, string cartId);
         Task<ApiResponse<CartResponse>> GetAllInCartAsync(int pageNumber, int pageSize, string cartId);
         Task<ApiResponse<decimal>> RefreshCartTotalAmountAsync(string cartId);
+        Task<ApiResponse<string>> ClearCartAsync(string userId);
+
     }
 }
