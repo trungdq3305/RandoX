@@ -16,6 +16,7 @@ import RandomWheel from '../pages/RandomWheel/RandomWheel'
 import SessionDetail from '../pages/SessionDetail/sessionDetail'
 import type { LayoutRoute } from '../types/routes'
 import DashboardPage from '../pages/Admin/DashboardPage'
+import Cart from '../pages/Cart/cart'
 const routes: LayoutRoute[] = [
   {
     layout: LoginRegisterLayout,
@@ -64,6 +65,16 @@ const routes: LayoutRoute[] = [
     layout: CustomerLayout,
     data: [
       {
+        path: '/cart',
+        component: Cart,
+        exact: true,
+      },
+    ],
+  },
+  {
+    layout: CustomerLayout,
+    data: [
+      {
         path: '/RandomWheel',
         component: RandomWheel,
         exact: true,
@@ -71,20 +82,20 @@ const routes: LayoutRoute[] = [
     ],
   },
   {
-  layout: AdminLayout,
-  data: [
-    {
-      path: '/admin/dashboard',
-      component: DashboardPage, // hoặc DashboardPage nếu có
-      exact: true,
-    },
-    {
-      path: '/admin/users',
-      component: AdminDashboard,
-      exact: true,
-    },
-  ],
-},
+    layout: AdminLayout,
+    data: [
+      {
+        path: '/admin/dashboard',
+        component: DashboardPage, // hoặc DashboardPage nếu có
+        exact: true,
+      },
+      {
+        path: '/admin/users',
+        component: AdminDashboard,
+        exact: true,
+      },
+    ],
+  },
   {
     layout: ManagerLayout,
     data: [

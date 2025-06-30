@@ -1,27 +1,27 @@
 import { apiSlice } from '../../apis/apiSlice'
 
-export const productAPI = apiSlice.injectEndpoints({
+export const cartAPI = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
-        getProductList: builder.query({
-            query: ({ currentPage, pageSize }) => ({
-                url: '/Product',
+        getCart: builder.query({
+            query: ({ pageNumber, pageSize }) => ({
+                url: '/Cart',
                 method: 'GET',
                 params: {
-                    currentPage,
+                    pageNumber,
                     pageSize,
                 },
             }),
             transformResponse: (res) => res,
-            providesTags: ['products'],
+            providesTags: ['carts'],
         }),
-        getProductDetail: builder.query({
-            query: (id) => ({
-                url: `/Product/${id}`,
-                method: 'GET',
+        getTotalAmount: builder.query({
+            query: () => ({
+                url: '/Cart/refresh-amount',
+                method: 'GET'
             }),
             transformResponse: (res) => res,
-            providesTags: ['products'],
+            providesTags: ['carts'],
         }),
     }),
 })
-export const { useGetProductListQuery, useGetProductDetailQuery } = productAPI
+export const { useGetCartQuery, useGetTotalAmountQuery } = cartAPI

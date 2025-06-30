@@ -76,7 +76,7 @@ const DetailProduct: React.FC = () => {
     const handleAddToCart = async () => {
         if (!product.isDeleted && product.quantity >= stock) {
             try {
-                const result = await addToCart({ productId: product.id, amount: stock }).unwrap();
+                await addToCart({ productId: product.id, amount: stock }).unwrap();
                 message.success(`Added ${stock} of ${product.productName} to cart`);
             } catch (error: any) {
                 message.error('Failed to add to cart. Please check the product ID and quantity.');
