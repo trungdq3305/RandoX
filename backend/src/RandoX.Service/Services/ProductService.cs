@@ -165,6 +165,16 @@ namespace RandoX.Service.Services
         {
             var cart = await _accountRepository.GetCartByUserIdAsync(userId);
             var product = await _productRepository.GetProductByIdAsync(productId);
+
+            // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
+            var existingCartProduct = cart.CartProducts
+                .FirstOrDefault(cp => cp.ProductId == Guid.Parse(productId) && (cp.IsDeleted == null || cp.IsDeleted == false));
+
+            if (existingCartProduct != null)
+            {
+                return ApiResponse<CartProduct>.Failure("Sản phẩm đã có trong giỏ hàng.");
+            }
+
             var cartProduct = new CartProduct
             {
                 Id = Guid.NewGuid(),
@@ -172,12 +182,13 @@ namespace RandoX.Service.Services
                 ProductId = Guid.Parse(productId),
                 Amount = amount
             };
-            await _cartService.RefreshCartTotalAmountAsync(userId);
 
+            await _cartService.RefreshCartTotalAmountAsync(userId);
             await _cartRepository.UpdateCartAsync(cart);
 
-            var a = await _productRepository.AddProductToCartAsync(cartProduct);
-            return ApiResponse<CartProduct>.Success(a, "success");
+            var result = await _productRepository.AddProductToCartAsync(cartProduct);
+            return ApiResponse<CartProduct>.Success(result, "success");
         }
+
     }
 }
