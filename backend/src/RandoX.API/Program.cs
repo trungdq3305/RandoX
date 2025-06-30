@@ -84,6 +84,7 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
+builder.Services.AddSingleton<BlobService>();
 
 builder.Services.AddSingleton<S3Service>(sp =>
 {
