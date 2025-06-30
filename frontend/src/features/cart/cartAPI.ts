@@ -22,15 +22,6 @@ export const productAPI = apiSlice.injectEndpoints({
             transformResponse: (res) => res,
             providesTags: ['products'],
         }),
-        addProductToCart: builder.mutation({
-            query: ({ productId, amount }) => ({
-                url: `/Product/add-to-cart?productId=${productId}&amount=${amount}`,
-                method: 'POST',
-
-            }),
-            transformResponse: (res) => res,
-            invalidatesTags: ['products'],
-        }),
     }),
 })
-export const { useGetProductListQuery, useGetProductDetailQuery, useAddProductToCartMutation } = productAPI
+export const { useGetProductListQuery, useGetProductDetailQuery } = productAPI
