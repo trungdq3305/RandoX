@@ -22,6 +22,39 @@ export const productAPI = apiSlice.injectEndpoints({
             transformResponse: (res) => res,
             providesTags: ['products'],
         }),
+        getAllProducts: builder.query<any, void>({
+      query: () => 'Product',
+      providesTags: ['products'],
+    }),
+    createProduct: builder.mutation<any, any>({
+      query: (body) => ({
+        url: '/Product',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['products'],
+    }),
+    updateProduct: builder.mutation<any, { id: string; body: any }>({
+      query: ({ id, body }) => ({
+        url: `/Product?id=${id}`,
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: ['products'],
+    }),
+    deleteProduct: builder.mutation<any, string>({
+      query: (id) => ({
+        url: `/Product?id=${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['products'],
+    }),
+    getAllProductsDropdown: builder.query<any, void>({
+      query: () => '/Product',
+    }),
     }),
 })
-export const { useGetProductListQuery, useGetProductDetailQuery } = productAPI
+export const { useGetProductListQuery, useGetProductDetailQuery,useGetAllProductsQuery,
+  useCreateProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,useGetAllProductsDropdownQuery  } = productAPI

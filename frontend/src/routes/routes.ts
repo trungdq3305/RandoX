@@ -11,11 +11,14 @@ import Login from '../pages/Login/Login'
 import ProductDetail from '../pages/ProductDetail/productDetail'
 import ManagerDashboard from '../pages/Manager/ManagerDashboard'
 
-
+import ProductManager from '../components/Manager/ProductManager'
 import RandomWheel from '../pages/RandomWheel/RandomWheel'
 import SessionDetail from '../pages/SessionDetail/sessionDetail'
 import type { LayoutRoute } from '../types/routes'
 import DashboardPage from '../pages/Admin/DashboardPage'
+import CategoryManager from '../components/Manager/CategoryManager'
+import PromotionVoucherManager from '../components/Manager/PromotionVoucherManager'
+import RevenueDashboard from '../pages/Admin/RevenueDashboard'
 const routes: LayoutRoute[] = [
   {
     layout: LoginRegisterLayout,
@@ -68,6 +71,7 @@ const routes: LayoutRoute[] = [
         component: RandomWheel,
         exact: true,
       },
+      
     ],
   },
   {
@@ -83,16 +87,31 @@ const routes: LayoutRoute[] = [
       component: AdminDashboard,
       exact: true,
     },
+    {
+      path: '/admin/revenue',
+      component: RevenueDashboard, // <-- thêm dòng này
+      exact: true,
+    },
   ],
 },
   {
     layout: ManagerLayout,
     data: [
       {
-        path: '/manager/products',
-        component: ManagerDashboard,
+      path: '/manager/products',
+      component: ProductManager, // sửa từ ManagerDashboard thành ProductManager
+      exact: true,
+    },
+      {
+        path: '/manager/categories',
+        component: CategoryManager,
         exact: true,
       },
+  {
+      path: '/manager/promotions-vouchers',
+      component: PromotionVoucherManager,
+      exact: true,
+    },
     ],
   },
 ]

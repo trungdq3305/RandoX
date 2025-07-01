@@ -1,0 +1,41 @@
+.revenue-dashboard {
+  padding: 24px;
+  background: #f9f9fc !important;
+}
+
+.dashboard-title {
+  font-weight: 700;
+  color: #2b2f54 !important;
+  margin-bottom: 24px;
+}
+
+.summary-row {
+  margin-bottom: 24px;
+}
+
+.summary-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important;
+  color: white;
+}
+
+.summary-card .ant-statistic-content-value {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.purple {
+  background: linear-gradient(135deg, #a18cd1, #fbc2eb) !important;
+} 
+
+.blue {
+  background: linear-gradient(135deg, #89f7fe, #66a6ff) !important;
+}
+
+.green {
+  background: linear-gradient(135deg, #d4fc79, #96e6a1) !important;
+}
+
+.orange {
+  background: linear-gradient(135deg, #fbc687, #f7955c) !important;
+}
