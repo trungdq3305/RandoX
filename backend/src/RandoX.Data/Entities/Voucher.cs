@@ -35,5 +35,9 @@ public partial class Voucher
 
     public bool? IsDeleted { get; set; }
 
+    public int AmountForSpin { get; set; }
+
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+    public virtual ICollection<SpinItem> SpinItems { get; set; } = new List<SpinItem>();
 }
