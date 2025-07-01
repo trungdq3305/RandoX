@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RandoX.Common;
 using RandoX.Data.DBContext;
 using RandoX.Data.Entities;
-using RandoX.Common;
 using RandoX.Service.Interfaces;
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace RandoX.API.Controllers
 {
@@ -14,15 +15,17 @@ namespace RandoX.API.Controllers
         private readonly IVNPayService _vnPayService;
         private readonly randox_dbContext _dbContext;
         private readonly ILogger<TransactionController> _logger;
-
+        private readonly IAccountService _accountService;
         public TransactionController(
             IVNPayService vnPayService,
             randox_dbContext dbContext,
-            ILogger<TransactionController> logger)
+            ILogger<TransactionController> logger,
+            IAccountService accountService)
         {
             _vnPayService = vnPayService;
             _dbContext = dbContext;
             _logger = logger;
+            _accountService = accountService;
         }
 
         [HttpPost("vnpay/create")]
@@ -85,6 +88,14 @@ namespace RandoX.API.Controllers
         [HttpGet("vnpay/callback")]
         public async Task<IActionResult> VNPayCallback([FromQuery] VNPayCallbackRequest callback)
         {
+            var identity = this.HttpContext.User.Identity as ClaimsIdentity;
+
+            if (identity == null || !identity.IsAuthenticated)
+                return Unauthorized("Bạn chưa đăng nhập");
+
+            var claims = identity.Claims;
+            var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            var user = await _accountService.GetAccountByEmailAsync(email);
             try
             {
                 bool isValid = await _vnPayService.ValidateCallbackAsync(callback);
@@ -95,7 +106,7 @@ namespace RandoX.API.Controllers
                     return Ok("RspCode=97&Message=Invalid signature");
                 }
 
-                await _vnPayService.ProcessPaymentCallbackAsync(callback);
+                await _vnPayService.ProcessPaymentCallbackAsync(callback, user.Id.ToString());
 
                 // VNPay yêu cầu response format cụ thể
                 string returnMessage = (callback.vnp_ResponseCode == "00" || callback.vnp_ResponseCode == "24")
