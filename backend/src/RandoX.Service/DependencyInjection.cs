@@ -31,6 +31,7 @@ namespace RandoX.Service
             service.AddTransient<IPromotionService, PromotionService>();
             service.AddTransient<IWalletService, WalletService>();
             service.AddTransient<ISpinWheelService, SpinWheelService>();
+            service.AddTransient<IDashboardService, DashboardService>();
             return service;
         }
     }

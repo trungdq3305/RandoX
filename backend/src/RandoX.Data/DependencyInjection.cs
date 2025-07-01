@@ -30,6 +30,7 @@ namespace RandoX.Data
             service.AddTransient<ICartRepository, CartRepository>();
             service.AddTransient<IWalletRepository, WalletRepository>();
             service.AddTransient<ISpinWheelRepository, SpinWheelRepository>();
+            service.AddTransient<IDashboardRepository, DashboardRepository>();
             return service;
         }
     }

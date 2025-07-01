@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace RandoX.API.Controllers
 {
-    [Authorize]
+    
     public class SpinWheelController : BaseAPIController
     {
         private readonly ISpinWheelService _service;
@@ -20,6 +20,7 @@ namespace RandoX.API.Controllers
         }
 
         [HttpPost("spin/{wheelId}")]
+        [Authorize]
         public async Task<IActionResult> Spin(Guid wheelId)
         {
             var identity = this.HttpContext.User.Identity as ClaimsIdentity;
@@ -33,12 +34,14 @@ namespace RandoX.API.Controllers
             var result = await _service.SpinAsync(user.Id, wheelId);
             return Ok(result);
         }
+
         [HttpGet("{wheelId}")]
         public async Task<IActionResult> GetWheelDetail(Guid wheelId)
         {
             var result = await _service.GetWheelDetailAsync(wheelId);
             return Ok(result);
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAllWheels()
         {
