@@ -25,6 +25,8 @@ public partial class Order
 
     public bool? IsDeleted { get; set; }
 
+    public bool IsDeposit { get; set; }
+
     public virtual Cart Cart { get; set; }
 
     public virtual ICollection<Image> Images { get; set; } = new List<Image>();

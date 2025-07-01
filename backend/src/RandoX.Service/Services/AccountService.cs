@@ -24,17 +24,20 @@ namespace RandoX.Service.Services
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AccountService> _logger;
+        private readonly IWalletRepository _walletRepository;
         public AccountService(IAccountRepository repository,
         IEmailTokenRepository tokenRepository,
         IEmailService emailService,
         IConfiguration configuration,
-        ILogger<AccountService> logger)
+        ILogger<AccountService> logger,
+        IWalletRepository walletRepository)
         {
             _accountRepository = repository;
             _tokenRepository = tokenRepository;
             _emailService = emailService;
             _configuration = configuration;
             _logger = logger;
+            _walletRepository = walletRepository;
         }
 
         public async Task<Account> Authenticate(string email, string password)
@@ -124,6 +127,12 @@ namespace RandoX.Service.Services
                     AccountId = account.Id,
                 };
                 await _accountRepository.CreateCartAsync(cart);
+                var wallet = new Wallet
+                {
+                    Id = account.Id,
+                    Balance = 0,
+                };
+                await _walletRepository.CreateWalletAsync(wallet);
                 // Đánh dấu token đã sử dụng
                 var tokenEntity = await _tokenRepository.GetTokenAsync(confirmDto.Token, "EmailConfirmation");
                 tokenEntity.IsUsed = true;
