@@ -79,6 +79,18 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[spin_history]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[spin_item]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[spin_wheel]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[transaction]",
          "ObjectType": 0
       },

@@ -31,6 +31,8 @@ public partial class Product
 
     public bool? IsDeleted { get; set; }
 
+    public int QuantityForSpin { get; set; }
+
     public virtual ICollection<CartProduct> CartProducts { get; set; } = new List<CartProduct>();
 
     public virtual Category Category { get; set; }
@@ -42,4 +44,6 @@ public partial class Product
     public virtual ICollection<ProductSet> ProductSets { get; set; } = new List<ProductSet>();
 
     public virtual Promotion Promotion { get; set; }
+
+    public virtual ICollection<SpinItem> SpinItems { get; set; } = new List<SpinItem>();
 }

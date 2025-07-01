@@ -323,11 +323,60 @@ CREATE TABLE email_token (
     created_at DATETIME DEFAULT GETDATE(),
     FOREIGN KEY (account_id) REFERENCES account(id)
 );
-
+ALTER TABLE [dbo].[product]
+ADD quantity_for_spin INT NOT NULL DEFAULT 0;
+ALTER TABLE [dbo].[voucher]
+ADD amount_for_spin INT NOT NULL DEFAULT 0;
 -- Indexes for email_token
 CREATE INDEX idx_token ON email_token(token);
 CREATE INDEX idx_token_type ON email_token(token_type);
 CREATE INDEX idx_expiry_date ON email_token(expiry_date);
+
+CREATE TABLE spin_wheel (
+    id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    name NVARCHAR(255) NOT NULL,
+    price DECIMAL(12,2) NOT NULL, -- 0 = miễn phí
+    type NVARCHAR(50) NOT NULL CHECK (type IN ('voucher', 'product')),
+    is_active BIT DEFAULT 1,
+    created_at DATETIME DEFAULT GETDATE(),
+    updated_at DATETIME DEFAULT GETDATE()
+);
+CREATE TABLE spin_item (
+    id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    spin_wheel_id UNIQUEIDENTIFIER NOT NULL,
+    reward_name NVARCHAR(255) NOT NULL,
+    reward_type NVARCHAR(50) NOT NULL CHECK (reward_type IN ('product', 'voucher')),
+    product_id UNIQUEIDENTIFIER NULL,
+    voucher_id UNIQUEIDENTIFIER NULL,
+    reward_value DECIMAL(12,2) NOT NULL,
+    image_url NVARCHAR(255),
+    probability DECIMAL(5,4) NOT NULL,
+    FOREIGN KEY (spin_wheel_id) REFERENCES spin_wheel(id),
+    FOREIGN KEY (product_id) REFERENCES product(id),
+    FOREIGN KEY (voucher_id) REFERENCES voucher(id),
+    -- Chỉ được có 1 trong 2: product hoặc voucher
+CHECK (
+    (product_id IS NOT NULL AND voucher_id IS NULL AND reward_type = 'product') OR
+    (product_id IS NULL AND voucher_id IS NOT NULL AND reward_type = 'voucher')
+)
+
+);
+CREATE TABLE spin_history (
+    id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    account_id UNIQUEIDENTIFIER NOT NULL,
+    spin_wheel_id UNIQUEIDENTIFIER NOT NULL,
+    spin_item_id UNIQUEIDENTIFIER NOT NULL,
+    price_paid DECIMAL(12,2) NOT NULL,
+    reward_value DECIMAL(12,2) NOT NULL,
+    created_at DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (account_id) REFERENCES account(id),
+    FOREIGN KEY (spin_item_id) REFERENCES spin_item(id),
+    FOREIGN KEY (spin_wheel_id) REFERENCES spin_wheel(id)
+);
+
+
+
+
 
 -- Initial data
 INSERT INTO withdraw_status (id, withdraw_status_name) VALUES (NEWID(), 'Pending'), (NEWID(), 'Success'), (NEWID(), 'Fail');

@@ -1,4 +1,6 @@
-﻿using RandoX.Common;
+﻿using Microsoft.EntityFrameworkCore;
+using RandoX.Common;
+using RandoX.Data.DBContext;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models;
@@ -20,12 +22,13 @@ namespace RandoX.Service.Services
         private readonly IWalletRepository _walletRepository;
         private readonly IOrderRepository _orderRepository;
         private readonly IAccountRepository _accountRepository;
-
-        public WalletService(IWalletRepository walletRepository,IOrderRepository orderRepository, IAccountRepository accountRepository)
+        private readonly randox_dbContext _context;
+        public WalletService(IWalletRepository walletRepository,IOrderRepository orderRepository, IAccountRepository accountRepository, randox_dbContext randox_DbContext)
         {
             _walletRepository = walletRepository;
             _orderRepository = orderRepository;
             _accountRepository = accountRepository;
+            _context = randox_DbContext;
         }
 
         public async Task<ApiResponse<Order>> CreateDepositOrderAsync(decimal totalAmount, string cartId)
@@ -108,7 +111,49 @@ namespace RandoX.Service.Services
                 return ApiResponse<WalletDto>.Failure("Lỗi khi lấy và cập nhật số dư ví.");
             }
         }
+        public async Task WithdrawAsync(Guid accountId, decimal amount, string description)
+        {
+            var wallet = await _context.Wallets.FindAsync(accountId);
+            if (wallet == null)
+                throw new Exception("Ví không tồn tại");
 
+            if (wallet.Balance < amount)
+                throw new Exception("Số dư không đủ");
+
+            wallet.Balance -= amount;
+
+            // Ghi wallet_history
+            var history = new WalletHistory
+            {
+                Id = Guid.NewGuid(),
+                TimeTransaction = DateOnly.FromDateTime(DateTime.Now),
+                Amount = -amount,
+                AccountId = accountId,
+                TransactionTypeId = await GetTransactionTypeId("Payment"), // hoặc Cache
+                CreatedAt = DateTime.Now
+            };
+            await _context.WalletHistories.AddAsync(history);
+
+            
+
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task<Guid> GetTransactionTypeId(string typeName)
+        {
+            return await _context.TransactionTypes
+                .Where(x => x.TransactionTypeName == typeName)
+                .Select(x => x.Id)
+                .FirstOrDefaultAsync();
+        }
+
+        private async Task<Guid> GetTransactionStatusId(string status)
+        {
+            return await _context.TransactionStatuses
+                .Where(x => x.TransactionStatusName == status)
+                .Select(x => x.Id)
+                .FirstOrDefaultAsync();
+        }
 
     }
 }

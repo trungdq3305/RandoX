@@ -15,5 +15,6 @@ namespace RandoX.Service.Interfaces
         Task<ApiResponse<Order>> CreateDepositOrderAsync(decimal totalAmount, string cartId);
         Task<ApiResponse<PaginationResult<WalletHistoryDto>>> GetUserWalletHistorysAsync(int pageNumber, int pageSize, string accountId);
         Task<ApiResponse<WalletDto>> GetUserWalletAsync(string accountId);
+        Task WithdrawAsync(Guid accountId, decimal amount, string description);
     }
 }
