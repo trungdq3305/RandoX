@@ -394,6 +394,7 @@ public partial class randox_dbContext : DbContext
             entity.Property(e => e.IsDeleted)
                 .HasDefaultValue(false)
                 .HasColumnName("is_deleted");
+            entity.Property(e => e.IsDeposit).HasColumnName("is_deposit");
             entity.Property(e => e.ShippingCost)
                 .HasColumnType("decimal(12, 2)")
                 .HasColumnName("shipping_cost");

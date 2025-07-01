@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RandoX.Data.DBContext;
 using RandoX.Data.Entities;
+using RandoX.Data.Interfaces;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -60,7 +61,7 @@ namespace RandoX.Common
     {
         Task<VNPayCreatePaymentResponse> CreatePaymentAsync(VNPayCreatePaymentRequest request);
         Task<bool> ValidateCallbackAsync(VNPayCallbackRequest callback);
-        Task  ProcessPaymentCallbackAsync(VNPayCallbackRequest callback);
+        Task  ProcessPaymentCallbackAsync(VNPayCallbackRequest callback, string userid);
     }
 
     // 4. VNPay Service Implementation
@@ -69,15 +70,20 @@ namespace RandoX.Common
         private readonly VNPayConfig _config;
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly ILogger<VNPayService> _logger;
-
+        private readonly IOrderRepository _orderRepository;
+        private readonly IWalletRepository _walletRepository;
         public VNPayService(
             IOptions<VNPayConfig> config,
             IServiceScopeFactory serviceScopeFactory,
-            ILogger<VNPayService> logger)
+            ILogger<VNPayService> logger,
+            IOrderRepository orderRepository,
+            IWalletRepository walletRepository)
         {
             _config = config.Value;
             _serviceScopeFactory = serviceScopeFactory;
             _logger = logger;
+            _orderRepository = orderRepository;
+            _walletRepository = walletRepository;
         }
 
         public async Task<VNPayCreatePaymentResponse> CreatePaymentAsync(VNPayCreatePaymentRequest request)
@@ -153,7 +159,7 @@ namespace RandoX.Common
             }
         }
 
-        public async Task ProcessPaymentCallbackAsync(VNPayCallbackRequest callback)
+        public async Task ProcessPaymentCallbackAsync(VNPayCallbackRequest callback, string userid)
         {
             using var scope = _serviceScopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<randox_dbContext>();
@@ -188,6 +194,20 @@ namespace RandoX.Common
                         : callback.vnp_TxnRef;
 
                     transaction.Description = $"VNPay - {callback.vnp_OrderInfo} - Mã giao dịch: {transactionNo}";
+
+                    var transOrder = await _orderRepository.GetOrderByIdAsync(transaction.Id.ToString());
+                    if (transOrder.IsDeposit != false)
+                    {
+                        var wallet = new WalletHistory
+                        {
+                            Id = Guid.NewGuid(),
+                            TimeTransaction = DateOnly.FromDateTime(DateTime.Now),
+                            Amount = (decimal)transaction.Amount,
+                            AccountId = Guid.Parse(userid),
+                            TransactionTypeId = Guid.Parse("005A36D6-06DE-469F-BD69-D88912DBA56F"),
+                        };
+                        _walletRepository.CreateWalletHistoryAsync(wallet);
+                    }
                 }
                 else
                 {

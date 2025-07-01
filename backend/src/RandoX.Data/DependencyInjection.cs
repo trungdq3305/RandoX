@@ -28,6 +28,7 @@ namespace RandoX.Data
             service.AddTransient<IPromotionRepository, PromotionRepository>();
             service.AddTransient<IProductSetRepository, ProductSetRepository>();
             service.AddTransient<ICartRepository, CartRepository>();
+            service.AddTransient<IWalletRepository, WalletRepository>();
             return service;
         }
     }

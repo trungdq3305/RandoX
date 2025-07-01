@@ -136,6 +136,8 @@ CREATE TABLE [order] (
     FOREIGN KEY (voucher_id) REFERENCES voucher(id),
     FOREIGN KEY (cart_id) REFERENCES cart(id) ON DELETE CASCADE
 );
+ALTER TABLE [dbo].[order]
+ADD is_deposit BIT NOT NULL DEFAULT 0;
 
 CREATE TABLE [transaction] (
     id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
