@@ -41,6 +41,8 @@ public partial class Account
 
     public virtual ICollection<ShipmentHistory> ShipmentHistories { get; set; } = new List<ShipmentHistory>();
 
+    public virtual ICollection<SpinHistory> SpinHistories { get; set; } = new List<SpinHistory>();
+
     public virtual Wallet Wallet { get; set; }
 
     public virtual ICollection<WalletHistory> WalletHistories { get; set; } = new List<WalletHistory>();

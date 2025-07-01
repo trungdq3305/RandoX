@@ -49,6 +49,12 @@ public partial class randox_dbContext : DbContext
 
     public virtual DbSet<ShipmentStatus> ShipmentStatuses { get; set; }
 
+    public virtual DbSet<SpinHistory> SpinHistories { get; set; }
+
+    public virtual DbSet<SpinItem> SpinItems { get; set; }
+
+    public virtual DbSet<SpinWheel> SpinWheels { get; set; }
+
     public virtual DbSet<Transaction> Transactions { get; set; }
 
     public virtual DbSet<TransactionStatus> TransactionStatuses { get; set; }
@@ -450,6 +456,7 @@ public partial class randox_dbContext : DbContext
                 .HasColumnName("product_name");
             entity.Property(e => e.PromotionId).HasColumnName("promotion_id");
             entity.Property(e => e.Quantity).HasColumnName("quantity");
+            entity.Property(e => e.QuantityForSpin).HasColumnName("quantity_for_spin");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
@@ -673,6 +680,122 @@ public partial class randox_dbContext : DbContext
                 .HasColumnName("updated_at");
         });
 
+        modelBuilder.Entity<SpinHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__spin_his__3213E83F69B20746");
+
+            entity.ToTable("spin_history");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("id");
+            entity.Property(e => e.AccountId).HasColumnName("account_id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.PricePaid)
+                .HasColumnType("decimal(12, 2)")
+                .HasColumnName("price_paid");
+            entity.Property(e => e.RewardValue)
+                .HasColumnType("decimal(12, 2)")
+                .HasColumnName("reward_value");
+            entity.Property(e => e.SpinItemId).HasColumnName("spin_item_id");
+            entity.Property(e => e.SpinWheelId).HasColumnName("spin_wheel_id");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.SpinHistories)
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__spin_hist__accou__2DB1C7EE");
+
+            entity.HasOne(d => d.SpinItem).WithMany(p => p.SpinHistories)
+                .HasForeignKey(d => d.SpinItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__spin_hist__spin___2EA5EC27");
+
+            entity.HasOne(d => d.SpinWheel).WithMany(p => p.SpinHistories)
+                .HasForeignKey(d => d.SpinWheelId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__spin_hist__spin___2F9A1060");
+        });
+
+        modelBuilder.Entity<SpinItem>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__spin_ite__3213E83F99F4A78C");
+
+            entity.ToTable("spin_item");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("id");
+            entity.Property(e => e.ImageUrl)
+                .HasMaxLength(255)
+                .HasColumnName("image_url");
+            entity.Property(e => e.Probability)
+                .HasColumnType("decimal(5, 4)")
+                .HasColumnName("probability");
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
+            entity.Property(e => e.RewardName)
+                .IsRequired()
+                .HasMaxLength(255)
+                .HasColumnName("reward_name");
+            entity.Property(e => e.RewardType)
+                .IsRequired()
+                .HasMaxLength(50)
+                .HasColumnName("reward_type");
+            entity.Property(e => e.RewardValue)
+                .HasColumnType("decimal(12, 2)")
+                .HasColumnName("reward_value");
+            entity.Property(e => e.SpinWheelId).HasColumnName("spin_wheel_id");
+            entity.Property(e => e.VoucherId).HasColumnName("voucher_id");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.SpinItems)
+                .HasForeignKey(d => d.ProductId)
+                .HasConstraintName("FK__spin_item__produ__2704CA5F");
+
+            entity.HasOne(d => d.SpinWheel).WithMany(p => p.SpinItems)
+                .HasForeignKey(d => d.SpinWheelId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__spin_item__spin___2610A626");
+
+            entity.HasOne(d => d.Voucher).WithMany(p => p.SpinItems)
+                .HasForeignKey(d => d.VoucherId)
+                .HasConstraintName("FK__spin_item__vouch__27F8EE98");
+        });
+
+        modelBuilder.Entity<SpinWheel>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__spin_whe__3213E83F94010F8A");
+
+            entity.ToTable("spin_wheel");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValue(true)
+                .HasColumnName("is_active");
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(255)
+                .HasColumnName("name");
+            entity.Property(e => e.Price)
+                .HasColumnType("decimal(12, 2)")
+                .HasColumnName("price");
+            entity.Property(e => e.Type)
+                .IsRequired()
+                .HasMaxLength(50)
+                .HasColumnName("type");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+        });
+
         modelBuilder.Entity<Transaction>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__transact__3213E83F32A35CF3");
@@ -787,6 +910,7 @@ public partial class randox_dbContext : DbContext
                 .HasDefaultValueSql("(newid())")
                 .HasColumnName("id");
             entity.Property(e => e.Amount).HasColumnName("amount");
+            entity.Property(e => e.AmountForSpin).HasColumnName("amount_for_spin");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
