@@ -1,6 +1,11 @@
-// ManagerDashboard.tsx
+// src/pages/Manager/ManagerDashboard.tsx
 import React, { useState } from 'react'
 import './ManagerDashboard.css'
+import { Tabs } from 'antd'
+import CategoryManager from '../../components/Manager/CategoryManager'
+
+const { TabPane } = Tabs
+
 interface Product {
   id: number
   name: string
@@ -107,7 +112,6 @@ const ManagerDashboard: React.FC = () => {
 
   return (
     <div className="manager-dashboard">
-      {/* Stats Cards */}
       <div className="stats-grid">
         {stats.map((stat, index) => (
           <div key={index} className="stat-card">
@@ -122,208 +126,167 @@ const ManagerDashboard: React.FC = () => {
         ))}
       </div>
 
-      {/* Product Management Table */}
-      <div className="table-container">
-        <div className="table-header">
-          <h2>Quản lý sản phẩm</h2>
-          <div className="table-actions">
-            <div className="search-box">
-              <input
-                type="text"
-                placeholder="Tìm kiếm sản phẩm..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <span className="search-icon">🔍</span>
-            </div>
-            <button className="add-btn" onClick={handleAdd}>
-              ➕ Thêm sản phẩm
-            </button>
-          </div>
-        </div>
+      <Tabs defaultActiveKey="1">
+        <TabPane tab="Danh mục" key="1">
+          <CategoryManager />
+        </TabPane>
 
-        <div className="table-wrapper">
-          <table className="management-table">
-            <thead>
-              <tr>
-                <th>Sản phẩm</th>
-                <th>Danh mục</th>
-                <th>Giá</th>
-                <th>Tồn kho</th>
-                <th>Trạng thái</th>
-                <th>Hành động</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProducts.map((product) => (
-                <tr key={product.id}>
-                  <td>
-                    <div className="product-info">
-                      <span className="product-image">{product.image}</span>
-                      <div className="product-details">
-                        <span className="product-name">{product.name}</span>
-                        <span className="product-description">{product.description}</span>
+        <TabPane tab="Sản phẩm" key="2">
+          <div className="table-container">
+            <div className="table-header">
+              <h2>Quản lý sản phẩm</h2>
+              <div className="table-actions">
+                <div className="search-box">
+                  <input
+                    type="text"
+                    placeholder="Tìm kiếm sản phẩm..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                  <span className="search-icon">🔍</span>
+                </div>
+                <button className="add-btn" onClick={handleAdd}>
+                  ➕ Thêm sản phẩm
+                </button>
+              </div>
+            </div>
+
+            <div className="table-wrapper">
+              <table className="management-table">
+                <thead>
+                  <tr>
+                    <th>Sản phẩm</th>
+                    <th>Danh mục</th>
+                    <th>Giá</th>
+                    <th>Tồn kho</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredProducts.map((product) => (
+                    <tr key={product.id}>
+                      <td>
+                        <div className="product-info">
+                          <span className="product-image">{product.image}</span>
+                          <div className="product-details">
+                            <span className="product-name">{product.name}</span>
+                            <span className="product-description">{product.description}</span>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <span className={`category-badge ${product.category.toLowerCase().replace(' ', '-')}`}>
+                          {product.category}
+                        </span>
+                      </td>
+                      <td className="price">{formatPrice(product.price)}</td>
+                      <td>
+                        <span className={`stock-badge ${product.stock > 10 ? 'high' : product.stock > 0 ? 'medium' : 'low'}`}>
+                          {product.stock} sản phẩm
+                        </span>
+                      </td>
+                      <td>
+                        <span className={`status-badge ${product.status}`}>
+                          {product.status === 'available' ? 'Có sẵn' :
+                            product.status === 'out_of_stock' ? 'Hết hàng' : 'Ngừng bán'}
+                        </span>
+                      </td>
+                      <td>
+                        <div className="action-buttons">
+                          <button className="action-btn view-btn" title="Xem chi tiết">👁️</button>
+                          <button className="action-btn edit-btn" onClick={() => handleEdit(product)} title="Chỉnh sửa">✏️</button>
+                          <button className="action-btn delete-btn" onClick={() => handleDelete(product.id)} title="Xóa">🗑️</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {showModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <div className="modal-header">
+                  <h3>{editingProduct ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'}</h3>
+                  <button className="close-btn" onClick={() => setShowModal(false)}>✕</button>
+                </div>
+                <div className="modal-body">
+                  <form onSubmit={(e) => {
+                    e.preventDefault()
+                    const formData = new FormData(e.target as HTMLFormElement)
+                    const productData: Product = {
+                      id: editingProduct?.id || 0,
+                      name: formData.get('name') as string,
+                      category: formData.get('category') as string,
+                      price: Number(formData.get('price')),
+                      stock: Number(formData.get('stock')),
+                      status: formData.get('status') as 'available' | 'out_of_stock' | 'discontinued',
+                      image: formData.get('image') as string,
+                      description: formData.get('description') as string
+                    }
+                    handleSave(productData)
+                  }}>
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Tên sản phẩm:</label>
+                        <input type="text" name="name" defaultValue={editingProduct?.name || ''} required />
+                      </div>
+                      <div className="form-group">
+                        <label>Danh mục:</label>
+                        <select name="category" defaultValue={editingProduct?.category || 'Figure'}>
+                          <option value="Figure">Figure</option>
+                          <option value="Art Toy">Art Toy</option>
+                          <option value="Blind Box">Blind Box</option>
+                          <option value="Collectible">Collectible</option>
+                        </select>
                       </div>
                     </div>
-                  </td>
-                  <td>
-                    <span className={`category-badge ${product.category.toLowerCase().replace(' ', '-')}`}>
-                      {product.category}
-                    </span>
-                  </td>
-                  <td className="price">{formatPrice(product.price)}</td>
-                  <td>
-                    <span className={`stock-badge ${product.stock > 10 ? 'high' : product.stock > 0 ? 'medium' : 'low'}`}>
-                      {product.stock} sản phẩm
-                    </span>
-                  </td>
-                  <td>
-                    <span className={`status-badge ${product.status}`}>
-                      {product.status === 'available' ? 'Có sẵn' : 
-                       product.status === 'out_of_stock' ? 'Hết hàng' : 'Ngừng bán'}
-                    </span>
-                  </td>
-                  <td>
-                    <div className="action-buttons">
-                      <button 
-                        className="action-btn view-btn"
-                        title="Xem chi tiết"
-                      >
-                        👁️
-                      </button>
-                      <button 
-                        className="action-btn edit-btn"
-                        onClick={() => handleEdit(product)}
-                        title="Chỉnh sửa"
-                      >
-                        ✏️
-                      </button>
-                      <button 
-                        className="action-btn delete-btn"
-                        onClick={() => handleDelete(product.id)}
-                        title="Xóa"
-                      >
-                        🗑️
-                      </button>
+
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Giá (VND):</label>
+                        <input type="number" name="price" defaultValue={editingProduct?.price || ''} required />
+                      </div>
+                      <div className="form-group">
+                        <label>Tồn kho:</label>
+                        <input type="number" name="stock" defaultValue={editingProduct?.stock || ''} required />
+                      </div>
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
 
-      {/* Modal */}
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <div className="modal-header">
-              <h3>{editingProduct ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'}</h3>
-              <button className="close-btn" onClick={() => setShowModal(false)}>✕</button>
-            </div>
-            <div className="modal-body">
-              <form onSubmit={(e) => {
-                e.preventDefault()
-                const formData = new FormData(e.target as HTMLFormElement)
-                const productData: Product = {
-                  id: editingProduct?.id || 0,
-                  name: formData.get('name') as string,
-                  category: formData.get('category') as string,
-                  price: Number(formData.get('price')),
-                  stock: Number(formData.get('stock')),
-                  status: formData.get('status') as 'available' | 'out_of_stock' | 'discontinued',
-                  image: formData.get('image') as string,
-                  description: formData.get('description') as string
-                }
-                handleSave(productData)
-              }}>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Tên sản phẩm:</label>
-                    <input
-                      type="text"
-                      name="name"
-                      defaultValue={editingProduct?.name || ''}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Danh mục:</label>
-                    <select name="category" defaultValue={editingProduct?.category || 'Figure'}>
-                      <option value="Figure">Figure</option>
-                      <option value="Art Toy">Art Toy</option>
-                      <option value="Blind Box">Blind Box</option>
-                      <option value="Collectible">Collectible</option>
-                    </select>
-                  </div>
-                </div>
-                
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Giá (VND):</label>
-                    <input
-                      type="number"
-                      name="price"
-                      defaultValue={editingProduct?.price || ''}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Tồn kho:</label>
-                    <input
-                      type="number"
-                      name="stock"
-                      defaultValue={editingProduct?.stock || ''}
-                      required
-                    />
-                  </div>
-                </div>
-                
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Trạng thái:</label>
-                    <select name="status" defaultValue={editingProduct?.status || 'available'}>
-                      <option value="available">Có sẵn</option>
-                      <option value="out_of_stock">Hết hàng</option>
-                      <option value="discontinued">Ngừng bán</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label>Icon:</label>
-                    <input
-                      type="text"
-                      name="image"
-                      defaultValue={editingProduct?.image || '🎁'}
-                      placeholder="🎁"
-                    />
-                  </div>
-                </div>
-                
-                <div className="form-group">
-                  <label>Mô tả:</label>
-                  <textarea
-                    name="description"
-                    defaultValue={editingProduct?.description || ''}
-                    rows={3}
-                  />
-                </div>
-                
-                <div className="form-actions">
-                  <button type="button" onClick={() => setShowModal(false)} className="cancel-btn">
-                    Hủy
-                  </button>
-                  <button type="submit" className="save-btn">
-                    {editingProduct ? 'Cập nhật' : 'Thêm mới'}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Trạng thái:</label>
+                        <select name="status" defaultValue={editingProduct?.status || 'available'}>
+                          <option value="available">Có sẵn</option>
+                          <option value="out_of_stock">Hết hàng</option>
+                          <option value="discontinued">Ngừng bán</option>
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label>Icon:</label>
+                        <input type="text" name="image" defaultValue={editingProduct?.image || '🎁'} placeholder="🎁" />
+                      </div>
+                    </div>
 
-      
+                    <div className="form-group">
+                      <label>Mô tả:</label>
+                      <textarea name="description" defaultValue={editingProduct?.description || ''} rows={3} />
+                    </div>
+
+                    <div className="form-actions">
+                      <button type="button" onClick={() => setShowModal(false)} className="cancel-btn">Hủy</button>
+                      <button type="submit" className="save-btn">{editingProduct ? 'Cập nhật' : 'Thêm mới'}</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          )}
+        </TabPane>
+      </Tabs>
     </div>
   )
 }
