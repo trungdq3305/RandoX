@@ -1,0 +1,53 @@
+/* src/components/SpinWheel/SpinAnimationModal.css */
+.animation-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+}
+
+.shining-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 6px solid #fadb14 !important;
+  animation: spin 2s linear infinite;
+  box-shadow: 0 0 20px #fadb14 !important;
+}
+
+.drawing-text {
+  margin-top: 20px;
+  font-size: 20px;
+  color: #555 !important;
+  font-weight: bold;
+}
+
+.reward-result {
+  text-align: center;
+  padding: 20px;
+}
+
+.reward-result h2 {
+  color: #52c41a !important;
+  font-size: 24px;
+}
+
+.confirm-button {
+  background: #1677ff !important;
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

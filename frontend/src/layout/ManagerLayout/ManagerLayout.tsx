@@ -8,13 +8,13 @@ const ManagerLayout: React.FC = () => {
   const location = useLocation()
 
   const menuItems = [
-    { icon: '📈', label: 'Dashboard', path: '/manager/dashboard' },
-    { icon: '🎁', label: 'Sản phẩm & Bộ sản phẩm', path: '/manager/products' },
+  { icon: '📈', label: 'Dashboard', path: '/manager/dashboard' },
+  { icon: '🎁', label: 'Sản phẩm & Bộ sản phẩm', path: '/manager/products' },
   { icon: '📂', label: 'Danh mục', path: '/manager/categories' },
-   // đổi nhãn
   { icon: '🏷️', label: 'Khuyến mãi & Voucher', path: '/manager/promotions-vouchers' },
+  { icon: '🎡', label: 'Lịch sử quay vòng', path: '/manager/spinwheel-history' }, // ← thêm dòng này
+];
 
-]
 
 
   const isActive = (path: string) => location.pathname === path
