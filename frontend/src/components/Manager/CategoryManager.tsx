@@ -83,18 +83,7 @@ const CategoryManager: React.FC = () => {
     dataIndex="updatedAt"
     render={(value: string) => new Date(value).toLocaleString()}
   />
-  <Table.Column
-    title="Đã xoá?"
-    dataIndex="isDeleted"
-    render={(value: boolean) => (value ? '🗑️' : '✅')}
-  />
-  <Table.Column
-    title="Ngày xoá"
-    dataIndex="deletedAt"
-    render={(value: string | null) =>
-      value ? new Date(value).toLocaleString() : '—'
-    }
-  />
+  
   <Table.Column
     title="Hành động"
     render={(record: any) => (

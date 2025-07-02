@@ -19,6 +19,8 @@ import DashboardPage from '../pages/Admin/DashboardPage'
 import CategoryManager from '../components/Manager/CategoryManager'
 import PromotionVoucherManager from '../components/Manager/PromotionVoucherManager'
 import RevenueDashboard from '../pages/Admin/RevenueDashboard'
+import AdminAccountManager from '../pages/Admin/AdminAccountManager'
+import SpinWheelHistoryManager from '../pages/Manager/SpinWheelHistoryManager'
 const routes: LayoutRoute[] = [
   {
     layout: LoginRegisterLayout,
@@ -92,6 +94,12 @@ const routes: LayoutRoute[] = [
       component: RevenueDashboard, // <-- thêm dòng này
       exact: true,
     },
+    {
+      path: '/admin/accounts',
+      component: AdminAccountManager,
+      exact: true,
+    },
+
   ],
 },
   {
@@ -110,6 +118,12 @@ const routes: LayoutRoute[] = [
   {
       path: '/manager/promotions-vouchers',
       component: PromotionVoucherManager,
+      exact: true,
+    },
+    
+    {
+      path: '/manager/spinwheel-history',
+      component: SpinWheelHistoryManager,
       exact: true,
     },
     ],
