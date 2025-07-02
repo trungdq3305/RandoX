@@ -64,6 +64,16 @@ namespace RandoX.Service.Services
         {
             return await _repo.GetAllWheelsAsync();
         }
+        public async Task<List<SpinHistoryDto>> GetHistoryByAccountIdAsync(Guid accountId)
+        {
+            return await _repo.GetHistoryByAccountIdAsync(accountId);
+        }
+
+        public async Task<List<SpinHistoryDto>> GetAllHistoryAsync()
+        {
+            return await _repo.GetAllHistoryAsync();
+        }
+
     }
 
 }

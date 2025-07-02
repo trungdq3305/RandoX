@@ -15,6 +15,8 @@ namespace RandoX.Data.Interfaces
         Task SaveSpinHistory(Guid accountId, SpinWheel wheel, SpinItem item);
         Task<SpinWheelDetailDto> GetWheelDetailAsync(Guid wheelId);
         Task<List<SpinWheelSummaryDto>> GetAllWheelsAsync();
+        Task<List<SpinHistoryDto>> GetHistoryByAccountIdAsync(Guid accountId);
+        Task<List<SpinHistoryDto>> GetAllHistoryAsync();
 
     }
 

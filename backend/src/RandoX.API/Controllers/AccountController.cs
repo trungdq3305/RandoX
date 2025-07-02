@@ -180,5 +180,32 @@ namespace RandoX.API.Controllers
             var user = await _accountService.GetAccountByEmailAsync(email);
             return Ok(user);
         }
+
+        [HttpGet("all")]
+        [Authorize]
+        public async Task<IActionResult> GetAllAccounts()
+        {
+            var accounts = await _accountService.GetAllAccountsAsync();
+            return Ok(accounts);
+        }
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateAccount(Guid id, [FromBody] UpdateAccountDto dto)
+        {
+            var result = await _accountService.UpdateAccountAsync(id, dto);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteAccount(Guid id)
+        {
+            var result = await _accountService.DeleteAccountAsync(id);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return Ok(result);
+        }
+
     }
 }

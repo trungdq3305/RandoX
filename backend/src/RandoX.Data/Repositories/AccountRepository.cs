@@ -87,5 +87,13 @@ namespace RandoX.Data.Repositories
                 .Include(a => a.Account)
                 .FirstOrDefaultAsync(a => a.AccountId == Guid.Parse(userId));
         }
+        public async Task<List<Account>> GetAllAsync()
+        {
+            return await _context.Accounts
+                .Include(a => a.Role)
+                .Where(a => a.IsDeleted != true)
+                .ToListAsync();
+        }
+
     }
 }

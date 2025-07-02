@@ -49,5 +49,28 @@ namespace RandoX.API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("history/me")]
+        [Authorize]
+        public async Task<IActionResult> GetMySpinHistory()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null || !identity.IsAuthenticated)
+                return Unauthorized("Bạn chưa đăng nhập");
+
+            var email = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            var user = await _accountService.GetAccountByEmailAsync(email);
+            var result = await _service.GetHistoryByAccountIdAsync(user.Id);
+            return Ok(result);
+        }
+
+        [HttpGet("history")]
+        [Authorize]
+        public async Task<IActionResult> GetAllSpinHistories()
+        {
+            var result = await _service.GetAllHistoryAsync();
+            return Ok(result);
+        }
+
+
     }
 }
