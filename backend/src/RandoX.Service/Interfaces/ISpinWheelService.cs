@@ -12,6 +12,8 @@ namespace RandoX.Service.Interfaces
         Task<SpinResultDto> SpinAsync(Guid accountId, Guid wheelId);
         Task<SpinWheelDetailDto> GetWheelDetailAsync(Guid wheelId);
         Task<List<SpinWheelSummaryDto>> GetAllWheelsAsync();
+        Task<List<SpinHistoryDto>> GetHistoryByAccountIdAsync(Guid accountId);
+        Task<List<SpinHistoryDto>> GetAllHistoryAsync();
 
     }
 
