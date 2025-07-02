@@ -284,6 +284,51 @@ namespace RandoX.Service.Services
         {
             return await _accountRepository.GetByEmailAsync(email);
         }
+        public async Task<List<AccountSummaryDto>> GetAllAccountsAsync()
+        {
+            var accounts = await _accountRepository.GetAllAsync();
+            return accounts.Select(a => new AccountSummaryDto
+            {
+                Id = a.Id,
+                Email = a.Email,
+                Dob = a.Dob,
+                PhoneNumber = a.PhoneNumber,
+                Status = a.Status,
+                RoleId = a.RoleId,
+                RoleName = a.Role?.RoleName,
+                CreatedAt = a.CreatedAt,
+                UpdatedAt = a.UpdatedAt
+            }).ToList();
+        }
+
+        public async Task<ApiResponse<bool>> UpdateAccountAsync(Guid id, UpdateAccountDto dto)
+        {
+            var acc = await _accountRepository.GetByIdAsync(id.ToString());
+            if (acc == null)
+                return ApiResponse<bool>.Failure("Tài khoản không tồn tại");
+
+            acc.PhoneNumber = dto.PhoneNumber;
+            acc.Dob = dto.Dob;
+            acc.Status = dto.Status;
+            acc.RoleId = dto.RoleId;
+            acc.UpdatedAt = DateTime.UtcNow;
+
+            await _accountRepository.UpdateAsync(acc);
+            return ApiResponse<bool>.Success(true, "Cập nhật thành công");
+        }
+
+        public async Task<ApiResponse<bool>> DeleteAccountAsync(Guid id)
+        {
+            var acc = await _accountRepository.GetByIdAsync(id.ToString());
+            if (acc == null)
+                return ApiResponse<bool>.Failure("Tài khoản không tồn tại");
+
+            acc.IsDeleted = true;
+            acc.UpdatedAt = DateTime.UtcNow;
+            await _accountRepository.UpdateAsync(acc);
+
+            return ApiResponse<bool>.Success(true, "Đã xóa tài khoản");
+        }
 
 
     }

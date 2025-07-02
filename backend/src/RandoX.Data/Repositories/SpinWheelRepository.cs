@@ -108,6 +108,44 @@ namespace RandoX.Data.Repositories
                 })
                 .ToListAsync();
         }
+        public async Task<List<SpinHistoryDto>> GetHistoryByAccountIdAsync(Guid accountId)
+        {
+            return await _context.SpinHistories
+                .Where(h => h.AccountId == accountId)
+                .Include(h => h.SpinItem)
+                .Include(h => h.SpinWheel)
+                .OrderByDescending(h => h.CreatedAt)
+                .Select(h => new SpinHistoryDto
+                {
+                    WheelName = h.SpinWheel.Name,
+                    RewardName = h.SpinItem.RewardName,
+                    RewardType = h.SpinItem.RewardType,
+                    RewardValue = h.RewardValue,
+                    PricePaid = h.PricePaid,
+                    CreatedAt = h.CreatedAt
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<SpinHistoryDto>> GetAllHistoryAsync()
+        {
+            return await _context.SpinHistories
+                .Include(h => h.SpinItem)
+                .Include(h => h.SpinWheel)
+                .Include(h => h.Account)
+                .OrderByDescending(h => h.CreatedAt)
+                .Select(h => new SpinHistoryDto
+                {
+                    WheelName = h.SpinWheel.Name,
+                    RewardName = h.SpinItem.RewardName,
+                    RewardType = h.SpinItem.RewardType,
+                    RewardValue = h.RewardValue,
+                    PricePaid = h.PricePaid,
+                    CreatedAt = h.CreatedAt,
+                    UserEmail = h.Account.Email
+                })
+                .ToListAsync();
+        }
 
     }
 
