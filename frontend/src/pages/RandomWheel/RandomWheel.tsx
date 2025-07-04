@@ -25,8 +25,13 @@ interface SpinWheelDetail {
   type: string;
   items: SpinItem[];
 }
-
+const getCookie = (name: string): string | null => {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? decodeURIComponent(match[2]) : null;
+};
 export default function RandomWheel() {
+  
+  const token = getCookie('userToken');
   const { data: wheels, isLoading } = useGetAllWheelsQuery();
   const [selectedWheelId, setSelectedWheelId] = useState<string | null>(null);
   const [openModal, setOpenModal] = useState(false);
@@ -39,7 +44,9 @@ export default function RandomWheel() {
     skip: !selectedWheelId,
   }) as { data: SpinWheelDetail | undefined; isFetching: boolean };
 
-  const { data: spinHistory, isLoading: isLoadingHistory } = useGetUserSpinHistoryQuery();
+  const { data: spinHistory, isLoading: isLoadingHistory } = useGetUserSpinHistoryQuery(undefined, {
+    skip: !token
+  });
 
   const handleDetailClick = (wheelId: string) => {
     setSelectedWheelId(wheelId);
@@ -47,24 +54,27 @@ export default function RandomWheel() {
   };
 
   const hasSpunFreeToday = (wheel: any) => {
-  if (!spinHistory) return false;
-
-  const today = new Date();
-  return spinHistory.some((item) => {
-    const spunDate = new Date(item.createdAt);
-    return (
-      item.wheelName === wheel.name && // ✅ So sánh theo tên
-      item.pricePaid == 0 && // dùng == để bao gồm cả null
-      spunDate.getDate() === today.getDate() &&
-      spunDate.getMonth() === today.getMonth() &&
-      spunDate.getFullYear() === today.getFullYear()
-    );
-  });
-};
-
-
+    if (!spinHistory) return false;
+    const today = new Date();
+    return spinHistory.some((item) => {
+      const spunDate = new Date(item.createdAt);
+      return (
+        item.wheelName === wheel.name &&
+        item.pricePaid == 0 &&
+        spunDate.getDate() === today.getDate() &&
+        spunDate.getMonth() === today.getMonth() &&
+        spunDate.getFullYear() === today.getFullYear()
+      );
+    });
+  };
 
   const handleSpinClick = async (wheel: any) => {
+    if (!token) {
+      console.log(token)
+      message.warning('Vui lòng đăng nhập để quay thưởng');
+      return;
+    }
+
     if (wheel.price === 0 && hasSpunFreeToday(wheel)) {
       message.warning('Hôm nay bạn đã quay miễn phí rồi');
       return;
@@ -74,7 +84,6 @@ export default function RandomWheel() {
       setRewardResult(null);
       setIsSpinning(true);
       const response = await spinWheelAPI(wheel.id).unwrap();
-      console.log("API spin result:", response);
       const reward = response?.data ?? response;
       if (!reward?.rewardName) throw new Error("Không có phần thưởng trả về");
       setRewardResult(reward);
@@ -85,6 +94,14 @@ export default function RandomWheel() {
     }
   };
 
+  const handleChangeTab = (tab: 'wheel' | 'history') => {
+    if (!token) {
+      message.warning('Vui lòng đăng nhập để sử dụng tính năng này');
+      return;
+    }
+    setActiveTab(tab);
+  };
+
   return (
     <div className="background">
       <div className="random-wheel-container">
@@ -92,7 +109,7 @@ export default function RandomWheel() {
           <span className={activeTab === 'wheel' ? 'active' : ''} onClick={() => setActiveTab('wheel')}>
             Wheel of fortune
           </span>
-          <span className={activeTab === 'history' ? 'active' : ''} onClick={() => setActiveTab('history')}>
+          <span className={activeTab === 'history' ? 'active' : ''} onClick={() => handleChangeTab('history')}>
             History of the draw
           </span>
         </div>
