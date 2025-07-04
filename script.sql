@@ -375,7 +375,41 @@ CREATE TABLE spin_history (
 );
 
 
-
+ CREATE TABLE AuctionItem (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    UserId UNIQUEIDENTIFIER NOT NULL,              -- người đăng form đấu giá
+    Name NVARCHAR(255),
+    Description NVARCHAR(MAX),
+    ImageUrl NVARCHAR(500),
+    Condition NVARCHAR(255),
+    StartPrice DECIMAL(18,2),
+    StepPrice DECIMAL(18,2),
+    ReservePrice DECIMAL(18,2),                    -- giá chốt
+    Status INT DEFAULT 0,                          -- 0: chờ duyệt, 1: từ chối, 2: đã duyệt, 3: đang đấu giá, 4: kết thúc
+    StaffNote NVARCHAR(MAX),                       -- nếu bị từ chối hoặc định giá lại
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    UpdatedAt DATETIME,
+    FOREIGN KEY (UserId) REFERENCES Account(Id)
+);
+CREATE TABLE AuctionSession (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    AuctionItemId UNIQUEIDENTIFIER NOT NULL,
+    StartTime DATETIME,
+    EndTime DATETIME,
+    FinalPrice DECIMAL(18,2),                      -- giá chốt (đấu tới đây thì tự động kết thúc)
+    IsEnded BIT DEFAULT 0,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (AuctionItemId) REFERENCES AuctionItem(Id)
+);
+CREATE TABLE AuctionBid (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    AuctionSessionId UNIQUEIDENTIFIER NOT NULL,
+    UserId UNIQUEIDENTIFIER NOT NULL,
+    Amount DECIMAL(18,2) NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (AuctionSessionId) REFERENCES AuctionSession(Id),
+    FOREIGN KEY (UserId) REFERENCES Account(Id)
+);
 
 
 -- Initial data

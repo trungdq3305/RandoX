@@ -21,6 +21,12 @@ public partial class randox_dbContext : DbContext
 
     public virtual DbSet<Address> Addresses { get; set; }
 
+    public virtual DbSet<AuctionBid> AuctionBids { get; set; }
+
+    public virtual DbSet<AuctionItem> AuctionItems { get; set; }
+
+    public virtual DbSet<AuctionSession> AuctionSessions { get; set; }
+
     public virtual DbSet<Cart> Carts { get; set; }
 
     public virtual DbSet<CartProduct> CartProducts { get; set; }
@@ -163,6 +169,75 @@ public partial class randox_dbContext : DbContext
             entity.HasOne(d => d.Account).WithMany(p => p.Addresses)
                 .HasForeignKey(d => d.AccountId)
                 .HasConstraintName("FK__address__account__6AEFE058");
+        });
+
+        modelBuilder.Entity<AuctionBid>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__AuctionB__3214EC07026F065B");
+
+            entity.ToTable("AuctionBid");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.AuctionSession).WithMany(p => p.AuctionBids)
+                .HasForeignKey(d => d.AuctionSessionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__AuctionBi__Aucti__4F12BBB9");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AuctionBids)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__AuctionBi__UserI__5006DFF2");
+        });
+
+        modelBuilder.Entity<AuctionItem>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__AuctionI__3214EC070390A23A");
+
+            entity.ToTable("AuctionItem");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.Condition).HasMaxLength(255);
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ImageUrl).HasMaxLength(500);
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.ReservePrice).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.StartPrice).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.Status).HasDefaultValue(0);
+            entity.Property(e => e.StepPrice).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AuctionItems)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__AuctionIt__UserI__44952D46");
+        });
+
+        modelBuilder.Entity<AuctionSession>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__AuctionS__3214EC0726C8CC11");
+
+            entity.ToTable("AuctionSession");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.EndTime).HasColumnType("datetime");
+            entity.Property(e => e.FinalPrice).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.IsEnded).HasDefaultValue(false);
+            entity.Property(e => e.StartTime).HasColumnType("datetime");
+
+            entity.HasOne(d => d.AuctionItem).WithMany(p => p.AuctionSessions)
+                .HasForeignKey(d => d.AuctionItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__AuctionSe__Aucti__4A4E069C");
         });
 
         modelBuilder.Entity<Cart>(entity =>

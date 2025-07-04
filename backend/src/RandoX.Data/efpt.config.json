@@ -23,6 +23,18 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[AuctionBid]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AuctionItem]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AuctionSession]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[cart]",
          "ObjectType": 0
       },
