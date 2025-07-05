@@ -117,7 +117,7 @@ namespace RandoX.Service.Services
                     return ApiResponse<Voucher>.Failure("Voucher not found");
                 }
 
-                voucher.DeletedAt = DateTime.UtcNow;
+                voucher.DeletedAt = DateTime.Now;
                 voucher.IsDeleted = true;
                 await _voucherRepository.UpdateVoucherAsync(voucher);
 

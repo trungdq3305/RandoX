@@ -37,7 +37,7 @@ namespace RandoX.Service.Services
                 ImageUrl = imageUrl,
                 ProductId = Guid.Parse(productId),
                 OrderId = Guid.Parse(orderId),
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
             await _imageRepository.AddImageAsync(imageEntity);

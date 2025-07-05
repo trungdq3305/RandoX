@@ -48,7 +48,7 @@ namespace RandoX.Service.Services
         public async Task<Account> Register(Account account)
         {
             account.Password = BCrypt.Net.BCrypt.HashPassword(account.Password); // hash password
-            account.CreatedAt = DateTime.UtcNow;
+            account.CreatedAt = DateTime.Now;
             return await _accountRepository.AddAsync(account);
         }
         public async Task<ApiResponse<Account>> RegisterAsync(RegisterRequest registerDto)
@@ -81,7 +81,7 @@ namespace RandoX.Service.Services
                     AccountId = createdAccount.Id,
                     Token = token,
                     TokenType = "EmailConfirmation",
-                    ExpiryDate = DateTime.UtcNow.AddHours(24)
+                    ExpiryDate = DateTime.Now.AddHours(24)
                 };
 
                 await _tokenRepository.CreateTokenAsync(emailToken);
@@ -165,7 +165,7 @@ namespace RandoX.Service.Services
                     AccountId = account.Id,
                     Token = token,
                     TokenType = "PasswordReset",
-                    ExpiryDate = DateTime.UtcNow.AddHours(1)
+                    ExpiryDate = DateTime.Now.AddHours(1)
                 };
 
                 await _tokenRepository.CreateTokenAsync(emailToken);
@@ -200,7 +200,7 @@ namespace RandoX.Service.Services
                     AccountId = account.Id,
                     Token = token,
                     TokenType = "PasswordChange",
-                    ExpiryDate = DateTime.UtcNow.AddHours(1)
+                    ExpiryDate = DateTime.Now.AddHours(1)
                 };
 
                 // Lưu mật khẩu mới tạm thời (có thể lưu vào cache hoặc bảng riêng)
@@ -311,7 +311,7 @@ namespace RandoX.Service.Services
             acc.Dob = dto.Dob;
             acc.Status = dto.Status;
             acc.RoleId = dto.RoleId;
-            acc.UpdatedAt = DateTime.UtcNow;
+            acc.UpdatedAt = DateTime.Now;
 
             await _accountRepository.UpdateAsync(acc);
             return ApiResponse<bool>.Success(true, "Cập nhật thành công");
@@ -324,7 +324,7 @@ namespace RandoX.Service.Services
                 return ApiResponse<bool>.Failure("Tài khoản không tồn tại");
 
             acc.IsDeleted = true;
-            acc.UpdatedAt = DateTime.UtcNow;
+            acc.UpdatedAt = DateTime.Now;
             await _accountRepository.UpdateAsync(acc);
 
             return ApiResponse<bool>.Success(true, "Đã xóa tài khoản");
