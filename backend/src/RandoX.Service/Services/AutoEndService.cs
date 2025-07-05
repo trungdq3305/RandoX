@@ -25,6 +25,10 @@ namespace RandoX.Service.Services
             foreach (var session in sessions)
             {
                 var lastBid = session.AuctionBids.OrderByDescending(b => b.CreatedAt).FirstOrDefault();
+                if (lastBid == null || !lastBid.CreatedAt.HasValue)
+                {
+                    continue; // No bids in this session, skip it
+                }
                 if ((session.EndTime.GetValueOrDefault() - lastBid.CreatedAt.GetValueOrDefault()).TotalMinutes <= 5)
 
                 {
