@@ -31,6 +31,9 @@ namespace RandoX.Data
             service.AddTransient<IWalletRepository, WalletRepository>();
             service.AddTransient<ISpinWheelRepository, SpinWheelRepository>();
             service.AddTransient<IDashboardRepository, DashboardRepository>();
+            service.AddTransient<IAuctionRepository, AuctionRepository>();
+            service.AddTransient<IAuctionBidRepository, AuctionBidRepository>();
+            service.AddTransient<IAuctionSessionRepository, AuctionSessionRepository>();
             return service;
         }
     }

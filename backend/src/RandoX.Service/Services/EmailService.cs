@@ -69,7 +69,7 @@ namespace RandoX.Service.Services
             await SendEmailAsync(email, subject, body);
         }
 
-        private async Task SendEmailAsync(string toEmail, string subject, string body)
+        public async Task SendEmailAsync(string toEmail, string subject, string body)
         {
             try
             {
@@ -96,5 +96,33 @@ namespace RandoX.Service.Services
                 throw;
             }
         }
+        public async Task SendAuctionApprovalAsync(string email, string itemName, string detailLink)
+        {
+            var subject = "Vật phẩm của bạn đã được duyệt";
+            var body = $@"
+        <h2>Xin chúc mừng!</h2>
+        <p>Vật phẩm <strong>{itemName}</strong> của bạn đã được duyệt để đưa lên đấu giá.</p>
+        <p>Nhấn vào nút bên dưới để xem chi tiết:</p>
+        <p><a href='{detailLink}' style='background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>Xem chi tiết</a></p>
+        <p>Chúc bạn đấu giá thành công!</p>
+        <p>Đội ngũ RandoX</p>";
+
+            await SendEmailAsync(email, subject, body);
+        }
+
+        public async Task SendAuctionRejectAsync(string email, string itemName, string reason)
+        {
+            var subject = "Vật phẩm của bạn bị từ chối";
+            var body = $@"
+        <h2>Thông báo từ chối vật phẩm</h2>
+        <p>Rất tiếc! Vật phẩm <strong>{itemName}</strong> của bạn đã bị từ chối.</p>
+        <p>Lý do: <em>{reason}</em></p>
+        <p>Nếu có thắc mắc, vui lòng liên hệ đội ngũ hỗ trợ.</p>
+        <p>Trân trọng,</p>
+        <p>Đội ngũ RandoX</p>";
+
+            await SendEmailAsync(email, subject, body);
+        }
+
     }
 }
