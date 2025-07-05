@@ -133,7 +133,7 @@ namespace RandoX.Data.Repositories
             return await _context.AuctionSessions
                 .Include(s => s.AuctionItem)
                 .Include(s => s.AuctionBids)
-                .Where(s => s.IsEnded == false && s.EndTime > TimeHelper.GetVietnamTime())
+                .Where(s => s.IsEnded == false)
                 .ToListAsync();
         }
 
