@@ -11,10 +11,12 @@ namespace RandoX.Service.Services
     public class AutoEndService : IAutoEndService
     {
         private readonly IAuctionRepository _auctionRepo;
+        private readonly IAuctionHubService _hubService;
 
-        public AutoEndService(IAuctionRepository auctionRepo)
+        public AutoEndService(IAuctionRepository auctionRepo, IAuctionHubService hubService)
         {
             _auctionRepo = auctionRepo;
+            _hubService = hubService;
         }
 
         public async Task HandleSessionExtensionAsync()
