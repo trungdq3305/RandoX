@@ -52,7 +52,7 @@ namespace RandoX.Data.Repositories
             var productSet = await GetProductSetByIdAsync(id);
             if (productSet != null)
             {
-                productSet.DeletedAt = DateTime.Now;
+                productSet.DeletedAt = TimeHelper.GetVietnamTime();
                 productSet.IsDeleted = true; // Mark as deleted
                 await _uow.SaveChangesAsync();
             }

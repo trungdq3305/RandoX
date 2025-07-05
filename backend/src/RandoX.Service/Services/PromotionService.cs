@@ -1,4 +1,5 @@
 ﻿using RandoX.Common;
+using RandoX.Data;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models;
@@ -104,7 +105,7 @@ namespace RandoX.Service.Services
             try
             {
                 var pro = await _promotionRepository.GetPromotionByIdAsync(id);
-                pro.DeletedAt  = DateTime.Now;
+                pro.DeletedAt  = TimeHelper.GetVietnamTime();
                 pro.IsDeleted = true;
                 await _promotionRepository.UpdatePromotionAsync(pro);
                 return ApiResponse<Promotion>.Success(pro, "Promotion delete successfully");

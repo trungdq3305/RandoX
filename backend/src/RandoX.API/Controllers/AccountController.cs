@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using RandoX.Data;
 using RandoX.Data.Entities;
 using RandoX.Data.Models.AccountModel;
 using RandoX.Service.Interfaces;
@@ -51,7 +52,7 @@ namespace RandoX.API.Controllers
                 //new(ClaimTypes.Email, systemUserAccount.Email),
                 new(ClaimTypes.Role, systemUserAccount.RoleId.ToString()),
                     },
-                    expires: DateTime.Now.AddMinutes(120),
+                    expires: TimeHelper.GetVietnamTime().AddMinutes(120),
                     signingCredentials: credentials
                 );
 

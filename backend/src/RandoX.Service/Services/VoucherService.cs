@@ -1,4 +1,5 @@
 ﻿using RandoX.Common;
+using RandoX.Data;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models;
@@ -117,7 +118,7 @@ namespace RandoX.Service.Services
                     return ApiResponse<Voucher>.Failure("Voucher not found");
                 }
 
-                voucher.DeletedAt = DateTime.Now;
+                voucher.DeletedAt = TimeHelper.GetVietnamTime();
                 voucher.IsDeleted = true;
                 await _voucherRepository.UpdateVoucherAsync(voucher);
 

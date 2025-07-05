@@ -1,4 +1,5 @@
-﻿using RandoX.Data.Entities;
+﻿using RandoX.Data;
+using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models.AutionModel;
 using RandoX.Service.Interfaces;
@@ -37,7 +38,7 @@ namespace RandoX.Service.Services
                 Condition = request.Condition,
                 Status = 0, // pending
                 UserId = userId,
-                CreatedAt = DateTime.Now,
+                CreatedAt = TimeHelper.GetVietnamTime(),
             };
 
             await _repo.CreateItemAsync(item);

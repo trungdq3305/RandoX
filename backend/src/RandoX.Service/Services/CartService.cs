@@ -1,4 +1,5 @@
 ﻿using RandoX.Common;
+using RandoX.Data;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models;
@@ -150,7 +151,7 @@ namespace RandoX.Service.Services
                 foreach (var product in cartProducts)
                 {
                     product.IsDeleted = true;
-                    product.UpdatedAt = DateTime.Now;
+                    product.UpdatedAt = TimeHelper.GetVietnamTime();
                 }
 
                 await _cartRepository.UpdateCartProductsAsync(cartProducts); // Viết method này nếu chưa có
