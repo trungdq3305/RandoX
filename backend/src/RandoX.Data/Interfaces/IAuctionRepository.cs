@@ -24,7 +24,9 @@ namespace RandoX.Data.Interfaces
         Task<AuctionBid> GetHighestBidAsync(Guid sessionId);
         Task SaveShippingInfoAsync(Guid sessionId, Guid userId, string address);
         Task<AuctionShippingInfo?> GetShippingInfoAsync(Guid sessionId);
-
+        Task<List<AuctionSession>> GetUnendedSessionsAsync();
+        Task UpdateSessionAsync(AuctionSession session);
+        Task<Account> GetUserByIdAsync(Guid userId);
     }
 
 }
