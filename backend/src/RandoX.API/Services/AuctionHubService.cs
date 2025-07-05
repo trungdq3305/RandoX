@@ -22,5 +22,10 @@ namespace RandoX.API.Services
         {
             await _hubContext.Clients.Group(sessionId).SendAsync("AuctionEnded");
         }
+        public async Task NotifyTimeExtended(string sessionId, DateTime newEndTime)
+        {
+            await _hubContext.Clients.Group(sessionId).SendAsync("TimeExtended", newEndTime);
+        }
+
     }
 }

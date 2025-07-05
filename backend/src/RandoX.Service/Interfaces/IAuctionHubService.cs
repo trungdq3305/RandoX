@@ -10,5 +10,7 @@ namespace RandoX.Service.Interfaces
     {
         Task NotifyNewBid(string sessionId, decimal amount);
         Task NotifyAuctionEnded(string sessionId);
+        Task NotifyTimeExtended(string sessionId, DateTime newEndTime);
+
     }
 }
