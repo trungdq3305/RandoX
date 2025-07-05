@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RandoX.Common;
+using RandoX.Data;
 using RandoX.Data.DBContext;
 using RandoX.Data.Entities;
 using RandoX.Service.Interfaces;
@@ -55,7 +56,7 @@ namespace RandoX.API.Controllers
                 OrderId = orderId,
                 ProductId = productId,
                 ImageUrl = imageUrl,
-                CreatedAt = DateTime.Now,
+                CreatedAt = TimeHelper.GetVietnamTime(),
                 IsDeleted = false
             };
 

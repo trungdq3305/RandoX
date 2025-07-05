@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using RandoX.Data;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models;
@@ -48,7 +49,7 @@ namespace RandoX.Service.Services
         public async Task<Account> Register(Account account)
         {
             account.Password = BCrypt.Net.BCrypt.HashPassword(account.Password); // hash password
-            account.CreatedAt = DateTime.Now;
+            account.CreatedAt = TimeHelper.GetVietnamTime();
             return await _accountRepository.AddAsync(account);
         }
         public async Task<ApiResponse<Account>> RegisterAsync(RegisterRequest registerDto)
@@ -81,7 +82,7 @@ namespace RandoX.Service.Services
                     AccountId = createdAccount.Id,
                     Token = token,
                     TokenType = "EmailConfirmation",
-                    ExpiryDate = DateTime.Now.AddHours(24)
+                    ExpiryDate = TimeHelper.GetVietnamTime().AddHours(24)
                 };
 
                 await _tokenRepository.CreateTokenAsync(emailToken);
@@ -165,7 +166,7 @@ namespace RandoX.Service.Services
                     AccountId = account.Id,
                     Token = token,
                     TokenType = "PasswordReset",
-                    ExpiryDate = DateTime.Now.AddHours(1)
+                    ExpiryDate = TimeHelper.GetVietnamTime().AddHours(1)
                 };
 
                 await _tokenRepository.CreateTokenAsync(emailToken);
@@ -200,7 +201,7 @@ namespace RandoX.Service.Services
                     AccountId = account.Id,
                     Token = token,
                     TokenType = "PasswordChange",
-                    ExpiryDate = DateTime.Now.AddHours(1)
+                    ExpiryDate = TimeHelper.GetVietnamTime().AddHours(1)
                 };
 
                 // Lưu mật khẩu mới tạm thời (có thể lưu vào cache hoặc bảng riêng)
@@ -311,7 +312,7 @@ namespace RandoX.Service.Services
             acc.Dob = dto.Dob;
             acc.Status = dto.Status;
             acc.RoleId = dto.RoleId;
-            acc.UpdatedAt = DateTime.Now;
+            acc.UpdatedAt = TimeHelper.GetVietnamTime();
 
             await _accountRepository.UpdateAsync(acc);
             return ApiResponse<bool>.Success(true, "Cập nhật thành công");
@@ -324,7 +325,7 @@ namespace RandoX.Service.Services
                 return ApiResponse<bool>.Failure("Tài khoản không tồn tại");
 
             acc.IsDeleted = true;
-            acc.UpdatedAt = DateTime.Now;
+            acc.UpdatedAt = TimeHelper.GetVietnamTime();
             await _accountRepository.UpdateAsync(acc);
 
             return ApiResponse<bool>.Success(true, "Đã xóa tài khoản");

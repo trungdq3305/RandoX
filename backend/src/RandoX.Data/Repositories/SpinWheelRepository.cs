@@ -63,7 +63,7 @@ namespace RandoX.Data.Repositories
                 SpinItemId = item.Id,
                 PricePaid = wheel.Price,
                 RewardValue = item.RewardValue,
-                CreatedAt = DateTime.Now
+                CreatedAt = TimeHelper.GetVietnamTime()
             };
             await _context.SpinHistories.AddAsync(history);
             await _context.SaveChangesAsync();

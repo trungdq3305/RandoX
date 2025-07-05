@@ -58,7 +58,7 @@ namespace RandoX.Data.Repositories
                 return false;
 
             wallet.Balance -= amount;
-            wallet.UpdatedAt = DateTime.Now;
+            wallet.UpdatedAt = TimeHelper.GetVietnamTime();
             await _context.SaveChangesAsync();
             return true;
         }
@@ -68,7 +68,7 @@ namespace RandoX.Data.Repositories
             if (wallet == null) return;
 
             wallet.Balance += amount;
-            wallet.UpdatedAt = DateTime.Now;
+            wallet.UpdatedAt = TimeHelper.GetVietnamTime();
             await _context.SaveChangesAsync();
         }
     }

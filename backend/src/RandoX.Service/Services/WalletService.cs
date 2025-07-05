@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RandoX.Common;
+using RandoX.Data;
 using RandoX.Data.DBContext;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
@@ -93,7 +94,7 @@ namespace RandoX.Service.Services
 
                 
                     wallet.Balance = totalBalance;
-                    wallet.UpdatedAt = DateTime.Now;
+                    wallet.UpdatedAt = TimeHelper.GetVietnamTime();
 
                     wallet = await _walletRepository.UpdateWalletAsync(wallet);
                 
@@ -126,11 +127,11 @@ namespace RandoX.Service.Services
             var history = new WalletHistory
             {
                 Id = Guid.NewGuid(),
-                TimeTransaction = DateOnly.FromDateTime(DateTime.Now),
+                TimeTransaction = DateOnly.FromDateTime(TimeHelper.GetVietnamTime()),
                 Amount = -amount,
                 AccountId = accountId,
                 TransactionTypeId = await GetTransactionTypeId("Payment"), // hoặc Cache
-                CreatedAt = DateTime.Now
+                CreatedAt = TimeHelper.GetVietnamTime()
             };
             await _context.WalletHistories.AddAsync(history);
 

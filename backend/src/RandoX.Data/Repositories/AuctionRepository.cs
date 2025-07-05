@@ -65,7 +65,7 @@ namespace RandoX.Data.Repositories
             if (item == null || item.Status != 0) return false;
 
             item.Status = 1;
-            item.UpdatedAt = DateTime.Now;
+            item.UpdatedAt = TimeHelper.GetVietnamTime();
 
             var session = new AuctionSession
             {
@@ -74,7 +74,7 @@ namespace RandoX.Data.Repositories
                 StartTime = startTime,
                 EndTime = endTime,
                 IsEnded = false,
-                CreatedAt = DateTime.Now
+                CreatedAt = TimeHelper.GetVietnamTime()
             };
 
             _context.AuctionItems.Update(item);
@@ -90,7 +90,7 @@ namespace RandoX.Data.Repositories
 
             item.Status = 2;
             item.StaffNote = reason;
-            item.UpdatedAt = DateTime.Now;
+            item.UpdatedAt = TimeHelper.GetVietnamTime();
 
             _context.AuctionItems.Update(item);
             await _context.SaveChangesAsync();
@@ -116,7 +116,7 @@ namespace RandoX.Data.Repositories
                 AuctionSessionId = sessionId,
                 UserId = userId,
                 Address = address,
-                ConfirmedAt = DateTime.Now
+                ConfirmedAt = TimeHelper.GetVietnamTime()
             };
             _context.AuctionShippingInfos.Add(info);
             await _context.SaveChangesAsync();
@@ -133,7 +133,7 @@ namespace RandoX.Data.Repositories
             return await _context.AuctionSessions
                 .Include(s => s.AuctionItem)
                 .Include(s => s.AuctionBids)
-                .Where(s => s.IsEnded == false && s.EndTime > DateTime.Now)
+                .Where(s => s.IsEnded == false && s.EndTime > TimeHelper.GetVietnamTime())
                 .ToListAsync();
         }
 

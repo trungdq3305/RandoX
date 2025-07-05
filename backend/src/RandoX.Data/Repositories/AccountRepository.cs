@@ -53,8 +53,8 @@ namespace RandoX.Data.Repositories
         public async Task<Account> CreateAsync(Account account)
         {
             account.Id = Guid.NewGuid();
-            account.CreatedAt = DateTime.Now;
-            account.UpdatedAt = DateTime.Now;
+            account.CreatedAt = TimeHelper.GetVietnamTime();
+            account.UpdatedAt = TimeHelper.GetVietnamTime();
 
             _context.Accounts.Add(account);
             await _context.SaveChangesAsync();
@@ -63,7 +63,7 @@ namespace RandoX.Data.Repositories
 
         public async Task<Account> UpdateAsync(Account account)
         {
-            account.UpdatedAt = DateTime.Now;
+            account.UpdatedAt = TimeHelper.GetVietnamTime();
             _context.Accounts.Update(account);
             await _context.SaveChangesAsync();
             return account;

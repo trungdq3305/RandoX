@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RandoX.Common;
+using RandoX.Data;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models;
@@ -132,7 +133,7 @@ namespace RandoX.Service.Services
             {
                 Product product = await _productRepository.GetProductByIdAsync(id);
 
-                product.DeletedAt = DateTime.Now;
+                product.DeletedAt = TimeHelper.GetVietnamTime();
                 product.IsDeleted = true;
 
                 await _productRepository.UpdateProductAsync(product);

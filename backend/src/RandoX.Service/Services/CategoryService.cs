@@ -1,4 +1,5 @@
 ﻿using RandoX.Common;
+using RandoX.Data;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models;
@@ -96,7 +97,7 @@ namespace RandoX.Service.Services
             try
             {
                 var cat = await _categoryRepository.GetCategoryByIdAsync(id);
-                cat.DeletedAt = DateTime.Now;
+                cat.DeletedAt = TimeHelper.GetVietnamTime();
                 cat.IsDeleted = true;
                 await _categoryRepository.UpdateCategoryAsync(cat);
                 return ApiResponse<Category>.Success(cat, "Category delete successfully");
