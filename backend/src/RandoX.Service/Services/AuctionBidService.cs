@@ -37,7 +37,7 @@ namespace RandoX.Service.Services
         public async Task<ApiResponse<string>> PlaceBidAsync(Guid sessionId, Guid userId, decimal amount)
         {
             var session = await _sessionRepo.GetByIdAsync(sessionId);
-            if (session == null || session.IsEnded == true || session.EndTime < DateTime.UtcNow)
+            if (session == null || session.IsEnded == true || session.EndTime < DateTime.Now)
                 return ApiResponse<string>.Failure("Phiên không hợp lệ");
 
             var current = await _bidRepo.GetHighestBidAsync(sessionId);
@@ -71,7 +71,7 @@ namespace RandoX.Service.Services
                 AuctionSessionId = sessionId,
                 UserId = userId,
                 Amount = amount,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
             await _bidRepo.CreateBidAsync(bid);
@@ -82,7 +82,7 @@ namespace RandoX.Service.Services
             {
                 session.IsEnded = true;
                 session.FinalPrice = amount;
-                session.EndTime = DateTime.UtcNow;
+                session.EndTime = DateTime.Now;
                 await _sessionRepo.UpdateSessionAsync(session);
             }
 

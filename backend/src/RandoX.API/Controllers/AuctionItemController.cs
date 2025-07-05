@@ -36,7 +36,7 @@ namespace RandoX.API.Controllers
         [HttpPost("{itemId}/approve")]
         public async Task<IActionResult> Approve(Guid itemId, [FromQuery] int durationMinutes = 30)
         {
-            var start = DateTime.UtcNow;
+            var start = DateTime.Now;
             var end = start.AddMinutes(durationMinutes);
 
             var success = await _service.ApproveAuctionItemAsync(itemId, start, end);

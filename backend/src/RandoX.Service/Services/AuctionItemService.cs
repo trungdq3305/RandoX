@@ -37,7 +37,7 @@ namespace RandoX.Service.Services
                 Condition = request.Condition,
                 Status = 0, // pending
                 UserId = userId,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now,
             };
 
             await _repo.CreateItemAsync(item);
