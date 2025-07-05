@@ -55,7 +55,7 @@ namespace RandoX.API.Controllers
                 OrderId = orderId,
                 ProductId = productId,
                 ImageUrl = imageUrl,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now,
                 IsDeleted = false
             };
 

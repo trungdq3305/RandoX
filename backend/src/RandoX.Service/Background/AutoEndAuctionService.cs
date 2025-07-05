@@ -38,7 +38,7 @@ namespace RandoX.Service.Background
                 var sessions = await auctionRepo.GetUnendedSessionsAsync();
                 foreach (var session in sessions)
                 {
-                    var now = DateTime.UtcNow;
+                    var now = DateTime.Now;
                     var highestBid = session.AuctionBids.OrderByDescending(b => b.Amount).FirstOrDefault();
                     var finalPrice = highestBid?.Amount;
 
