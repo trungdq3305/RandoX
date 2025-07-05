@@ -411,6 +411,16 @@ CREATE TABLE AuctionBid (
     FOREIGN KEY (UserId) REFERENCES Account(Id)
 );
 
+CREATE TABLE AuctionShippingInfo (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    AuctionSessionId UNIQUEIDENTIFIER NOT NULL,
+    UserId UNIQUEIDENTIFIER NOT NULL,
+    Address NVARCHAR(500) NOT NULL,
+    ConfirmedAt DATETIME NOT NULL DEFAULT GETDATE(),
+
+    CONSTRAINT FK_ShippingInfo_Session FOREIGN KEY (AuctionSessionId) REFERENCES AuctionSession(Id),
+    CONSTRAINT FK_ShippingInfo_User FOREIGN KEY (UserId) REFERENCES Account(Id)
+);
 
 -- Initial data
 INSERT INTO withdraw_status (id, withdraw_status_name) VALUES (NEWID(), 'Pending'), (NEWID(), 'Success'), (NEWID(), 'Fail');

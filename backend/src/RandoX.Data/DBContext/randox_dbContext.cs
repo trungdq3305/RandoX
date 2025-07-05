@@ -27,6 +27,8 @@ public partial class randox_dbContext : DbContext
 
     public virtual DbSet<AuctionSession> AuctionSessions { get; set; }
 
+    public virtual DbSet<AuctionShippingInfo> AuctionShippingInfos { get; set; }
+
     public virtual DbSet<Cart> Carts { get; set; }
 
     public virtual DbSet<CartProduct> CartProducts { get; set; }
@@ -238,6 +240,31 @@ public partial class randox_dbContext : DbContext
                 .HasForeignKey(d => d.AuctionItemId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__AuctionSe__Aucti__4A4E069C");
+        });
+
+        modelBuilder.Entity<AuctionShippingInfo>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__AuctionS__3214EC0760B64C2E");
+
+            entity.ToTable("AuctionShippingInfo");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.Address)
+                .IsRequired()
+                .HasMaxLength(500);
+            entity.Property(e => e.ConfirmedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.AuctionSession).WithMany(p => p.AuctionShippingInfos)
+                .HasForeignKey(d => d.AuctionSessionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ShippingInfo_Session");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AuctionShippingInfos)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ShippingInfo_User");
         });
 
         modelBuilder.Entity<Cart>(entity =>

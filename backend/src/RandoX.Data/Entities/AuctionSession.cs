@@ -24,4 +24,6 @@ public partial class AuctionSession
     public virtual ICollection<AuctionBid> AuctionBids { get; set; } = new List<AuctionBid>();
 
     public virtual AuctionItem AuctionItem { get; set; }
+
+    public virtual ICollection<AuctionShippingInfo> AuctionShippingInfos { get; set; } = new List<AuctionShippingInfo>();
 }

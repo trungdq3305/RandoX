@@ -35,6 +35,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[AuctionShippingInfo]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[cart]",
          "ObjectType": 0
       },

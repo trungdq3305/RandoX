@@ -47,6 +47,29 @@ namespace RandoX.Data.Repositories
             await _uow.SaveChangesAsync();
             return wallet;
         }
+        public async Task<Wallet> GetByUserIdAsync(Guid userId)
+        {
+            return await _context.Wallets.FirstOrDefaultAsync(w => w.Id == userId);
+        }
+        public async Task<bool> DeductBalanceAsync(Guid userId, decimal amount)
+        {
+            var wallet = await GetByUserIdAsync(userId);
+            if (wallet == null || wallet.Balance < amount)
+                return false;
 
+            wallet.Balance -= amount;
+            wallet.UpdatedAt = DateTime.Now;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        public async Task AddBalanceAsync(Guid userId, decimal amount)
+        {
+            var wallet = await _context.Wallets.FirstOrDefaultAsync(w => w.Id == userId);
+            if (wallet == null) return;
+
+            wallet.Balance += amount;
+            wallet.UpdatedAt = DateTime.Now;
+            await _context.SaveChangesAsync();
+        }
     }
 }

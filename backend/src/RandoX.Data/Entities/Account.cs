@@ -35,6 +35,8 @@ public partial class Account
 
     public virtual ICollection<AuctionItem> AuctionItems { get; set; } = new List<AuctionItem>();
 
+    public virtual ICollection<AuctionShippingInfo> AuctionShippingInfos { get; set; } = new List<AuctionShippingInfo>();
+
     public virtual ICollection<Cart> CartAccounts { get; set; } = new List<Cart>();
 
     public virtual Cart CartIdNavigation { get; set; }
