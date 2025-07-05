@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RandoX.Data;
 using RandoX.Data.Interfaces;
 using RandoX.Service.Interfaces;
 using System;
@@ -38,7 +39,7 @@ namespace RandoX.Service.Background
                 var sessions = await auctionRepo.GetUnendedSessionsAsync();
                 foreach (var session in sessions)
                 {
-                    var now = DateTime.Now;
+                    var now = TimeHelper.GetVietnamTime();
                     var highestBid = session.AuctionBids.OrderByDescending(b => b.Amount).FirstOrDefault();
                     var finalPrice = highestBid?.Amount;
 

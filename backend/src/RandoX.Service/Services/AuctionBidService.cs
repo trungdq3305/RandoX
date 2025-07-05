@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using RandoX.Data;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models;
@@ -37,7 +38,7 @@ namespace RandoX.Service.Services
         public async Task<ApiResponse<string>> PlaceBidAsync(Guid sessionId, Guid userId, decimal amount)
         {
             var session = await _sessionRepo.GetByIdAsync(sessionId);
-            if (session == null || session.IsEnded == true || session.EndTime < DateTime.Now)
+            if (session == null || session.IsEnded == true || session.EndTime < TimeHelper.GetVietnamTime())
                 return ApiResponse<string>.Failure("Phiên không hợp lệ");
 
             var current = await _bidRepo.GetHighestBidAsync(sessionId);
@@ -71,7 +72,7 @@ namespace RandoX.Service.Services
                 AuctionSessionId = sessionId,
                 UserId = userId,
                 Amount = amount,
-                CreatedAt = DateTime.Now
+                CreatedAt = TimeHelper.GetVietnamTime()
             };
 
             await _bidRepo.CreateBidAsync(bid);
@@ -82,7 +83,7 @@ namespace RandoX.Service.Services
             {
                 session.IsEnded = true;
                 session.FinalPrice = amount;
-                session.EndTime = DateTime.Now;
+                session.EndTime = TimeHelper.GetVietnamTime();
                 await _sessionRepo.UpdateSessionAsync(session);
             }
 

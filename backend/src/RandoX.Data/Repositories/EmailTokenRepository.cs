@@ -22,7 +22,7 @@ namespace RandoX.Data.Repositories
         public async Task<EmailToken> CreateTokenAsync(EmailToken token)
         {
             token.Id = Guid.NewGuid();
-            token.CreatedAt = DateTime.Now;
+            token.CreatedAt = TimeHelper.GetVietnamTime();
 
             _context.EmailTokens.Add(token);
             await _context.SaveChangesAsync();
@@ -36,7 +36,7 @@ namespace RandoX.Data.Repositories
                 .FirstOrDefaultAsync(t => t.Token == token &&
                                    t.TokenType == tokenType &&
                                    t.IsUsed != true &&
-                                   t.ExpiryDate > DateTime.Now);
+                                   t.ExpiryDate > TimeHelper.GetVietnamTime());
         }
 
         public async Task<EmailToken> UpdateTokenAsync(EmailToken token)
@@ -53,7 +53,7 @@ namespace RandoX.Data.Repositories
                          t.Account.Email == email &&
                          t.TokenType == tokenType &&
                          t.IsUsed != true &&
-                         t.ExpiryDate > DateTime.Now);
+                         t.ExpiryDate > TimeHelper.GetVietnamTime());
         }
     }
 }

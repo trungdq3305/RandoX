@@ -1,4 +1,5 @@
 ﻿using RandoX.Common;
+using RandoX.Data;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models;
@@ -95,7 +96,7 @@ namespace RandoX.Service.Services
             {
                 var ma = await _manufacturerRepository.GetManufacturerByIdAsync(id);
                 ma.IsDeleted = true;
-                ma.DeletedAt = DateTime.Now;
+                ma.DeletedAt = TimeHelper.GetVietnamTime();
                 await _manufacturerRepository.UpdateManufacturerAsync(ma);
                 return ApiResponse<Manufacturer>.Success(ma, "Manufacturer delete successfully");
             }

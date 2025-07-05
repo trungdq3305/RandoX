@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using RandoX.Common;
+using RandoX.Data;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models;
@@ -37,7 +38,7 @@ namespace RandoX.Service.Services
                 ImageUrl = imageUrl,
                 ProductId = Guid.Parse(productId),
                 OrderId = Guid.Parse(orderId),
-                CreatedAt = DateTime.Now
+                CreatedAt = TimeHelper.GetVietnamTime()
             };
 
             await _imageRepository.AddImageAsync(imageEntity);

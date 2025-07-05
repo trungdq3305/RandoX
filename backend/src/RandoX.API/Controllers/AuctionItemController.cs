@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RandoX.Common;
+using RandoX.Data;
 using RandoX.Data.Models.AutionModel;
 using RandoX.Service.Interfaces;
 using RandoX.Service.Services;
@@ -36,7 +38,7 @@ namespace RandoX.API.Controllers
         [HttpPost("{itemId}/approve")]
         public async Task<IActionResult> Approve(Guid itemId, [FromQuery] int durationMinutes = 30)
         {
-            var start = DateTime.Now;
+            var start = TimeHelper.GetVietnamTime();
             var end = start.AddMinutes(durationMinutes);
 
             var success = await _service.ApproveAuctionItemAsync(itemId, start, end);

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using RandoX.Data;
 using RandoX.Data.DBContext;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
@@ -97,7 +98,7 @@ namespace RandoX.Common
                 vnpay.AddRequestData("vnp_Command", _config.Command);
                 vnpay.AddRequestData("vnp_TmnCode", _config.TmnCode);
                 vnpay.AddRequestData("vnp_Amount", ((long)(request.Amount * 100)).ToString());
-                vnpay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
+                vnpay.AddRequestData("vnp_CreateDate", TimeHelper.GetVietnamTime().ToString("yyyyMMddHHmmss"));
                 vnpay.AddRequestData("vnp_CurrCode", request.CurrCode);
                 vnpay.AddRequestData("vnp_IpAddr", request.IpAddress);
                 vnpay.AddRequestData("vnp_Locale", request.Locale);
@@ -178,7 +179,7 @@ namespace RandoX.Common
                 // Cập nhật trạng thái transaction
                 string statusId = GetTransactionStatusId(callback.vnp_ResponseCode);
                 transaction.TransactionStatusId = Guid.Parse(statusId);
-                transaction.UpdatedAt = DateTime.Now;
+                transaction.UpdatedAt = TimeHelper.GetVietnamTime();
 
                 if (callback.vnp_ResponseCode == "00") // Thành công
                 {
@@ -201,7 +202,7 @@ namespace RandoX.Common
                         var wallet = new WalletHistory
                         {
                             Id = Guid.NewGuid(),
-                            TimeTransaction = DateOnly.FromDateTime(DateTime.Now),
+                            TimeTransaction = DateOnly.FromDateTime(TimeHelper.GetVietnamTime()),
                             Amount = (decimal)transaction.Amount,
                             AccountId = Guid.Parse(userid),
                             TransactionTypeId = Guid.Parse("005A36D6-06DE-469F-BD69-D88912DBA56F"),
@@ -286,7 +287,7 @@ namespace RandoX.Common
                     TransactionStatusId = Guid.Parse("342EFC9C-A6EB-45D9-AC43-E64A3FB8C36E"), // ID của status pending trong bảng TransactionStatus
                                                                                               //PaymentTypeId = "vnpay", // ID của payment type VNPay
                     PaymentLocation = true, // Online payment
-                    CreatedAt = DateTime.Now
+                    CreatedAt = TimeHelper.GetVietnamTime()
                 };
 
                 dbContext.Transactions.Add(transaction);
