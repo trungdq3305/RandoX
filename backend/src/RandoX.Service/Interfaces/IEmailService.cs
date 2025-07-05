@@ -11,5 +11,8 @@ namespace RandoX.Service.Interfaces
         Task SendEmailConfirmationAsync(string email, string confirmationLink);
         Task SendPasswordResetAsync(string email, string resetLink);
         Task SendPasswordChangeConfirmationAsync(string email, string confirmationLink);
+        Task SendAuctionApprovalAsync(string email, string itemName, string detailLink);
+        Task SendAuctionRejectAsync(string email, string itemName, string reason);
+        Task SendEmailAsync(string toEmail, string subject, string body);
     }
 }
