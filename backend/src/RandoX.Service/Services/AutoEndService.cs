@@ -29,6 +29,7 @@ namespace RandoX.Service.Services
                     session.EndTime = session.EndTime.GetValueOrDefault().AddMinutes(5);
 
                     await _auctionRepo.UpdateSessionAsync(session);
+                    await _hubService.NotifyTimeExtended(session.Id.ToString(), session.EndTime.Value);
                 }
             }
         }
