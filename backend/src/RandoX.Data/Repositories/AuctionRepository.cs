@@ -128,6 +128,22 @@ namespace RandoX.Data.Repositories
                 .Include(x => x.User)
                 .FirstOrDefaultAsync(x => x.AuctionSessionId == sessionId);
         }
+        public async Task<List<AuctionSession>> GetUnendedSessionsAsync()
+        {
+            return await _context.AuctionSessions
+                .Include(s => s.AuctionItem)
+                .Include(s => s.AuctionBids)
+                .Where(s => s.IsEnded == false && s.EndTime > DateTime.UtcNow)
+                .ToListAsync();
+        }
+
+        public async Task UpdateSessionAsync(AuctionSession session)
+        {
+            _context.AuctionSessions.Update(session);
+            await _context.SaveChangesAsync();
+        }
+
+        
 
     }
 }

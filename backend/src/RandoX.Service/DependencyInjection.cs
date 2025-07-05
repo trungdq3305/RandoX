@@ -34,6 +34,7 @@ namespace RandoX.Service
             service.AddTransient<IDashboardService, DashboardService>();
             service.AddTransient<IAuctionItemService, AuctionItemService>();
             service.AddTransient<IAuctionBidService, AuctionBidService>();
+            service.AddTransient<IAutoEndService, AutoEndService>();
             return service;
         }
     }

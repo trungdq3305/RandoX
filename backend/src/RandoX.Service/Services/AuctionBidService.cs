@@ -1,4 +1,5 @@
-﻿using RandoX.Data.Entities;
+﻿using Microsoft.AspNetCore.SignalR;
+using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models;
 using RandoX.Service.Interfaces;
@@ -17,18 +18,20 @@ namespace RandoX.Service.Services
         private readonly IWalletRepository _walletRepo;
         private readonly IEmailService _emailService;
         private readonly IAccountRepository _accountRepo;
-
+        private readonly IAuctionHubService _hubService;
         public AuctionBidService(IAuctionBidRepository bidRepo,
                                  IAuctionSessionRepository sessionRepo,
                                  IWalletRepository walletRepo,
                                  IEmailService emailService,
-                                 IAccountRepository accountRepo)
+                                 IAccountRepository accountRepo,
+                                 IAuctionHubService hubService)
         {
             _bidRepo = bidRepo;
             _sessionRepo = sessionRepo;
             _walletRepo = walletRepo;
             _emailService = emailService;
             _accountRepo = accountRepo;
+            _hubService = hubService;
         }
 
         public async Task<ApiResponse<string>> PlaceBidAsync(Guid sessionId, Guid userId, decimal amount)
@@ -72,6 +75,7 @@ namespace RandoX.Service.Services
             };
 
             await _bidRepo.CreateBidAsync(bid);
+            await _hubService.NotifyNewBid(sessionId.ToString(), amount);
 
             // nếu chạm giá chốt
             if (session.AuctionItem.ReservePrice != null && amount >= session.AuctionItem.ReservePrice)
