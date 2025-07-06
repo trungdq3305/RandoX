@@ -3,8 +3,6 @@ import './productSlider.css'
 import { Card, Carousel } from 'antd'
 import type { Products } from '../../types/product'
 import { useNavigate } from 'react-router-dom'
-import { useGetCategoryDetailQuery } from '../../features/product/category/categoryAPI'
-import { LoadingOutlined } from '@ant-design/icons';
 
 interface ProductCardSliderProps {
   products: Products[]
@@ -42,7 +40,6 @@ const ProductsCardSlider: React.FC<ProductCardSliderProps> = ({ products }) => {
     >
       {products.map((product) => {
         // Call the hook at the top level of the map callback
-        const { data: categoryData, isLoading: isCategoryLoading } = useGetCategoryDetailQuery(product?.categoryId);
         return (
           <div key={product.id}>
             <Card
@@ -95,17 +92,7 @@ const ProductsCardSlider: React.FC<ProductCardSliderProps> = ({ products }) => {
                       </span>
                     </p>
                     <p style={{ color: '#888', margin: 0, fontSize: '13px' }}>
-                      {isCategoryLoading
-                        ? <LoadingOutlined
-                          style={{
-                            fontSize: '20px',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            height: '5vh',
-                          }}
-                        />
-                        : categoryData?.data?.categoryName || 'Unknown category'}
+                      {product.categoryName}
                     </p>
                   </div>
                 }

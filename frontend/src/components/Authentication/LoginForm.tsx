@@ -58,7 +58,7 @@ export const LoginForm = () => {
     >
       <Form.Item
         name='email'
-      // rules={[{ validator: (_, value) => validateInput(value) }]}
+        rules={[{ validator: (_, value) => validateInput(value) }]}
       >
         <Input
           placeholder='Email'

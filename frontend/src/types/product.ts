@@ -6,6 +6,6 @@ export interface Products {
   image?: string[];
   isDeleted: boolean;
   manufacturerId: string;
-  categoryId: string;
+  categoryName: string;
   quantity: number;
 }
