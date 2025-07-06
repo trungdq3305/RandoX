@@ -7,7 +7,7 @@ using System.Security.Claims;
 
 namespace RandoX.API.Controllers
 {
-    [Authorize]
+    
     public class ProductController : BaseAPIController
     {
         private readonly IProductService _productService;
@@ -33,18 +33,21 @@ namespace RandoX.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateProduct(ProductRequest productRequest)
         {
             var productResponse = await _productService.CreateProductAsync(productRequest);
             return Ok(productResponse);
         }
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> UpdateProduct(string id, ProductRequest productRequest)
         {
             var productResponse = await _productService.UpdateProductAsync(id, productRequest);
             return Ok(productResponse);
         }
         [HttpDelete]
+        [Authorize]
         public async Task<IActionResult> DeleteProduct(string id)
         {
             var productResponse = await _productService.DeleteProductAsync(id);
@@ -65,7 +68,7 @@ namespace RandoX.API.Controllers
         }
 
         [HttpPost("add-to-cart")]
-        public async Task<IActionResult> AddProducttoCart(string productId)
+        public async Task<IActionResult> AddProducttoCart(string productId, int amount)
         {
             var identity = this.HttpContext.User.Identity as ClaimsIdentity;
 
@@ -76,7 +79,7 @@ namespace RandoX.API.Controllers
             var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
             var user = await _accountService.GetAccountByEmailAsync(email);
 
-            var productResponse = await _productService.AddProductToCartAsync(user.Id.ToString(), productId);
+            var productResponse = await _productService.AddProductToCartAsync(user.Id.ToString(), productId, amount);
             return Ok(productResponse);
         }
     }

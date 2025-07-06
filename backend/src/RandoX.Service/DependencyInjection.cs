@@ -28,6 +28,13 @@ namespace RandoX.Service
             service.AddTransient<ICartService, CartService>();
             service.AddTransient<IVoucherService, VoucherService>();
             service.AddTransient<IOrderService, OrderService>();
+            service.AddTransient<IPromotionService, PromotionService>();
+            service.AddTransient<IWalletService, WalletService>();
+            service.AddTransient<ISpinWheelService, SpinWheelService>();
+            service.AddTransient<IDashboardService, DashboardService>();
+            service.AddTransient<IAuctionItemService, AuctionItemService>();
+            service.AddTransient<IAuctionBidService, AuctionBidService>();
+            service.AddTransient<IAutoEndService, AutoEndService>();
             return service;
         }
     }

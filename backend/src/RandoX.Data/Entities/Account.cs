@@ -31,6 +31,12 @@ public partial class Account
 
     public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
 
+    public virtual ICollection<AuctionBid> AuctionBids { get; set; } = new List<AuctionBid>();
+
+    public virtual ICollection<AuctionItem> AuctionItems { get; set; } = new List<AuctionItem>();
+
+    public virtual ICollection<AuctionShippingInfo> AuctionShippingInfos { get; set; } = new List<AuctionShippingInfo>();
+
     public virtual ICollection<Cart> CartAccounts { get; set; } = new List<Cart>();
 
     public virtual Cart CartIdNavigation { get; set; }
@@ -40,6 +46,8 @@ public partial class Account
     public virtual Role Role { get; set; }
 
     public virtual ICollection<ShipmentHistory> ShipmentHistories { get; set; } = new List<ShipmentHistory>();
+
+    public virtual ICollection<SpinHistory> SpinHistories { get; set; } = new List<SpinHistory>();
 
     public virtual Wallet Wallet { get; set; }
 

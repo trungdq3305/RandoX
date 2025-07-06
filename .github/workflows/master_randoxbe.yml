@@ -1,0 +1,68 @@
+name: Build and deploy ASP.Net Core app to Azure Web App - randoxbe
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Build with dotnet
+        run: dotnet build backend/src/RandoX.sln --configuration Release
+
+      - name: dotnet publish
+        run: dotnet publish backend/src/RandoX.API/RandoX.API.csproj -c Release -o publish
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-api
+          path: publish
+
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: dotnet-api
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E53C6FB5C0354F22A11139DBB9D5A2C2 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_8D5A23E18EA64374BFEBC81565532FBD }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_421E4142C18742EAA2A6622B1C0DD931 }}
+
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: dotnet-api
+          path: dotnet-api
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'randoxbe'
+          slot-name: 'Production'
+          package: dotnet-api
+

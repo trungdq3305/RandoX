@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RandoX.Common;
+using RandoX.Data;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models;
@@ -28,32 +29,56 @@ namespace RandoX.Service.Services
             _cartRepository = cartRepository;
             _cartService = cartService;
         }
-        public async Task<ApiResponse<PaginationResult<Product>>> GetAllProductsAsync(int pageNumber, int pageSize)
+        public async Task<ApiResponse<PaginationResult<ProductDetailDto>>> GetAllProductsAsync(int pageNumber, int pageSize)
         {
             try
             {
                 var products = await _productRepository.GetAllProductsAsync();
 
-                var paginatedResult = new PaginationResult<Product>(products.ToList(), products.Count(), pageNumber, pageSize);
+                var productDtos = products.Select(MapToDto).ToList();
+                var paginatedResult = new PaginationResult<ProductDetailDto>(productDtos, productDtos.Count, pageNumber, pageSize);
 
-                return ApiResponse<PaginationResult<Product>>.Success(paginatedResult, "success");
+                return ApiResponse<PaginationResult<ProductDetailDto>>.Success(paginatedResult, "success");
             }
             catch (Exception)
             {
-                return ApiResponse<PaginationResult<Product>>.Failure("Fail to get all product ");
+                return ApiResponse<PaginationResult<ProductDetailDto>>.Failure("Fail to get all product");
             }
         }
-        public async Task<ApiResponse<Product>> GetProductByIdAsync(string id)
+
+        public async Task<ApiResponse<ProductDetailDto>> GetProductByIdAsync(string id)
         {
             try
             {
-                var products = await _productRepository.GetProductByIdAsync(id);
-                return ApiResponse<Product>.Success(products, "success");
+                var product = await _productRepository.GetProductByIdAsync(id);
+
+                if (product == null)
+                    return ApiResponse<ProductDetailDto>.Failure("Product not found");
+
+                var dto = MapToDto(product);
+                return ApiResponse<ProductDetailDto>.Success(dto, "success");
             }
             catch (Exception)
             {
-                return ApiResponse<Product>.Failure("Fail to get product ");
+                return ApiResponse<ProductDetailDto>.Failure("Fail to get product");
             }
+        }
+
+        private ProductDetailDto MapToDto(Product product)
+        {
+            return new ProductDetailDto
+            {
+                Id = product.Id,
+                ProductName = product.ProductName,
+                Description = product.Description,
+                Quantity = product.Quantity,
+                Price = product.Price,
+                ManufacturerName = product.Manufacturer?.ManufacturerName,
+                CategoryName = product.Category?.CategoryName,
+                PromotionEvent = product.Promotion?.Event,
+                PercentageDiscountValue = product.Promotion?.PercentageDiscountValue,
+                DiscountValue = product.Promotion?.DiscountValue
+            };
         }
         public async Task<ApiResponse<ProductRequest>> CreateProductAsync(ProductRequest productRequest)
         {
@@ -108,7 +133,7 @@ namespace RandoX.Service.Services
             {
                 Product product = await _productRepository.GetProductByIdAsync(id);
 
-                product.DeletedAt = DateTime.Now;
+                product.DeletedAt = TimeHelper.GetVietnamTime();
                 product.IsDeleted = true;
 
                 await _productRepository.UpdateProductAsync(product);
@@ -161,22 +186,34 @@ namespace RandoX.Service.Services
             }
         }
 
-        public async Task<ApiResponse<CartProduct>> AddProductToCartAsync(string userId, string productId)
+        public async Task<ApiResponse<CartProduct>> AddProductToCartAsync(string userId, string productId, int amount)
         {
             var cart = await _accountRepository.GetCartByUserIdAsync(userId);
             var product = await _productRepository.GetProductByIdAsync(productId);
+
+            // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
+            var existingCartProduct = cart.CartProducts
+                .FirstOrDefault(cp => cp.ProductId == Guid.Parse(productId) && (cp.IsDeleted == null || cp.IsDeleted == false));
+
+            if (existingCartProduct != null)
+            {
+                return ApiResponse<CartProduct>.Failure("Sản phẩm đã có trong giỏ hàng.");
+            }
+
             var cartProduct = new CartProduct
             {
                 Id = Guid.NewGuid(),
                 CartId = cart.Id,
-                ProductId = Guid.Parse(productId)
+                ProductId = Guid.Parse(productId),
+                Amount = amount
             };
-            await _cartService.RefreshCartTotalAmountAsync(userId);
 
+            await _cartService.RefreshCartTotalAmountAsync(userId);
             await _cartRepository.UpdateCartAsync(cart);
 
-            var a = await _productRepository.AddProductToCartAsync(cartProduct);
-            return ApiResponse<CartProduct>.Success(a, "success");
+            var result = await _productRepository.AddProductToCartAsync(cartProduct);
+            return ApiResponse<CartProduct>.Success(result, "success");
         }
+
     }
 }

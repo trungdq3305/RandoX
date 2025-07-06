@@ -2,8 +2,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using RandoX.Data;
 using RandoX.Data.DBContext;
 using RandoX.Data.Entities;
+using RandoX.Data.Interfaces;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -60,7 +62,7 @@ namespace RandoX.Common
     {
         Task<VNPayCreatePaymentResponse> CreatePaymentAsync(VNPayCreatePaymentRequest request);
         Task<bool> ValidateCallbackAsync(VNPayCallbackRequest callback);
-        Task  ProcessPaymentCallbackAsync(VNPayCallbackRequest callback);
+        Task  ProcessPaymentCallbackAsync(VNPayCallbackRequest callback, string userid);
     }
 
     // 4. VNPay Service Implementation
@@ -69,15 +71,20 @@ namespace RandoX.Common
         private readonly VNPayConfig _config;
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly ILogger<VNPayService> _logger;
-
+        private readonly IOrderRepository _orderRepository;
+        private readonly IWalletRepository _walletRepository;
         public VNPayService(
             IOptions<VNPayConfig> config,
             IServiceScopeFactory serviceScopeFactory,
-            ILogger<VNPayService> logger)
+            ILogger<VNPayService> logger,
+            IOrderRepository orderRepository,
+            IWalletRepository walletRepository)
         {
             _config = config.Value;
             _serviceScopeFactory = serviceScopeFactory;
             _logger = logger;
+            _orderRepository = orderRepository;
+            _walletRepository = walletRepository;
         }
 
         public async Task<VNPayCreatePaymentResponse> CreatePaymentAsync(VNPayCreatePaymentRequest request)
@@ -91,7 +98,7 @@ namespace RandoX.Common
                 vnpay.AddRequestData("vnp_Command", _config.Command);
                 vnpay.AddRequestData("vnp_TmnCode", _config.TmnCode);
                 vnpay.AddRequestData("vnp_Amount", ((long)(request.Amount * 100)).ToString());
-                vnpay.AddRequestData("vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss"));
+                vnpay.AddRequestData("vnp_CreateDate", TimeHelper.GetVietnamTime().ToString("yyyyMMddHHmmss"));
                 vnpay.AddRequestData("vnp_CurrCode", request.CurrCode);
                 vnpay.AddRequestData("vnp_IpAddr", request.IpAddress);
                 vnpay.AddRequestData("vnp_Locale", request.Locale);
@@ -153,7 +160,7 @@ namespace RandoX.Common
             }
         }
 
-        public async Task ProcessPaymentCallbackAsync(VNPayCallbackRequest callback)
+        public async Task ProcessPaymentCallbackAsync(VNPayCallbackRequest callback, string userid)
         {
             using var scope = _serviceScopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<randox_dbContext>();
@@ -172,7 +179,7 @@ namespace RandoX.Common
                 // Cập nhật trạng thái transaction
                 string statusId = GetTransactionStatusId(callback.vnp_ResponseCode);
                 transaction.TransactionStatusId = Guid.Parse(statusId);
-                transaction.UpdatedAt = DateTime.Now;
+                transaction.UpdatedAt = TimeHelper.GetVietnamTime();
 
                 if (callback.vnp_ResponseCode == "00") // Thành công
                 {
@@ -188,6 +195,20 @@ namespace RandoX.Common
                         : callback.vnp_TxnRef;
 
                     transaction.Description = $"VNPay - {callback.vnp_OrderInfo} - Mã giao dịch: {transactionNo}";
+
+                    var transOrder = await _orderRepository.GetOrderByIdAsync(transaction.Id.ToString());
+                    if (transOrder.IsDeposit != false)
+                    {
+                        var wallet = new WalletHistory
+                        {
+                            Id = Guid.NewGuid(),
+                            TimeTransaction = DateOnly.FromDateTime(TimeHelper.GetVietnamTime()),
+                            Amount = (decimal)transaction.Amount,
+                            AccountId = Guid.Parse(userid),
+                            TransactionTypeId = Guid.Parse("005A36D6-06DE-469F-BD69-D88912DBA56F"),
+                        };
+                        _walletRepository.CreateWalletHistoryAsync(wallet);
+                    }
                 }
                 else
                 {
@@ -195,6 +216,31 @@ namespace RandoX.Common
                     transaction.Description = $"VNPay - Thanh toán thất bại - Mã lỗi: {callback.vnp_ResponseCode} - {GetResponseMessage(callback.vnp_ResponseCode)}";
                 }
 
+                await dbContext.SaveChangesAsync();
+
+                var order = await dbContext.Orders.Include(x => x.Cart).FirstOrDefaultAsync(x => x.Id == transaction.Id);
+                var cartProducts = await dbContext.CartProducts.Where(x => x.CartId == order.CartId).ToListAsync();
+                if (order == null || order.CartId == null)
+                {
+                    _logger.LogWarning("Không tìm thấy đơn hàng hoặc CartId null cho transaction: {TransactionId}", transaction.Id);
+                    
+                }
+                foreach (var item in cartProducts)
+                {
+                    if(item.ProductId != null)
+                    {
+                        var product = await dbContext.Products.FirstOrDefaultAsync(x => x.Id == item.ProductId);
+                        product.Quantity = product.Quantity - item.Amount;
+                        dbContext.Products.Update(product);
+                    }
+                    else
+                    {
+                        var set = await dbContext.ProductSets.FirstOrDefaultAsync(x => x.Id == item.ProductSetId);
+                        set.Quantity = set.Quantity - item.Amount;
+                        dbContext.ProductSets.Update(set);
+                        
+                    }
+                }
                 await dbContext.SaveChangesAsync();
                 _logger.LogInformation("Cập nhật trạng thái transaction thành công: {TransactionId}, ResponseCode: {ResponseCode}",
                     callback.vnp_TxnRef, callback.vnp_ResponseCode);
@@ -241,7 +287,7 @@ namespace RandoX.Common
                     TransactionStatusId = Guid.Parse("342EFC9C-A6EB-45D9-AC43-E64A3FB8C36E"), // ID của status pending trong bảng TransactionStatus
                                                                                               //PaymentTypeId = "vnpay", // ID của payment type VNPay
                     PaymentLocation = true, // Online payment
-                    CreatedAt = DateTime.Now
+                    CreatedAt = TimeHelper.GetVietnamTime()
                 };
 
                 dbContext.Transactions.Add(transaction);

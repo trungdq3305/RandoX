@@ -12,13 +12,13 @@ namespace RandoX.Service.Interfaces
 {
     public interface IProductService
     {
-        Task<ApiResponse<PaginationResult<Product>>> GetAllProductsAsync(int pageNumber, int pageSize);
-        Task<ApiResponse<Product>> GetProductByIdAsync(string id);
+        Task<ApiResponse<PaginationResult<ProductDetailDto>>> GetAllProductsAsync(int pageNumber, int pageSize);
+        Task<ApiResponse<ProductDetailDto>> GetProductByIdAsync(string id);
         Task<ApiResponse<ProductRequest>> CreateProductAsync(ProductRequest productRequest);
         Task<ApiResponse<ProductRequest>> UpdateProductAsync(string id, ProductRequest productRequest);
         Task<ApiResponse<Product>> DeleteProductAsync(string id);
         Task<ApiResponse<Product>> UpdateProToProductAsync(string id, string proId);
         Task<ApiResponse<Product>> DeletePromotionAsync(string id);
-        Task<ApiResponse<CartProduct>> AddProductToCartAsync(string userId, string productId);
+        Task<ApiResponse<CartProduct>> AddProductToCartAsync(string userId, string productId, int amount);
     }
 }

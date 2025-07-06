@@ -11,5 +11,6 @@ namespace RandoX.Data.Interfaces
     {
         Task<Order> GetOrderByIdAsync(string orderId);
         Task<Order> CreateOrderAsync(Order order);
+        Task<IEnumerable<Order>> GetAllSuccessOrderAsync();
     }
 }

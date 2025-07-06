@@ -23,6 +23,22 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[AuctionBid]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AuctionItem]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AuctionSession]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[AuctionShippingInfo]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[cart]",
          "ObjectType": 0
       },
@@ -76,6 +92,18 @@
       },
       {
          "Name": "[dbo].[shipment_status]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[spin_history]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[spin_item]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[spin_wheel]",
          "ObjectType": 0
       },
       {

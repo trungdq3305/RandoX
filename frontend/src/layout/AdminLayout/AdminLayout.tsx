@@ -8,10 +8,11 @@ const AdminLayout: React.FC = () => {
   const location = useLocation()
 
   const menuItems = [
-    { icon: '📊', label: 'Dashboard', path: '/admin/dashboard' },
-    { icon: '👥', label: 'Quản lý người dùng', path: '/admin/users' },
-    { icon: '⚙️', label: 'Cài đặt hệ thống', path: '/admin/settings' },
-  ]
+  { icon: '💰', label: 'Revenue Dashboard', path: '/admin/revenue' }, // <-- thêm dòng này
+  { icon: '👥', label: 'Quản lý người dùng', path: '/admin/accounts' },
+  { icon: '⚙️', label: 'Cài đặt hệ thống', path: '/admin/settings' },
+
+];
 
   const isActive = (path: string) => location.pathname === path
 

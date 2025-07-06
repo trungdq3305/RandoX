@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using RandoX.Data;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models;
@@ -24,17 +25,20 @@ namespace RandoX.Service.Services
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AccountService> _logger;
+        private readonly IWalletRepository _walletRepository;
         public AccountService(IAccountRepository repository,
         IEmailTokenRepository tokenRepository,
         IEmailService emailService,
         IConfiguration configuration,
-        ILogger<AccountService> logger)
+        ILogger<AccountService> logger,
+        IWalletRepository walletRepository)
         {
             _accountRepository = repository;
             _tokenRepository = tokenRepository;
             _emailService = emailService;
             _configuration = configuration;
             _logger = logger;
+            _walletRepository = walletRepository;
         }
 
         public async Task<Account> Authenticate(string email, string password)
@@ -45,7 +49,7 @@ namespace RandoX.Service.Services
         public async Task<Account> Register(Account account)
         {
             account.Password = BCrypt.Net.BCrypt.HashPassword(account.Password); // hash password
-            account.CreatedAt = DateTime.UtcNow;
+            account.CreatedAt = TimeHelper.GetVietnamTime();
             return await _accountRepository.AddAsync(account);
         }
         public async Task<ApiResponse<Account>> RegisterAsync(RegisterRequest registerDto)
@@ -78,7 +82,7 @@ namespace RandoX.Service.Services
                     AccountId = createdAccount.Id,
                     Token = token,
                     TokenType = "EmailConfirmation",
-                    ExpiryDate = DateTime.UtcNow.AddHours(24)
+                    ExpiryDate = TimeHelper.GetVietnamTime().AddHours(24)
                 };
 
                 await _tokenRepository.CreateTokenAsync(emailToken);
@@ -124,6 +128,12 @@ namespace RandoX.Service.Services
                     AccountId = account.Id,
                 };
                 await _accountRepository.CreateCartAsync(cart);
+                var wallet = new Wallet
+                {
+                    Id = account.Id,
+                    Balance = 0,
+                };
+                await _walletRepository.CreateWalletAsync(wallet);
                 // Đánh dấu token đã sử dụng
                 var tokenEntity = await _tokenRepository.GetTokenAsync(confirmDto.Token, "EmailConfirmation");
                 tokenEntity.IsUsed = true;
@@ -156,7 +166,7 @@ namespace RandoX.Service.Services
                     AccountId = account.Id,
                     Token = token,
                     TokenType = "PasswordReset",
-                    ExpiryDate = DateTime.UtcNow.AddHours(1)
+                    ExpiryDate = TimeHelper.GetVietnamTime().AddHours(1)
                 };
 
                 await _tokenRepository.CreateTokenAsync(emailToken);
@@ -191,7 +201,7 @@ namespace RandoX.Service.Services
                     AccountId = account.Id,
                     Token = token,
                     TokenType = "PasswordChange",
-                    ExpiryDate = DateTime.UtcNow.AddHours(1)
+                    ExpiryDate = TimeHelper.GetVietnamTime().AddHours(1)
                 };
 
                 // Lưu mật khẩu mới tạm thời (có thể lưu vào cache hoặc bảng riêng)
@@ -274,6 +284,51 @@ namespace RandoX.Service.Services
         public async Task<Account> GetAccountByEmailAsync(string email)
         {
             return await _accountRepository.GetByEmailAsync(email);
+        }
+        public async Task<List<AccountSummaryDto>> GetAllAccountsAsync()
+        {
+            var accounts = await _accountRepository.GetAllAsync();
+            return accounts.Select(a => new AccountSummaryDto
+            {
+                Id = a.Id,
+                Email = a.Email,
+                Dob = a.Dob,
+                PhoneNumber = a.PhoneNumber,
+                Status = a.Status,
+                RoleId = a.RoleId,
+                RoleName = a.Role?.RoleName,
+                CreatedAt = a.CreatedAt,
+                UpdatedAt = a.UpdatedAt
+            }).ToList();
+        }
+
+        public async Task<ApiResponse<bool>> UpdateAccountAsync(Guid id, UpdateAccountDto dto)
+        {
+            var acc = await _accountRepository.GetByIdAsync(id.ToString());
+            if (acc == null)
+                return ApiResponse<bool>.Failure("Tài khoản không tồn tại");
+
+            acc.PhoneNumber = dto.PhoneNumber;
+            acc.Dob = dto.Dob;
+            acc.Status = dto.Status;
+            acc.RoleId = dto.RoleId;
+            acc.UpdatedAt = TimeHelper.GetVietnamTime();
+
+            await _accountRepository.UpdateAsync(acc);
+            return ApiResponse<bool>.Success(true, "Cập nhật thành công");
+        }
+
+        public async Task<ApiResponse<bool>> DeleteAccountAsync(Guid id)
+        {
+            var acc = await _accountRepository.GetByIdAsync(id.ToString());
+            if (acc == null)
+                return ApiResponse<bool>.Failure("Tài khoản không tồn tại");
+
+            acc.IsDeleted = true;
+            acc.UpdatedAt = TimeHelper.GetVietnamTime();
+            await _accountRepository.UpdateAsync(acc);
+
+            return ApiResponse<bool>.Success(true, "Đã xóa tài khoản");
         }
 
 

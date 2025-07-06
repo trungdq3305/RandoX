@@ -28,6 +28,12 @@ namespace RandoX.Data
             service.AddTransient<IPromotionRepository, PromotionRepository>();
             service.AddTransient<IProductSetRepository, ProductSetRepository>();
             service.AddTransient<ICartRepository, CartRepository>();
+            service.AddTransient<IWalletRepository, WalletRepository>();
+            service.AddTransient<ISpinWheelRepository, SpinWheelRepository>();
+            service.AddTransient<IDashboardRepository, DashboardRepository>();
+            service.AddTransient<IAuctionRepository, AuctionRepository>();
+            service.AddTransient<IAuctionBidRepository, AuctionBidRepository>();
+            service.AddTransient<IAuctionSessionRepository, AuctionSessionRepository>();
             return service;
         }
     }

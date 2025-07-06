@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using RandoX.Data;
 using RandoX.Data.Entities;
 using RandoX.Data.Models.AccountModel;
 using RandoX.Service.Interfaces;
@@ -51,7 +52,7 @@ namespace RandoX.API.Controllers
                 //new(ClaimTypes.Email, systemUserAccount.Email),
                 new(ClaimTypes.Role, systemUserAccount.RoleId.ToString()),
                     },
-                    expires: DateTime.Now.AddMinutes(120),
+                    expires: TimeHelper.GetVietnamTime().AddMinutes(120),
                     signingCredentials: credentials
                 );
 
@@ -62,34 +63,6 @@ namespace RandoX.API.Controllers
 
         public sealed record LoginRequest(string Email, string Password);
 
-        //[HttpPost("Register")]
-        //public async Task<IActionResult> Register([FromBody] RegisterRequest request)
-        //{
-        //    var existingUser = await _accountService.Authenticate(request.Email, request.Password);
-        //    if (existingUser != null)
-        //        return BadRequest("Email already in use.");
-
-        //    var newAccount = new Account
-        //    {
-        //        Id = Guid.NewGuid().ToString(),
-        //        Email = request.Email,
-        //        Password = request.Password, // sẽ được hash trong service
-        //        PhoneNumber = request.PhoneNumber,
-        //        Dob = request.Dob,
-        //        RoleId = request.RoleId,
-        //        Status = 1,
-        //        IsDeleted = 0,
-        //    };
-
-        //    var result = await _accountService.Register(newAccount);
-        //    return Ok(new
-        //    {
-        //        result.Id,
-        //        result.Email,
-        //        result.PhoneNumber,
-        //        result.RoleId
-        //    });
-        //}
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest registerDto)
         {
@@ -208,5 +181,32 @@ namespace RandoX.API.Controllers
             var user = await _accountService.GetAccountByEmailAsync(email);
             return Ok(user);
         }
+
+        [HttpGet("all")]
+        [Authorize]
+        public async Task<IActionResult> GetAllAccounts()
+        {
+            var accounts = await _accountService.GetAllAccountsAsync();
+            return Ok(accounts);
+        }
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateAccount(Guid id, [FromBody] UpdateAccountDto dto)
+        {
+            var result = await _accountService.UpdateAccountAsync(id, dto);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return Ok(result);
+        }
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteAccount(Guid id)
+        {
+            var result = await _accountService.DeleteAccountAsync(id);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return Ok(result);
+        }
+
     }
 }

@@ -4,12 +4,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RandoX.API;
+using RandoX.API.Hubs;
+using RandoX.API.Services;
 using RandoX.Common;
 using RandoX.Data;
 using RandoX.Data.DBContext;
 using RandoX.Data.Models.EmailModel;
 using RandoX.Service;
-
+using RandoX.Service.Background;
+using RandoX.Service.Interfaces;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -84,6 +87,7 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
+builder.Services.AddSingleton<BlobService>();
 
 builder.Services.AddSingleton<S3Service>(sp =>
 {
@@ -92,15 +96,18 @@ builder.Services.AddSingleton<S3Service>(sp =>
 });
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader());
+    options.AddPolicy("AllowFrontend", policy =>
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials());
 });
 // VNPay Configuration
 builder.Services.Configure<VNPayConfig>(builder.Configuration.GetSection("VNPay"));
 builder.Services.AddScoped<IVNPayService, VNPayService>();
-
+builder.Services.AddScoped<IAuctionHubService, AuctionHubService>();
+builder.Services.AddHostedService<AutoEndAuctionService>();
+builder.Services.AddSignalR();
 // Logging
 builder.Services.AddLogging();
 
@@ -110,9 +117,9 @@ var app = builder.Build();
     app.UseSwagger();
     app.UseSwaggerUI();
 
-
+app.MapHub<AuctionHub>("/hubs/auction");
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 

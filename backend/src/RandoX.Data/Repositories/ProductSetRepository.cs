@@ -24,12 +24,13 @@ namespace RandoX.Data.Repositories
 
         public async Task<IEnumerable<ProductSet>> GetAllProductSetsAsync()
         {
-            return await Entities.Where(a => a.IsDeleted != true).ToListAsync();
+            return await Entities.Where(a => a.IsDeleted != true)
+                .Include(x => x.Promotion).Include(x => x.Product).ToListAsync();
         }
 
         public async Task<ProductSet> GetProductSetByIdAsync(string id)
         {
-            return await Entities.Where(a => a.IsDeleted != true).FirstOrDefaultAsync(ps => ps.Id == Guid.Parse(id));
+            return await Entities.Where(a => a.IsDeleted != true).Include(x => x.Promotion).Include(x => x.Product).FirstOrDefaultAsync(ps => ps.Id == Guid.Parse(id));
         }
 
         public async Task<ProductSet> CreateProductSetAsync(ProductSet productSet)
@@ -51,7 +52,7 @@ namespace RandoX.Data.Repositories
             var productSet = await GetProductSetByIdAsync(id);
             if (productSet != null)
             {
-                productSet.DeletedAt = DateTime.Now;
+                productSet.DeletedAt = TimeHelper.GetVietnamTime();
                 productSet.IsDeleted = true; // Mark as deleted
                 await _uow.SaveChangesAsync();
             }

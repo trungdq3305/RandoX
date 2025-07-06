@@ -1,4 +1,5 @@
 ﻿using RandoX.Common;
+using RandoX.Data;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models;
@@ -18,10 +19,14 @@ namespace RandoX.Service.Services
     {
         private readonly ICartRepository _cartRepository;
         private readonly IAccountRepository _accountRepository;
-        public CartService(ICartRepository cartRepository, IAccountRepository accountRepository)
+        private readonly IProductRepository _productRepository;
+        private readonly IProductSetRepository _productSetRepository;
+        public CartService(ICartRepository cartRepository, IAccountRepository accountRepository, IProductRepository productRepository, IProductSetRepository productSetRepository)
         {
             _cartRepository = cartRepository;
             _accountRepository = accountRepository;
+            _productRepository = productRepository;
+            _productSetRepository = productSetRepository;
         }
 
         public async Task<ApiResponse<CartProduct>> UpdateCartProductAmountAsync(string id, int amount, string cartId)
@@ -48,15 +53,40 @@ namespace RandoX.Service.Services
         {
             try
             {
-                var categories = await _cartRepository.GetAllInCartAsync(cartId);
+                var cartProducts = await _cartRepository.GetAllInCartAsync(cartId);
                 var cart = await _accountRepository.GetCartByUserIdAsync(cartId);
 
-                var paginatedResult = new PaginationResult<CartProduct>(categories.ToList(), categories.Count(), pageNumber, pageSize);
+                var cartProductDtos = new List<CartProductDto>();
+
+                foreach (var cp in cartProducts)
+                {
+                    var dto = new CartProductDto
+                    {
+                        Id = cp.Id,
+                        Amount = cp.Amount
+                    };
+
+                    if (cp.ProductId != null)
+                    {
+                        var product = await _productRepository.GetProductByIdAsync(cp.ProductId.ToString());
+                        dto.ProductName = product?.ProductName;
+                    }
+
+                    if (cp.ProductSetId != null)
+                    {
+                        var productSet = await _productSetRepository.GetProductSetByIdAsync(cp.ProductSetId.ToString());
+                        dto.ProductSetName = productSet?.ProductSetName;
+                    }
+
+                    cartProductDtos.Add(dto);
+                }
+
                 var response = new CartResponse
                 {
                     Id = Guid.Parse(cartId),
-                    CartProducts = categories
+                    CartProducts = cartProductDtos
                 };
+
                 return ApiResponse<CartResponse>.Success(response, "success");
             }
             catch (Exception)
@@ -64,6 +94,8 @@ namespace RandoX.Service.Services
                 return ApiResponse<CartResponse>.Failure("Fail to get cart");
             }
         }
+
+
 
         public async Task<ApiResponse<decimal>> RefreshCartTotalAmountAsync(string cartId)
         {
@@ -99,6 +131,8 @@ namespace RandoX.Service.Services
                     }
                     
                 }
+                cart.TotalAmount = total;
+                await _cartRepository.UpdateCartAsync(cart);
                 return ApiResponse<decimal>.Success(total, "success");
             }
             catch (Exception)
@@ -106,5 +140,28 @@ namespace RandoX.Service.Services
                 return ApiResponse<decimal>.Failure("Fail to refresh");
             }
         }
+        public async Task<ApiResponse<string>> ClearCartAsync(string userId)
+        {
+            try
+            {
+                var cart = await _accountRepository.GetCartByUserIdAsync(userId);
+                if (cart == null) return ApiResponse<string>.Failure("Cart not found");
+
+                var cartProducts = await _cartRepository.GetAllInCartAsync(cart.Id.ToString());
+                foreach (var product in cartProducts)
+                {
+                    product.IsDeleted = true;
+                    product.UpdatedAt = TimeHelper.GetVietnamTime();
+                }
+
+                await _cartRepository.UpdateCartProductsAsync(cartProducts); // Viết method này nếu chưa có
+                return ApiResponse<string>.Success("Cart cleared successfully");
+            }
+            catch (Exception ex)
+            {
+                return ApiResponse<string>.Failure("Failed to clear cart");
+            }
+        }
+
     }
 }

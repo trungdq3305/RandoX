@@ -21,6 +21,14 @@ public partial class randox_dbContext : DbContext
 
     public virtual DbSet<Address> Addresses { get; set; }
 
+    public virtual DbSet<AuctionBid> AuctionBids { get; set; }
+
+    public virtual DbSet<AuctionItem> AuctionItems { get; set; }
+
+    public virtual DbSet<AuctionSession> AuctionSessions { get; set; }
+
+    public virtual DbSet<AuctionShippingInfo> AuctionShippingInfos { get; set; }
+
     public virtual DbSet<Cart> Carts { get; set; }
 
     public virtual DbSet<CartProduct> CartProducts { get; set; }
@@ -49,6 +57,12 @@ public partial class randox_dbContext : DbContext
 
     public virtual DbSet<ShipmentStatus> ShipmentStatuses { get; set; }
 
+    public virtual DbSet<SpinHistory> SpinHistories { get; set; }
+
+    public virtual DbSet<SpinItem> SpinItems { get; set; }
+
+    public virtual DbSet<SpinWheel> SpinWheels { get; set; }
+
     public virtual DbSet<Transaction> Transactions { get; set; }
 
     public virtual DbSet<TransactionStatus> TransactionStatuses { get; set; }
@@ -67,15 +81,15 @@ public partial class randox_dbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=garams.database.windows.net;Initial Catalog=randoxdb;Persist Security Info=True;User ID=sa1;Password=TTt192004");
+        => optionsBuilder.UseSqlServer("Data Source=garams.database.windows.net;Initial Catalog=randoxdb;Persist Security Info=True;User ID=sa1;Password=TTt192004;Encrypt=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__account__3213E83F77DEDB75");
+            entity.HasKey(e => e.Id).HasName("PK__account__3213E83FD7ABF67F");
 
-            entity.ToTable("account", tb => tb.HasTrigger("trg_update_account_updated_at"));
+            entity.ToTable("account");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -113,14 +127,14 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
                 .HasForeignKey(d => d.RoleId)
-                .HasConstraintName("FK__account__role_id__7E37BEF6");
+                .HasConstraintName("FK__account__role_id__69FBBC1F");
         });
 
         modelBuilder.Entity<Address>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__address__3213E83F009CFC57");
+            entity.HasKey(e => e.Id).HasName("PK__address__3213E83F487D5346");
 
-            entity.ToTable("address", tb => tb.HasTrigger("trg_update_address_updated_at"));
+            entity.ToTable("address");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -156,14 +170,108 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.Addresses)
                 .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__address__account__5E8A0973");
+                .HasConstraintName("FK__address__account__6AEFE058");
+        });
+
+        modelBuilder.Entity<AuctionBid>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__AuctionB__3214EC07026F065B");
+
+            entity.ToTable("AuctionBid");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.AuctionSession).WithMany(p => p.AuctionBids)
+                .HasForeignKey(d => d.AuctionSessionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__AuctionBi__Aucti__4F12BBB9");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AuctionBids)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__AuctionBi__UserI__5006DFF2");
+        });
+
+        modelBuilder.Entity<AuctionItem>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__AuctionI__3214EC070390A23A");
+
+            entity.ToTable("AuctionItem");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.Condition).HasMaxLength(255);
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ImageUrl).HasMaxLength(500);
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.ReservePrice).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.StartPrice).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.Status).HasDefaultValue(0);
+            entity.Property(e => e.StepPrice).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AuctionItems)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__AuctionIt__UserI__44952D46");
+        });
+
+        modelBuilder.Entity<AuctionSession>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__AuctionS__3214EC0726C8CC11");
+
+            entity.ToTable("AuctionSession");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.EndTime).HasColumnType("datetime");
+            entity.Property(e => e.FinalPrice).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.IsEnded).HasDefaultValue(false);
+            entity.Property(e => e.StartTime).HasColumnType("datetime");
+
+            entity.HasOne(d => d.AuctionItem).WithMany(p => p.AuctionSessions)
+                .HasForeignKey(d => d.AuctionItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__AuctionSe__Aucti__4A4E069C");
+        });
+
+        modelBuilder.Entity<AuctionShippingInfo>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__AuctionS__3214EC0760B64C2E");
+
+            entity.ToTable("AuctionShippingInfo");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.Address)
+                .IsRequired()
+                .HasMaxLength(500);
+            entity.Property(e => e.ConfirmedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.AuctionSession).WithMany(p => p.AuctionShippingInfos)
+                .HasForeignKey(d => d.AuctionSessionId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ShippingInfo_Session");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AuctionShippingInfos)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ShippingInfo_User");
         });
 
         modelBuilder.Entity<Cart>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__cart__3213E83FBDEA084B");
+            entity.HasKey(e => e.Id).HasName("PK__cart__3213E83F34AA68E1");
 
-            entity.ToTable("cart", tb => tb.HasTrigger("trg_update_cart_updated_at"));
+            entity.ToTable("cart");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -189,18 +297,18 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.CartAccounts)
                 .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__cart__account_id__1CBC4616");
+                .HasConstraintName("FK__cart__account_id__6BE40491");
 
             entity.HasOne(d => d.IdNavigation).WithOne(p => p.CartIdNavigation)
                 .HasForeignKey<Cart>(d => d.Id)
-                .HasConstraintName("FK__cart__id__1BC821DD");
+                .HasConstraintName("FK__cart__id__6CD828CA");
         });
 
         modelBuilder.Entity<CartProduct>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__cart_pro__3213E83FB23832D1");
+            entity.HasKey(e => e.Id).HasName("PK__cart_pro__3213E83FB06CC127");
 
-            entity.ToTable("cart_product", tb => tb.HasTrigger("trg_update_cart_product_updated_at"));
+            entity.ToTable("cart_product");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -228,11 +336,11 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Cart).WithMany(p => p.CartProducts)
                 .HasForeignKey(d => d.CartId)
-                .HasConstraintName("FK__cart_prod__cart___55F4C372");
+                .HasConstraintName("FK__cart_prod__cart___6DCC4D03");
 
             entity.HasOne(d => d.Product).WithMany(p => p.CartProducts)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__cart_prod__produ__56E8E7AB");
+                .HasConstraintName("FK__cart_prod__produ__6EC0713C");
 
             entity.HasOne(d => d.ProductSet).WithMany(p => p.CartProducts)
                 .HasForeignKey(d => d.ProductSetId)
@@ -241,9 +349,9 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__category__3213E83FDD9A310C");
+            entity.HasKey(e => e.Id).HasName("PK__category__3213E83F53B0AF82");
 
-            entity.ToTable("category", tb => tb.HasTrigger("trg_update_category_updated_at"));
+            entity.ToTable("category");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -274,15 +382,9 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<EmailToken>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__email_to__3213E83F95B24BA1");
+            entity.HasKey(e => e.Id).HasName("PK__email_to__3213E83F405DB229");
 
             entity.ToTable("email_token");
-
-            entity.HasIndex(e => e.ExpiryDate, "idx_expiry_date");
-
-            entity.HasIndex(e => e.Token, "idx_token");
-
-            entity.HasIndex(e => e.TokenType, "idx_token_type");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -310,14 +412,14 @@ public partial class randox_dbContext : DbContext
             entity.HasOne(d => d.Account).WithMany(p => p.EmailTokens)
                 .HasForeignKey(d => d.AccountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__email_tok__accou__01D345B0");
+                .HasConstraintName("FK__email_tok__accou__70A8B9AE");
         });
 
         modelBuilder.Entity<Image>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__image__3213E83F90303324");
+            entity.HasKey(e => e.Id).HasName("PK__image__3213E83FD1353683");
 
-            entity.ToTable("image", tb => tb.HasTrigger("trg_update_image_updated_at"));
+            entity.ToTable("image");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -344,18 +446,18 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Order).WithMany(p => p.Images)
                 .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK__image__order_id__7B264821");
+                .HasConstraintName("FK__image__order_id__719CDDE7");
 
             entity.HasOne(d => d.Product).WithMany(p => p.Images)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__image__product_i__7C1A6C5A");
+                .HasConstraintName("FK__image__product_i__72910220");
         });
 
         modelBuilder.Entity<Manufacturer>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__manufact__3213E83FA7C1A988");
+            entity.HasKey(e => e.Id).HasName("PK__manufact__3213E83F8DCBB454");
 
-            entity.ToTable("manufacturer", tb => tb.HasTrigger("trg_update_manufacturer_updated_at"));
+            entity.ToTable("manufacturer");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -382,9 +484,9 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__order__3213E83FEF82BC37");
+            entity.HasKey(e => e.Id).HasName("PK__order__3213E83FF5E8F15E");
 
-            entity.ToTable("order", tb => tb.HasTrigger("trg_update_order_updated_at"));
+            entity.ToTable("order");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -400,6 +502,7 @@ public partial class randox_dbContext : DbContext
             entity.Property(e => e.IsDeleted)
                 .HasDefaultValue(false)
                 .HasColumnName("is_deleted");
+            entity.Property(e => e.IsDeposit).HasColumnName("is_deposit");
             entity.Property(e => e.ShippingCost)
                 .HasColumnType("decimal(12, 2)")
                 .HasColumnName("shipping_cost");
@@ -415,18 +518,18 @@ public partial class randox_dbContext : DbContext
             entity.HasOne(d => d.Cart).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.CartId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__order__cart_id__245D67DE");
+                .HasConstraintName("FK__order__cart_id__73852659");
 
             entity.HasOne(d => d.Voucher).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.VoucherId)
-                .HasConstraintName("FK__order__voucher_i__236943A5");
+                .HasConstraintName("FK__order__voucher_i__74794A92");
         });
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__product__3213E83F0375A1B7");
+            entity.HasKey(e => e.Id).HasName("PK__product__3213E83F90F1259C");
 
-            entity.ToTable("product", tb => tb.HasTrigger("trg_update_product_updated_at"));
+            entity.ToTable("product");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -455,6 +558,7 @@ public partial class randox_dbContext : DbContext
                 .HasColumnName("product_name");
             entity.Property(e => e.PromotionId).HasColumnName("promotion_id");
             entity.Property(e => e.Quantity).HasColumnName("quantity");
+            entity.Property(e => e.QuantityForSpin).HasColumnName("quantity_for_spin");
             entity.Property(e => e.UpdatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
@@ -462,22 +566,22 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
-                .HasConstraintName("FK__product__categor__4F47C5E3");
+                .HasConstraintName("FK__product__categor__756D6ECB");
 
             entity.HasOne(d => d.Manufacturer).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ManufacturerId)
-                .HasConstraintName("FK__product__manufac__4C6B5938");
+                .HasConstraintName("FK__product__manufac__76619304");
 
             entity.HasOne(d => d.Promotion).WithMany(p => p.Products)
                 .HasForeignKey(d => d.PromotionId)
-                .HasConstraintName("FK__product__promoti__4E53A1AA");
+                .HasConstraintName("FK__product__promoti__7755B73D");
         });
 
         modelBuilder.Entity<ProductSet>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__product___3213E83FBB1C632E");
+            entity.HasKey(e => e.Id).HasName("PK__product___3213E83FEAAB6ADC");
 
-            entity.ToTable("product_set", tb => tb.HasTrigger("trg_update_product_set_updated_at"));
+            entity.ToTable("product_set");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -516,14 +620,14 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Promotion).WithMany(p => p.ProductSets)
                 .HasForeignKey(d => d.PromotionId)
-                .HasConstraintName("FK__product_s__promo__3F115E1A");
+                .HasConstraintName("FK__product_s__promo__7849DB76");
         });
 
         modelBuilder.Entity<Promotion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__promotio__3213E83F6221EC4B");
+            entity.HasKey(e => e.Id).HasName("PK__promotio__3213E83FCC2CF34C");
 
-            entity.ToTable("promotion", tb => tb.HasTrigger("trg_update_promotion_updated_at"));
+            entity.ToTable("promotion");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -555,9 +659,9 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__role__3213E83F3A0A8FB6");
+            entity.HasKey(e => e.Id).HasName("PK__role__3213E83FB861C331");
 
-            entity.ToTable("role", tb => tb.HasTrigger("trg_update_role_updated_at"));
+            entity.ToTable("role");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -584,9 +688,9 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Shipment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83F7C0D6D97");
+            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83F23AE1650");
 
-            entity.ToTable("shipment", tb => tb.HasTrigger("trg_update_shipment_updated_at"));
+            entity.ToTable("shipment");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -611,9 +715,9 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<ShipmentHistory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83F302550C5");
+            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83F293AB0C3");
 
-            entity.ToTable("shipment_history", tb => tb.HasTrigger("trg_update_shipment_history_updated_at"));
+            entity.ToTable("shipment_history");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -638,22 +742,22 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.ShipmentHistories)
                 .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__shipment___accou__6CD828CA");
+                .HasConstraintName("FK__shipment___accou__7A3223E8");
 
             entity.HasOne(d => d.Shipment).WithMany(p => p.ShipmentHistories)
                 .HasForeignKey(d => d.ShipmentId)
-                .HasConstraintName("FK__shipment___shipm__6BE40491");
+                .HasConstraintName("FK__shipment___shipm__7C1A6C5A");
 
             entity.HasOne(d => d.ShipmentStatus).WithMany(p => p.ShipmentHistories)
                 .HasForeignKey(d => d.ShipmentStatusId)
-                .HasConstraintName("FK__shipment___shipm__6AEFE058");
+                .HasConstraintName("FK__shipment___shipm__7B264821");
         });
 
         modelBuilder.Entity<ShipmentStatus>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83F2D06ABB9");
+            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83FFFDB93D3");
 
-            entity.ToTable("shipment_status", tb => tb.HasTrigger("trg_update_shipment_status_updated_at"));
+            entity.ToTable("shipment_status");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -678,11 +782,127 @@ public partial class randox_dbContext : DbContext
                 .HasColumnName("updated_at");
         });
 
+        modelBuilder.Entity<SpinHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__spin_his__3213E83F69B20746");
+
+            entity.ToTable("spin_history");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("id");
+            entity.Property(e => e.AccountId).HasColumnName("account_id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.PricePaid)
+                .HasColumnType("decimal(12, 2)")
+                .HasColumnName("price_paid");
+            entity.Property(e => e.RewardValue)
+                .HasColumnType("decimal(12, 2)")
+                .HasColumnName("reward_value");
+            entity.Property(e => e.SpinItemId).HasColumnName("spin_item_id");
+            entity.Property(e => e.SpinWheelId).HasColumnName("spin_wheel_id");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.SpinHistories)
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__spin_hist__accou__2DB1C7EE");
+
+            entity.HasOne(d => d.SpinItem).WithMany(p => p.SpinHistories)
+                .HasForeignKey(d => d.SpinItemId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__spin_hist__spin___2EA5EC27");
+
+            entity.HasOne(d => d.SpinWheel).WithMany(p => p.SpinHistories)
+                .HasForeignKey(d => d.SpinWheelId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__spin_hist__spin___2F9A1060");
+        });
+
+        modelBuilder.Entity<SpinItem>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__spin_ite__3213E83F99F4A78C");
+
+            entity.ToTable("spin_item");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("id");
+            entity.Property(e => e.ImageUrl)
+                .HasMaxLength(255)
+                .HasColumnName("image_url");
+            entity.Property(e => e.Probability)
+                .HasColumnType("decimal(5, 4)")
+                .HasColumnName("probability");
+            entity.Property(e => e.ProductId).HasColumnName("product_id");
+            entity.Property(e => e.RewardName)
+                .IsRequired()
+                .HasMaxLength(255)
+                .HasColumnName("reward_name");
+            entity.Property(e => e.RewardType)
+                .IsRequired()
+                .HasMaxLength(50)
+                .HasColumnName("reward_type");
+            entity.Property(e => e.RewardValue)
+                .HasColumnType("decimal(12, 2)")
+                .HasColumnName("reward_value");
+            entity.Property(e => e.SpinWheelId).HasColumnName("spin_wheel_id");
+            entity.Property(e => e.VoucherId).HasColumnName("voucher_id");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.SpinItems)
+                .HasForeignKey(d => d.ProductId)
+                .HasConstraintName("FK__spin_item__produ__2704CA5F");
+
+            entity.HasOne(d => d.SpinWheel).WithMany(p => p.SpinItems)
+                .HasForeignKey(d => d.SpinWheelId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__spin_item__spin___2610A626");
+
+            entity.HasOne(d => d.Voucher).WithMany(p => p.SpinItems)
+                .HasForeignKey(d => d.VoucherId)
+                .HasConstraintName("FK__spin_item__vouch__27F8EE98");
+        });
+
+        modelBuilder.Entity<SpinWheel>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__spin_whe__3213E83F94010F8A");
+
+            entity.ToTable("spin_wheel");
+
+            entity.Property(e => e.Id)
+                .HasDefaultValueSql("(newid())")
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("created_at");
+            entity.Property(e => e.IsActive)
+                .HasDefaultValue(true)
+                .HasColumnName("is_active");
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(255)
+                .HasColumnName("name");
+            entity.Property(e => e.Price)
+                .HasColumnType("decimal(12, 2)")
+                .HasColumnName("price");
+            entity.Property(e => e.Type)
+                .IsRequired()
+                .HasMaxLength(50)
+                .HasColumnName("type");
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("updated_at");
+        });
+
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83FF458EA7B");
+            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83F32A35CF3");
 
-            entity.ToTable("transaction", tb => tb.HasTrigger("trg_update_transaction_updated_at"));
+            entity.ToTable("transaction");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -713,22 +933,22 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.IdNavigation).WithOne(p => p.Transaction)
                 .HasForeignKey<Transaction>(d => d.Id)
-                .HasConstraintName("FK__transaction__id__2CF2ADDF");
+                .HasConstraintName("FK__transaction__id__7EF6D905");
 
             entity.HasOne(d => d.TransactionStatus).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.TransactionStatusId)
-                .HasConstraintName("FK__transacti__trans__2B0A656D");
+                .HasConstraintName("FK__transacti__trans__7D0E9093");
 
             entity.HasOne(d => d.WalletHistory).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.WalletHistoryId)
-                .HasConstraintName("FK__transacti__walle__2BFE89A6");
+                .HasConstraintName("FK__transacti__walle__7E02B4CC");
         });
 
         modelBuilder.Entity<TransactionStatus>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83F897755B5");
+            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83F567A7B13");
 
-            entity.ToTable("transaction_status", tb => tb.HasTrigger("trg_update_transaction_status_updated_at"));
+            entity.ToTable("transaction_status");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -755,9 +975,9 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<TransactionType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83FFB7ED181");
+            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83FF4F8F29C");
 
-            entity.ToTable("transaction_type", tb => tb.HasTrigger("trg_update_transaction_type_updated_at"));
+            entity.ToTable("transaction_type");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -784,14 +1004,15 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Voucher>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__voucher__3213E83FD6F2AE01");
+            entity.HasKey(e => e.Id).HasName("PK__voucher__3213E83FB20084A7");
 
-            entity.ToTable("voucher", tb => tb.HasTrigger("trg_update_voucher_updated_at"));
+            entity.ToTable("voucher");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
                 .HasColumnName("id");
             entity.Property(e => e.Amount).HasColumnName("amount");
+            entity.Property(e => e.AmountForSpin).HasColumnName("amount_for_spin");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
@@ -831,9 +1052,9 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Wallet>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__wallet__3213E83F6CB7A5DC");
+            entity.HasKey(e => e.Id).HasName("PK__wallet__3213E83F7BB151DC");
 
-            entity.ToTable("wallet", tb => tb.HasTrigger("trg_update_wallet_updated_at"));
+            entity.ToTable("wallet");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -858,14 +1079,14 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.IdNavigation).WithOne(p => p.Wallet)
                 .HasForeignKey<Wallet>(d => d.Id)
-                .HasConstraintName("FK__wallet__id__05D8E0BE");
+                .HasConstraintName("FK__wallet__id__7FEAFD3E");
         });
 
         modelBuilder.Entity<WalletHistory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__wallet_h__3213E83FA6EA5998");
+            entity.HasKey(e => e.Id).HasName("PK__wallet_h__3213E83F50E062DE");
 
-            entity.ToTable("wallet_history", tb => tb.HasTrigger("trg_update_wallet_history_updated_at"));
+            entity.ToTable("wallet_history");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -893,18 +1114,18 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.WalletHistories)
                 .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__wallet_hi__accou__0C85DE4D");
+                .HasConstraintName("FK__wallet_hi__accou__00DF2177");
 
             entity.HasOne(d => d.TransactionType).WithMany(p => p.WalletHistories)
                 .HasForeignKey(d => d.TransactionTypeId)
-                .HasConstraintName("FK__wallet_hi__trans__0D7A0286");
+                .HasConstraintName("FK__wallet_hi__trans__01D345B0");
         });
 
         modelBuilder.Entity<WithDrawForm>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__with_dra__3213E83FB8CBC208");
+            entity.HasKey(e => e.Id).HasName("PK__with_dra__3213E83FC64E16B7");
 
-            entity.ToTable("with_draw_form", tb => tb.HasTrigger("trg_update_with_draw_form_updated_at"));
+            entity.ToTable("with_draw_form");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
@@ -935,18 +1156,18 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.WithDrawForms)
                 .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__with_draw__accou__74794A92");
+                .HasConstraintName("FK__with_draw__accou__02C769E9");
 
             entity.HasOne(d => d.WithdrawStatus).WithMany(p => p.WithDrawForms)
                 .HasForeignKey(d => d.WithdrawStatusId)
-                .HasConstraintName("FK__with_draw__withd__73852659");
+                .HasConstraintName("FK__with_draw__withd__03BB8E22");
         });
 
         modelBuilder.Entity<WithdrawStatus>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__withdraw__3213E83F7DBDCFE1");
+            entity.HasKey(e => e.Id).HasName("PK__withdraw__3213E83FFE780F4C");
 
-            entity.ToTable("withdraw_status", tb => tb.HasTrigger("trg_update_withdraw_status_updated_at"));
+            entity.ToTable("withdraw_status");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("(newid())")
