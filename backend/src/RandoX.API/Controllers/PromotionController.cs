@@ -6,7 +6,7 @@ using RandoX.Service.Interfaces;
 
 namespace RandoX.API.Controllers
 {
-    [Authorize]
+    
     public class PromotionController : BaseAPIController
     {
         private readonly IPromotionService _promotionService;
@@ -31,6 +31,7 @@ namespace RandoX.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreatePromotion([FromBody] PromotionRequest promotionRequest)
         {
             var response = await _promotionService.CreatePromotionAsync(promotionRequest);
@@ -38,6 +39,7 @@ namespace RandoX.API.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> UpdatePromotion(string id, [FromBody] PromotionRequest promotionRequest)
         {
             var response = await _promotionService.UpdatePromotionAsync(id, promotionRequest);
@@ -45,6 +47,7 @@ namespace RandoX.API.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         public async Task<IActionResult> DeletePromotion(string id)
         {
             var response = await _promotionService.DeletePromotionAsync(id);
