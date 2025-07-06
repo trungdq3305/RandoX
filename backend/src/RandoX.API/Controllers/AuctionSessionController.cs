@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RandoX.Data.Interfaces;
+using RandoX.Service.Interfaces;
 using System.Security.Claims;
 
 namespace RandoX.API.Controllers
@@ -9,11 +10,13 @@ namespace RandoX.API.Controllers
         private readonly IAuctionSessionRepository _repo;
         private readonly IAuctionRepository _auctionRepository;
         private readonly IWalletRepository _walletRepo;
-        public AuctionSessionController(IAuctionSessionRepository repo, IAuctionRepository auctionRepository, IWalletRepository walletRepo)
+        private readonly IAccountService _accountService;
+        public AuctionSessionController(IAuctionSessionRepository repo, IAuctionRepository auctionRepository, IWalletRepository walletRepo, IAccountService accountService)
         {
             _repo = repo;
             _auctionRepository = auctionRepository;
             _walletRepo = walletRepo;
+            _accountService = accountService;
         }
 
         // [1] Xem tất cả phiên đang diễn ra
@@ -46,15 +49,15 @@ namespace RandoX.API.Controllers
         [HttpGet("won")]
         public async Task<IActionResult> GetWonAuctions()
         {
-            var identity = this.HttpContext.User.Identity as ClaimsIdentity;
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (identity == null || !identity.IsAuthenticated)
                 return Unauthorized("Bạn chưa đăng nhập");
+            var claims = identity.Claims;
+            var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            var user = await _accountService.GetAccountByEmailAsync(email);
+            var userId = user.Id; // Lấy từ Claims
 
-            var userId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            if (!Guid.TryParse(userId, out var guid))
-                return BadRequest("User ID không hợp lệ");
-
-            var wonAuctions = await _repo.GetWonAuctionsByUserIdAsync(guid);
+            var wonAuctions = await _repo.GetWonAuctionsByUserIdAsync(userId);
             return Ok(wonAuctions);
         }
         [HttpGet("{sessionId}/shipping-info")]
