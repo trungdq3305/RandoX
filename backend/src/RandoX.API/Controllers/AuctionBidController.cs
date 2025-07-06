@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using RandoX.API.Hubs;
 using RandoX.Data.Models.AutionModel;
 using RandoX.Service.Interfaces;
 using RandoX.Service.Services;
@@ -10,11 +12,12 @@ namespace RandoX.API.Controllers
     {
         private readonly IAuctionBidService _bidService;
         private readonly IAccountService _accountService;
-
-        public AuctionBidController(IAuctionBidService bidService, IAccountService accountService)
+        private readonly IHubContext<AuctionHub> _hubContext;
+        public AuctionBidController(IAuctionBidService bidService, IAccountService accountService, IHubContext<AuctionHub> hubContext)
         {
             _bidService = bidService;
             _accountService = accountService;
+            _hubContext = hubContext;
         }
 
         [HttpPost("place")]
@@ -29,6 +32,9 @@ namespace RandoX.API.Controllers
             var user = await _accountService.GetAccountByEmailAsync(email);
             var userId = user.Id; // Lấy từ Claims
             var result = await _bidService.PlaceBidAsync(request.SessionId, userId, request.Amount);
+            // ✅ Gửi thông báo SignalR cho tất cả người tham gia phiên này
+            await _hubContext.Clients.Group(request.SessionId.ToString())
+                .SendAsync("ReceiveNewBid", user.Email, request.Amount);
             return Ok(result);
         }
     }

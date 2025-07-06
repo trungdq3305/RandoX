@@ -21,6 +21,12 @@ import PromotionVoucherManager from '../components/Manager/PromotionVoucherManag
 import RevenueDashboard from '../pages/Admin/RevenueDashboard'
 import AdminAccountManager from '../pages/Admin/AdminAccountManager'
 import SpinWheelHistoryManager from '../pages/Manager/SpinWheelHistoryManager'
+import AuctionCreatePage from '../pages/Auction/AuctionCreatePage';
+import ShippingConfirmPage from '../pages/Auction/ShippingConfirmPage';
+import ManagerApprovalPage from '../pages/Auction/ManagerApprovalPage';
+import AdminShippingCompletePage from '../pages/Auction/AdminShippingCompletePage';
+import ActiveSessionsPage from '../pages/Auction/ActiveSessionsPage'
+
 const routes: LayoutRoute[] = [
   {
     layout: LoginRegisterLayout,
@@ -53,29 +59,34 @@ const routes: LayoutRoute[] = [
         component: ProductDetail,
         exact: true,
       },
-    ],
-  },
-  {
-    layout: CustomerLayout,
-    data: [
       {
         path: '/sessions/:id',
         component: SessionDetail,
         exact: true,
       },
-    ],
-  },
-  {
-    layout: CustomerLayout,
-    data: [
+      {
+      path: '/auction/create',
+      component: AuctionCreatePage,
+      exact: true,
+      },
+      {
+        path: '/shipping/:sessionId',
+        component: ShippingConfirmPage,
+        exact: true,
+      },
       {
         path: '/RandomWheel',
         component: RandomWheel,
         exact: true,
       },
-      
+      {
+      path: '/sessions',
+      component: ActiveSessionsPage,
+      exact: true,
+    },
     ],
   },
+
   {
   layout: AdminLayout,
   data: [
@@ -115,7 +126,7 @@ const routes: LayoutRoute[] = [
         component: CategoryManager,
         exact: true,
       },
-  {
+    {
       path: '/manager/promotions-vouchers',
       component: PromotionVoucherManager,
       exact: true,
@@ -124,6 +135,16 @@ const routes: LayoutRoute[] = [
     {
       path: '/manager/spinwheel-history',
       component: SpinWheelHistoryManager,
+      exact: true,
+    },
+    {
+      path: '/manager/approval',
+      component: ManagerApprovalPage,
+      exact: true,
+    },
+    {
+      path: '/manager/confirm-shipping',
+      component: AdminShippingCompletePage,
       exact: true,
     },
     ],

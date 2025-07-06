@@ -96,10 +96,11 @@ builder.Services.AddSingleton<S3Service>(sp =>
 });
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
-        builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader());
+    options.AddPolicy("AllowFrontend", policy =>
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials());
 });
 // VNPay Configuration
 builder.Services.Configure<VNPayConfig>(builder.Configuration.GetSection("VNPay"));
@@ -118,7 +119,7 @@ var app = builder.Build();
 
 app.MapHub<AuctionHub>("/hubs/auction");
 app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 
