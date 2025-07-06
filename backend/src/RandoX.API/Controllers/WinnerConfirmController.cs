@@ -30,13 +30,12 @@ namespace RandoX.API.Controllers
 
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             if (identity == null || !identity.IsAuthenticated)
-                return Unauthorized();
-
-            var userId = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-            if (!Guid.TryParse(userId, out var userGuid))
-                return BadRequest("Lỗi tài khoản");
-
-            await _repo.SaveShippingInfoAsync(sessionId, userGuid, address);
+                return Unauthorized("Bạn chưa đăng nhập");
+            var claims = identity.Claims;
+            var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            var user = await _accountService.GetAccountByEmailAsync(email);
+            var userId = user.Id; // Lấy từ Claims
+            await _repo.SaveShippingInfoAsync(sessionId, userId, address);
             await _emailService.SendEmailAsync(bid.User.Email, "Xác nhận địa chỉ", $"Chúng tôi sẽ gửi đến địa chỉ: {address}");
 
             return Ok("Xác nhận thành công");
