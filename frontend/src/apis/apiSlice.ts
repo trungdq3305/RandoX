@@ -12,6 +12,14 @@ const baseQuery = fetchBaseQuery({
 
     return headers
   },
+responseHandler: async (response) => {
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      return await response.json();
+    } else {
+      return await response.text(); // chấp nhận trả text thuần
+    }
+  },
 })
 
 export const apiSlice = createApi({

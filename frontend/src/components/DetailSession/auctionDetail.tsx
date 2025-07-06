@@ -1,167 +1,196 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import './auctionDetail.css';
-import auctions from '../../data/auction.json';
-import Content from '../Content/content';
-import AuctionSlider from '../auctionSlider/auctionSlider';
-import { notification, Button, Form, InputNumber, Statistic } from 'antd';
-const { Timer } = Statistic;
+import {
+  useGetSessionDetailQuery,
+  usePlaceBidMutation,
+} from '../../features/auction/auctionAPI';
+import {
+  notification,
+  Button,
+  Form,
+  InputNumber,
+  Statistic,
+  List,
+  Avatar,
+  Divider,
+  Typography,
+} from 'antd';
+import {
+  connectToAuctionHub,
+  disconnectFromAuctionHub,
+} from '../../realtime/auctionHub';
 
-interface Auction {
-    id: number;
-    name: string;
-    initialPrice: number;
-    image: string;
-    description: string;
-    available: boolean;
-    brand: string;
-    size: string;
-    material: string;
-    filling: string;
-    setNumber: number;
-    auctionStartTime: string;
+const { Countdown } = Statistic;
+const { Text } = Typography;
+
+interface Bid {
+  id: string;
+  amount: number;
+  createdAt: string;
+  userId: string;
+  user?: {
+    email: string;
+  };
 }
 
 const DetailSession: React.FC = () => {
-    const { id } = useParams<{ id: string }>();
-    const [auction, setAuction] = useState<Auction | null>(null);
-    const [deadline, setDeadline] = useState<number | null>(null);
-    const [api, contextHolder] = notification.useNotification();
+  const { id: sessionId } = useParams<{ id: string }>();
+  const {
+    data,
+    isLoading,
+    error,
+    refetch,
+  } = useGetSessionDetailQuery(sessionId!);
 
-    const openNotification = (type: 'success' | 'error', message: string) => {
-        api[type]({
-            message: type === 'success' ? 'Thành công' : 'Lỗi',
-            description: message,
-            duration: 3, // Notification disappears after 3 seconds
-            placement: 'topRight', // Position at top right
+  const [placeBid] = usePlaceBidMutation();
+  const [api, contextHolder] = notification.useNotification();
+  const [isExpired, setIsExpired] = useState(false);
+  const [endTime, setEndTime] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (data?.session?.endTime) {
+      setEndTime(new Date(data.session.endTime).getTime());
+    }
+  }, [data]);
+
+  // ✅ Kết nối SignalR
+  useEffect(() => {
+    if (!sessionId || sessionId === 'undefined') return;
+
+    connectToAuctionHub(
+      sessionId,
+      (bidderName, amount) => {
+        api.info({
+          message: `${bidderName} vừa đặt giá mới: ${amount.toLocaleString()}₫`,
         });
-    };
-    useEffect(() => {
-        const selectedAuction = auctions.find((p) => p.id === Number(id));
-        setAuction(selectedAuction || null);
-
-        // Calculate the deadline for the countdown
-        if (selectedAuction) {
-            const startTime = new Date(selectedAuction.auctionStartTime).getTime();
-            const now = new Date().getTime();
-            const timeLeft = startTime - now; // Time left in milliseconds
-            setDeadline(timeLeft > 0 ? timeLeft : 0); // Ensure deadline is not negative
-        }
-    }, [id]);
-    if (!auction) return <div>Session not found</div>;
-    const onFinish = (values: any) => {
-        const bidPrice = values.bidPrice;
-        if (bidPrice < auction.initialPrice) {
-            openNotification('error', `Giá đặt phải lớn hơn hoặc bằng giá khởi điểm (${auction.initialPrice.toLocaleString('vi-VN')} đ)!`);
-        } else {
-            openNotification('success', 'Đặt giá thành công!');
-            console.log('Submitted bid:', values);
-            // Add your bid submission logic here
-        }
-    };
-
-    return (
-        <div
-            style={{
-                width: '100%',
-                maxWidth: '80%',
-                padding: '24px',
-                margin: '0 auto',
-                position: 'relative',
-            }}
-        >
-            {contextHolder} {/* Notification context holder */}
-            <div className="product-detail-container"
-                style={{
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                }}>
-                <div className="product-images">
-                    {/* Thumbnail images using the same product image */}
-                    {[1, 2, 3, 4].map((img) => (
-                        <img
-                            key={img}
-                            src={auction.image}
-                            alt={`${auction.name} thumbnail ${img}`}
-                            className="thumbnail"
-                        />
-                    ))}
-                </div>
-                <div className="product-main">
-                    <img src={auction.image} alt={auction.name} className="main-image" />
-                </div>
-                <div className="product-info">
-                    <div className="new-tag">NEW</div>
-                    <h1>{auction.name}</h1>
-                    <p className="price">{auction.initialPrice.toLocaleString('vi-VN')} đ</p>
-                    <div className="details-section">
-                        <h3>Details</h3>
-                        <p><strong>Brand:</strong> {auction.brand}</p>
-                        <p><strong>PRODUCT SIZE:</strong> Height about {auction.size}</p>
-                        <p><strong>Material:</strong> {auction.material}</p>
-                        <p><strong>Filling:</strong> {auction.filling}</p>
-                        {deadline !== null && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <p style={{ margin: 0 }}><strong>Phiên đấu giá bắt đầu: </strong></p>
-                                <Timer
-                                    type="countdown"
-                                    value={Date.now() + deadline}
-                                    format="DD ngày HH:mm:ss"
-                                    onFinish={() => setDeadline(0)}
-                                />
-                            </div>
-                        )}
-                    </div>
-                    <div style={{ marginTop: '20px' }}>
-                        <Form
-                            name="bidForm"
-                            onFinish={onFinish}
-                            layout="horizontal"
-                        >
-                            <Form.Item
-                                label="Đặt giá"
-                                name="bidPrice"
-                                rules={[{ required: true, message: 'Vui lòng nhập giá đặt!' }]}
-                            >
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    <InputNumber
-                                        placeholder="Nhập giá đặt"
-                                        className="form-control"
-                                        style={{ width: '200px', height: '35px', fontSize: '15px' }}
-                                        formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                                        parser={(value) => value!.replace(/\$\s?|(,*)/g, '')}
-                                    />
-                                    <Button
-                                        type="primary"
-                                        htmlType="submit"
-                                        style={{
-                                            background: 'linear-gradient(90deg, rgb(255, 0, 242), rgb(0, 106, 255))',
-                                            border: 'none',
-                                            color: 'white',
-                                            padding: '0 16px',
-                                            height: '35px',
-                                            borderRadius: '15px',
-                                        }}
-                                    >
-                                        Đặt giá ngay
-                                    </Button>
-                                </div>
-                            </Form.Item>
-                        </Form>
-                    </div>
-                    <div className="shipping-section">
-                        <h3>SHIPPING & AFTER - SALES SERVICE</h3>
-                        {/* Add shipping details here */}
-                    </div>
-                </div>
-            </div>
-            <Content
-                title='CÁC PHIÊN ĐẤU GIÁ KHÁC'
-                btnContent='Xem thêm'
-                linkURL='/sessions'
-            />
-            <AuctionSlider auctions={auctions} />
-        </div>
+        refetch();
+      },
+      (winnerName, finalAmount) => {
+        setIsExpired(true);
+        api.success({
+          message: 'Phiên đấu giá đã kết thúc',
+          description: `${winnerName} thắng với giá ${finalAmount.toLocaleString()}₫`,
+        });
+      },
+      (newEndTime) => {
+        const extended = new Date(newEndTime).getTime();
+        setEndTime(extended);
+        api.info({
+          message: 'Gia hạn phiên thêm 5 phút',
+        });
+      }
     );
+
+    return () => {
+      disconnectFromAuctionHub(sessionId);
+    };
+  }, [sessionId]);
+
+  const openNotification = (type: 'success' | 'error', message: string) => {
+    api[type]({
+      message: type === 'success' ? 'Thành công' : 'Lỗi',
+      description: message,
+      duration: 3,
+      placement: 'topRight',
+    });
+  };
+
+  const onFinish = async (values: any) => {
+    try {
+      await placeBid({ sessionId: sessionId!, amount: values.bidPrice }).unwrap();
+      openNotification('success', 'Đặt giá thành công!');
+      refetch();
+    } catch (err: any) {
+      openNotification('error', err?.data || 'Đặt giá thất bại!');
+    }
+  };
+
+  if (isLoading) return <div>Đang tải phiên đấu giá...</div>;
+  if (error || !data?.session) return <div>Không tìm thấy phiên đấu giá.</div>;
+
+  const session = data.session;
+  const item = session.auctionItem;
+  const bids: Bid[] = (data.bids || []).slice().sort(
+    (a: Bid, b: Bid) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
+  const highestBid = bids.length > 0 ? Math.max(...bids.map((b) => b.amount)) : null;
+
+  return (
+    <div style={{ maxWidth: '80%', margin: '0 auto', padding: 24 }}>
+      {contextHolder}
+      <h2>{item?.name}</h2>
+      <img src={item?.imageUrl || '/no-image.png'} alt="Ảnh" style={{ width: 300 }} />
+      <p>{item?.description}</p>
+      <p>Giá khởi điểm: {item?.startPrice?.toLocaleString()} đ</p>
+      <p>Giá chốt: {item?.reservePrice?.toLocaleString()} đ</p>
+      <p>Bước nhảy: {item?.stepPrice?.toLocaleString()} đ</p>
+
+      <p><strong>Thời gian còn lại:</strong></p>
+      {endTime && !isExpired ? (
+        <Countdown
+          value={endTime}
+          format="HH:mm:ss"
+          onFinish={() => setIsExpired(true)}
+        />
+      ) : (
+        <Text type="danger"><strong>Phiên đấu giá đã kết thúc.</strong></Text>
+      )}
+
+      <Form name="bidForm" onFinish={onFinish} layout="horizontal" style={{ marginTop: 24 }}>
+        <Form.Item
+          label="Giá đặt"
+          name="bidPrice"
+          rules={[{ required: true, message: 'Nhập giá đặt!' }]}
+        >
+          <InputNumber
+            min={item?.startPrice}
+            style={{ width: 200 }}
+            disabled={isExpired}
+            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+            parser={(value) => value!.replace(/(,*)/g, '')}
+          />
+        </Form.Item>
+        <Form.Item>
+          <Button type="primary" htmlType="submit" disabled={isExpired}>
+            Đặt giá ngay
+          </Button>
+        </Form.Item>
+      </Form>
+
+      <Divider>Danh sách lượt đặt giá</Divider>
+
+      <List
+        itemLayout="horizontal"
+        dataSource={bids}
+        locale={{ emptyText: 'Chưa có lượt đặt giá nào.' }}
+        renderItem={(bid) => {
+          const isHighest = bid.amount === highestBid;
+          return (
+            <List.Item
+              style={isHighest ? { backgroundColor: '#fff7e6', border: '1px solid #ffa940' } : {}}
+            >
+              <List.Item.Meta
+                avatar={<Avatar>{bid.user?.email?.charAt(0).toUpperCase() || '?'}</Avatar>}
+                title={
+                  <>
+                    {bid.user?.email || 'Người dùng ẩn danh'}
+                    {isHighest && (
+                      <Text type="warning" style={{ marginLeft: 8 }}>(Giá cao nhất)</Text>
+                    )}
+                  </>
+                }
+                description={`Giá đặt: ${bid.amount.toLocaleString()} đ - Lúc: ${new Date(
+                  bid.createdAt
+                ).toLocaleString('vi-VN')}`}
+              />
+            </List.Item>
+          );
+        }}
+      />
+    </div>
+  );
 };
 
 export default DetailSession;
