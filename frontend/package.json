@@ -17,6 +17,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@microsoft/signalr": "^8.0.7",
     "@mui/material": "^6.4.8",
     "@mui/x-charts": "^7.28.0",
     "@reduxjs/toolkit": "^2.5.1",
