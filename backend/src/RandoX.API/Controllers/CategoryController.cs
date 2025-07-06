@@ -6,7 +6,7 @@ using RandoX.Service.Interfaces;
 
 namespace RandoX.API.Controllers
 {
-    [Authorize]
+    
     public class CategoryController : BaseAPIController
     {
         private readonly ICategoryService _categoryService;
@@ -31,6 +31,7 @@ namespace RandoX.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateCategory([FromBody] CategoryRequest categoryRequest)
         {
             var response = await _categoryService.CreateCategoryAsync(categoryRequest);
@@ -38,6 +39,7 @@ namespace RandoX.API.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> UpdateCategory(string id, [FromBody] CategoryRequest categoryRequest)
         {
             var response = await _categoryService.UpdateCategoryAsync(id, categoryRequest);
@@ -45,6 +47,7 @@ namespace RandoX.API.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         public async Task<IActionResult> DeleteCategory(string id)
         {
             var response = await _categoryService.DeleteCategoryAsync(id);
