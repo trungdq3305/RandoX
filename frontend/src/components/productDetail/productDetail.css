@@ -18,6 +18,11 @@
   width: 80px;
   margin-right: 10px;
   /* Fixed width to match thumbnail column */
+  /* Changed to sticky */
+  top: 20px;
+  /* Distance from the top of the viewport */
+  align-self: flex-start;
+  /* Ensures it sticks to the top within flex context */
 }
 
 .thumbnail {
@@ -32,6 +37,12 @@
 .product-main {
   flex: 2;
   text-align: center;
+  position: sticky;
+  /* Changed to sticky */
+  top: 20px;
+  /* Distance from the top of the viewport */
+  align-self: flex-start;
+  /* Ensures it sticks to the top within flex context */
 }
 
 .main-image {
@@ -94,7 +105,6 @@
   /* White text for contrast */
   border-radius: 10px;
 }
-
 
 .details-section,
 .shipping-section {
