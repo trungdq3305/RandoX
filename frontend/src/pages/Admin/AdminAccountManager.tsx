@@ -35,7 +35,6 @@ const ROLE_OPTIONS = [
   { label: 'Staff', value: '59e7061e-5b9c-4dfa-93d2-baea9717f37a' },
 ];
 
-
 const ROLE_COLOR: { [key: string]: string } = {
   Admin: 'purple',
   Manager: 'blue',
@@ -52,16 +51,14 @@ const AdminAccountManager: React.FC = () => {
   const [form] = Form.useForm();
 
   const showEditModal = (account: any) => {
-  setSelectedAccount(account);
-  form.setFieldsValue({
-  ...account,
-  dob: account.dob ? moment(account.dob) : null,
-  roleId: account.roleId?.toLowerCase(), // Đồng bộ với value ở trên
-});
-
-  setIsModalVisible(true);
-};
-
+    setSelectedAccount(account);
+    form.setFieldsValue({
+      ...account,
+      dob: account.dob ? moment(account.dob) : null,
+      roleId: account.roleId?.toLowerCase(),
+    });
+    setIsModalVisible(true);
+  };
 
   const handleUpdate = async () => {
     try {
@@ -73,126 +70,123 @@ const AdminAccountManager: React.FC = () => {
           dob: values.dob?.format('YYYY-MM-DD'),
         },
       }).unwrap();
-      message.success('Cập nhật tài khoản thành công');
+      message.success('Account updated successfully');
       setIsModalVisible(false);
       refetch();
     } catch (error) {
-      message.error('Cập nhật thất bại');
+      message.error('Failed to update account');
     }
   };
 
   const handleDelete = async (id: string) => {
     try {
       await deleteAccount(id).unwrap();
-      message.success('Xoá tài khoản thành công');
+      message.success('Account deleted successfully');
       refetch();
     } catch {
-      message.error('Xoá tài khoản thất bại');
+      message.error('Failed to delete account');
     }
   };
 
   const columns: ColumnsType<any> = [
-  {
-    title: 'Email',
-    dataIndex: 'email',
-    key: 'email',
-    align: 'center',
-  },
-  {
-    title: 'Ngày sinh',
-    dataIndex: 'dob',
-    key: 'dob',
-    align: 'center',
-    render: (dob: string) => (dob ? moment(dob).format('DD/MM/YYYY') : '---'),
-  },
-  {
-    title: 'Số điện thoại',
-    dataIndex: 'phoneNumber',
-    key: 'phoneNumber',
-    align: 'center',
-  },
-  {
-    title: 'Trạng thái',
-    dataIndex: 'status',
-    key: 'status',
-    align: 'center',
-    render: (status: number) =>
-      status === 1 ? <Tag color="green">Hoạt động</Tag> : <Tag color="red">Khoá</Tag>,
-  },
-  {
-  title: 'Vai trò',
-  dataIndex: 'roleName',
-  key: 'roleName',
-  align: 'center',
-  render: (roleName: string) => {
-    const colorMap: Record<string, string> = {
-      Admin: 'geekblue',
-      Manager: 'gold',
-      Customer: 'cyan',
-      Staff: 'purple',
-    };
-    const color = colorMap[roleName] || 'default';
-    return <Tag color={color}>{roleName || 'Khác'}</Tag>;
-  },
-}
-,
-  {
-    title: 'Thao tác',
-    key: 'actions',
-    align: 'center',
-    render: (_: any, record: any) => (
-      <Space>
-        <Button onClick={() => showEditModal(record)}>Sửa</Button>
-        <Popconfirm
-          title="Bạn có chắc muốn xoá?"
-          onConfirm={() => handleDelete(record.id)}
-          okText="Xoá"
-          cancelText="Huỷ"
-        >
-          <Button danger>Xoá</Button>
-        </Popconfirm>
-      </Space>
-    ),
-  },
-];
-
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      align: 'center',
+    },
+    {
+      title: 'Date of Birth',
+      dataIndex: 'dob',
+      key: 'dob',
+      align: 'center',
+      render: (dob: string) => (dob ? moment(dob).format('DD/MM/YYYY') : '---'),
+    },
+    {
+      title: 'Phone Number',
+      dataIndex: 'phoneNumber',
+      key: 'phoneNumber',
+      align: 'center',
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      align: 'center',
+      render: (status: number) =>
+        status === 1 ? <Tag color="green">Active</Tag> : <Tag color="red">Locked</Tag>,
+    },
+    {
+      title: 'Role',
+      dataIndex: 'roleName',
+      key: 'roleName',
+      align: 'center',
+      render: (roleName: string) => {
+        const colorMap: Record<string, string> = {
+          Admin: 'geekblue',
+          Manager: 'gold',
+          Customer: 'cyan',
+          Staff: 'purple',
+        };
+        const color = colorMap[roleName] || 'default';
+        return <Tag color={color}>{roleName || 'Other'}</Tag>;
+      },
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      align: 'center',
+      render: (_: any, record: any) => (
+        <Space>
+          <Button onClick={() => showEditModal(record)}>Edit</Button>
+          <Popconfirm
+            title="Are you sure to delete this account?"
+            onConfirm={() => handleDelete(record.id)}
+            okText="Delete"
+            cancelText="Cancel"
+          >
+            <Button danger>Delete</Button>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
 
   return (
     <div>
-      <h2>🛠️ Quản lý tài khoản</h2>
+      <h2>🛠️ Account Management</h2>
       <Table dataSource={accounts} columns={columns} rowKey="id" />
 
       <Modal
-        title="Chỉnh sửa tài khoản"
+        title="Edit Account"
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         onOk={handleUpdate}
-        okText="Lưu"
-        cancelText="Huỷ"
+        okText="Save"
+        cancelText="Cancel"
       >
         <Form form={form} layout="vertical">
-          <Form.Item name="phoneNumber" label="Số điện thoại">
+          <Form.Item name="phoneNumber" label="Phone Number">
             <Input />
           </Form.Item>
-          <Form.Item name="dob" label="Ngày sinh">
+          <Form.Item name="dob" label="Date of Birth">
             <DatePicker format="YYYY-MM-DD" />
           </Form.Item>
-          <Form.Item name="status" label="Trạng thái">
+          <Form.Item name="status" label="Status">
             <Select>
-              <Option value={1}>Hoạt động</Option>
-              <Option value={0}>Khoá</Option>
+              <Option value={1}>Active</Option>
+              <Option value={0}>Locked</Option>
             </Select>
           </Form.Item>
-          <Form.Item name="roleId" label="Vai trò">
-  <Select placeholder="Chọn vai trò">
-    {ROLE_OPTIONS.map((r) => (
-      <Option key={r.value} value={r.value}>
-        {r.label}
-      </Option>
-    ))}
-  </Select>
-</Form.Item>
-
+          <Form.Item name="roleId" label="Role">
+            <Select placeholder="Select role">
+              {ROLE_OPTIONS.map((r) => (
+                <Option key={r.value} value={r.value}>
+                  {r.label}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
         </Form>
       </Modal>
     </div>

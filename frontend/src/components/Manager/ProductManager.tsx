@@ -84,14 +84,14 @@ const { data: productDropdownData } = useGetAllProductsDropdownQuery();
       } else {
         await updateProductSet({ id: editing.id, ...values }).unwrap(); // productSet chưa hỗ trợ image
       }
-      message.success('Cập nhật thành công');
+      message.success('Update successful');
     } else {
       if (activeTab === 'product') {
         await createProduct(formData).unwrap();
       } else {
         await createProductSet(values).unwrap();
       }
-      message.success('Thêm thành công');
+      message.success('Add successful');
     }
 
     setOpen(false);
@@ -101,7 +101,7 @@ const { data: productDropdownData } = useGetAllProductsDropdownQuery();
     refetchProductSet();
   } catch (err) {
     console.error(err);
-    message.error('Lỗi khi lưu dữ liệu');
+    message.error('Adding error');
   }
 };
 
@@ -145,19 +145,19 @@ const { data: productDropdownData } = useGetAllProductsDropdownQuery();
         await deleteProductSet(id).unwrap();
         refetchProductSet();
       }
-      message.success('Đã xoá');
+      message.success('Deleted');
     } catch {
-      message.error('Xoá thất bại');
+      message.error('Delete Error');
     }
   };
 
   return (
     <div>
-      <h2>Quản lý Sản phẩm & Bộ sản phẩm</h2>
+      <h2>Product & Product Set Management</h2>
       <Tabs defaultActiveKey="product" onChange={(key) => setActiveTab(key as 'product' | 'productSet')}>
-        <TabPane tab="Sản phẩm" key="product" >
+        <TabPane tab="Product" key="product" >
           <Button type="primary" className="add-category-btn" onClick={() => { setEditing(null); setOpen(true); setActiveTab('product'); }}>
-            ➕ Thêm sản phẩm
+            ➕ Add Product
           </Button>
           <Table
   loading={loadingProduct}
@@ -165,17 +165,17 @@ const { data: productDropdownData } = useGetAllProductsDropdownQuery();
   rowKey="id"
   style={{ marginTop: 16 }}
 >
-  <Table.Column title="Tên sản phẩm" dataIndex="productName" />
-  <Table.Column title="Mô tả" dataIndex="description" />
-  <Table.Column title="Số lượng" dataIndex="quantity" />
-  <Table.Column title="Giá" dataIndex="price" />
-  <Table.Column title="Hãng sản xuất" dataIndex="manufacturerName" />
-  <Table.Column title="Danh mục" dataIndex="categoryName" />
-  <Table.Column title="Sự kiện khuyến mãi" dataIndex="promotionEvent" />
-  <Table.Column title="% giảm" dataIndex="percentageDiscountValue" render={(v) => `${v}%`} />
-  <Table.Column title="Giảm giá" dataIndex="discountValue" render={(v) => `${v * 100}%`} />
+  <Table.Column title="Product Name" dataIndex="productName" />
+  <Table.Column title="Description" dataIndex="description" />
+  <Table.Column title="Quantity" dataIndex="quantity" />
+  <Table.Column title="Price" dataIndex="price" />
+  <Table.Column title="Manufacturer" dataIndex="manufacturerName" />
+  <Table.Column title="Category" dataIndex="categoryName" />
+  <Table.Column title="Promotion" dataIndex="promotionEvent" />
+  <Table.Column title="% Discount" dataIndex="percentageDiscountValue" render={(v) => `${v}%`} />
+  <Table.Column title="Discount value" dataIndex="discountValue" render={(v) => `${v * 100}%`} />
   <Table.Column
-    title="Thao tác"
+    title="Actions"
     render={(record: any) => (
       <Space>
         <Button onClick={() => handleEdit(record, 'product')}>✏️</Button>
@@ -187,9 +187,9 @@ const { data: productDropdownData } = useGetAllProductsDropdownQuery();
 
         </TabPane>
 
-        <TabPane tab="Bộ sản phẩm" key="productSet">
+        <TabPane tab="Product Set" key="productSet">
           <Button type="primary" className="add-category-btn" onClick={() => { setEditing(null); setOpen(true); setActiveTab('productSet'); }}>
-            ➕ Thêm bộ sản phẩm
+            ➕ Add Product Set
           </Button>
           <Table
   loading={loadingProductSet}
@@ -197,17 +197,17 @@ const { data: productDropdownData } = useGetAllProductsDropdownQuery();
   rowKey="id"
   style={{ marginTop: 16 }}
 >
-  <Table.Column title="Tên bộ" dataIndex="productSetName" />
-  <Table.Column title="Mô tả" dataIndex="description" />
-  <Table.Column title="Số lượng bộ" dataIndex="setQuantity" />
-  <Table.Column title="Tổng sản phẩm" dataIndex="quantity" />
-  <Table.Column title="Giá bộ" dataIndex="price" />
-  <Table.Column title="Sự kiện khuyến mãi" dataIndex="promotionEvent" />
-  <Table.Column title="% giảm" dataIndex="percentageDiscountValue" render={(v) => `${v}%`} />
-  <Table.Column title="Giảm giá" dataIndex="discountValue" render={(v) => `${v * 100}%`} />
-  <Table.Column title="Tên sản phẩm chính" dataIndex="productName" />
+  <Table.Column title="Set Name" dataIndex="productSetName" />
+  <Table.Column title="Description" dataIndex="description" />
+  <Table.Column title="Product Quantity" dataIndex="setQuantity" />
+  <Table.Column title="Quantity" dataIndex="quantity" />
+  <Table.Column title="Price" dataIndex="price" />
+  <Table.Column title="Promotion" dataIndex="promotionEvent" />
+  <Table.Column title="% discount" dataIndex="percentageDiscountValue" render={(v) => `${v}%`} />
+  <Table.Column title="Discount Value" dataIndex="discountValue" render={(v) => `${v * 100}%`} />
+  <Table.Column title="Product" dataIndex="productName" />
   <Table.Column
-    title="Thao tác"
+    title="Actions"
     render={(record: any) => (
       <Space>
         <Button onClick={() => handleEdit(record, 'productSet')}>✏️</Button>
@@ -221,34 +221,34 @@ const { data: productDropdownData } = useGetAllProductsDropdownQuery();
       </Tabs>
 
       <Modal
-        title={editing ? 'Chỉnh sửa' : 'Thêm mới'}
+        title={editing ? 'Update' : 'Add'}
         open={open}
         onCancel={() => { setOpen(false); setEditing(null); }}
         onOk={() => form.submit()}
-        okText={editing ? 'Cập nhật' : 'Thêm'}
+        okText={editing ? 'Update' : 'Add'}
       >
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
           <Form.Item name={activeTab === 'product' ? 'productName' : 'productSetName'} label="Tên" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="description" label="Mô tả" rules={[{ required: true }]}>
+          <Form.Item name="description" label="Description" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="quantity" label="Số lượng" rules={[{ required: true }]}>
+          <Form.Item name="quantity" label="Quantity" rules={[{ required: true }]}>
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
           {activeTab === 'productSet' && (
-            <Form.Item name="setQuantity" label="Số lượng bộ" rules={[{ required: true }]}>
+            <Form.Item name="setQuantity" label="Quantity" rules={[{ required: true }]}>
               <InputNumber min={0} style={{ width: '100%' }} />
             </Form.Item>
           )}
-          <Form.Item name="price" label="Giá" rules={[{ required: true }]}>
+          <Form.Item name="price" label="Price" rules={[{ required: true }]}>
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
           {/* Nếu cần dropdown, sẽ thêm ở đây sau */}
           <Form.Item
   name="image"
-  label="Ảnh sản phẩm"
+  label="Image"
   valuePropName="file"
   getValueFromEvent={(e) => {
     if (Array.isArray(e)) return e;
@@ -261,9 +261,9 @@ const { data: productDropdownData } = useGetAllProductsDropdownQuery();
 
           {activeTab === 'product' && (
   <>
-    <Form.Item name="manufacturerId" label="Hãng sản xuất" rules={[{ required: true }]}>
+    <Form.Item name="manufacturerId" label="Manufacturer" rules={[{ required: true }]}>
       <Select
-        placeholder="Chọn hãng"
+        placeholder="Choose manufacturer"
         options={(manufacturerData?.data?.items || []).map((item: any) => ({
           label: item.manufacturerName,
           value: item.id,
@@ -271,9 +271,9 @@ const { data: productDropdownData } = useGetAllProductsDropdownQuery();
       />
     </Form.Item>
 
-    <Form.Item name="categoryId" label="Danh mục" rules={[{ required: true }]}>
+    <Form.Item name="categoryId" label="Category" rules={[{ required: true }]}>
       <Select
-        placeholder="Chọn danh mục"
+        placeholder="Choose category"
         options={(categoryData?.data?.items || []).map((item: any) => ({
           label: item.categoryName,
           value: item.id,
@@ -283,9 +283,9 @@ const { data: productDropdownData } = useGetAllProductsDropdownQuery();
   </>
 )}
 {activeTab === 'productSet' && (
-  <Form.Item name="productId" label="Sản phẩm gốc" rules={[{ required: true }]}>
+  <Form.Item name="productId" label="Product" rules={[{ required: true }]}>
     <Select
-      placeholder="Chọn sản phẩm"
+      placeholder="Choose Product"
       options={(productDropdownData?.data?.items || []).map((item: any) => ({
         label: item.productName,
         value: item.id,

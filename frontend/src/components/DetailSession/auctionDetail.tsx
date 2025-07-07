@@ -14,14 +14,19 @@ import {
   Avatar,
   Divider,
   Typography,
+  Card,
+  Space,
+  Tag,
 } from 'antd';
 import {
   connectToAuctionHub,
   disconnectFromAuctionHub,
 } from '../../realtime/auctionHub';
+import { ClockCircleOutlined, TrophyOutlined, DollarOutlined } from '@ant-design/icons';
+import './DetailSession.css';
 
 const { Countdown } = Statistic;
-const { Text } = Typography;
+const { Text, Title } = Typography;
 
 interface Bid {
   id: string;
@@ -105,8 +110,8 @@ const DetailSession: React.FC = () => {
     }
   };
 
-  if (isLoading) return <div>Đang tải phiên đấu giá...</div>;
-  if (error || !data?.session) return <div>Không tìm thấy phiên đấu giá.</div>;
+  if (isLoading) return <div className="loading-container">Đang tải phiên đấu giá...</div>;
+  if (error || !data?.session) return <div className="error-container">Không tìm thấy phiên đấu giá.</div>;
 
   const session = data.session;
   const item = session.auctionItem;
@@ -118,77 +123,134 @@ const DetailSession: React.FC = () => {
   const highestBid = bids.length > 0 ? Math.max(...bids.map((b) => b.amount)) : null;
 
   return (
-    <div style={{ maxWidth: '80%', margin: '0 auto', padding: 24 }}>
+    <div className="auction-container">
       {contextHolder}
-      <h2>{item?.name}</h2>
-      <img src={item?.imageUrl || '/no-image.png'} alt="Ảnh" style={{ width: 300 }} />
-      <p>{item?.description}</p>
-      <p>Giá khởi điểm: {item?.startPrice?.toLocaleString()} đ</p>
-      <p>Giá chốt: {item?.reservePrice?.toLocaleString()} đ</p>
-      <p>Bước nhảy: {item?.stepPrice?.toLocaleString()} đ</p>
+      
+      <div className="auction-header">
+        <Title level={1} className="auction-title">{item?.name}</Title>
+      </div>
 
-      <p><strong>Thời gian còn lại:</strong></p>
-      {endTime && !isExpired ? (
-        <Countdown
-          value={endTime}
-          format="HH:mm:ss"
-          onFinish={() => setIsExpired(true)}
-        />
-      ) : (
-        <Text type="danger"><strong>Phiên đấu giá đã kết thúc.</strong></Text>
-      )}
-
-      <Form name="bidForm" onFinish={onFinish} layout="horizontal" style={{ marginTop: 24 }}>
-        <Form.Item
-          label="Giá đặt"
-          name="bidPrice"
-          rules={[{ required: true, message: 'Nhập giá đặt!' }]}
-        >
-          <InputNumber
-            min={item?.startPrice}
-            style={{ width: 200 }}
-            disabled={isExpired}
-            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-            parser={(value) => value!.replace(/(,*)/g, '')}
-          />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" disabled={isExpired}>
-            Đặt giá ngay
-          </Button>
-        </Form.Item>
-      </Form>
-
-      <Divider>Danh sách lượt đặt giá</Divider>
-
-      <List
-        itemLayout="horizontal"
-        dataSource={bids}
-        locale={{ emptyText: 'Chưa có lượt đặt giá nào.' }}
-        renderItem={(bid) => {
-          const isHighest = bid.amount === highestBid;
-          return (
-            <List.Item
-              style={isHighest ? { backgroundColor: '#fff7e6', border: '1px solid #ffa940' } : {}}
-            >
-              <List.Item.Meta
-                avatar={<Avatar>{bid.user?.email?.charAt(0).toUpperCase() || '?'}</Avatar>}
-                title={
-                  <>
-                    {bid.user?.email || 'Người dùng ẩn danh'}
-                    {isHighest && (
-                      <Text type="warning" style={{ marginLeft: 8 }}>(Giá cao nhất)</Text>
-                    )}
-                  </>
-                }
-                description={`Giá đặt: ${bid.amount.toLocaleString()} đ - Lúc: ${new Date(
-                  bid.createdAt
-                ).toLocaleString('vi-VN')}`}
+      <div className="auction-content">
+        <div className="auction-main">
+          <Card className="item-card">
+            <div className="item-image-container">
+              <img 
+                src={item?.imageUrl || '/no-image.png'} 
+                alt="Ảnh sản phẩm" 
+                className="item-image"
               />
-            </List.Item>
-          );
-        }}
-      />
+            </div>
+            <div className="item-details">
+              <Text className="item-description">{item?.description}</Text>
+              <div className="price-info">
+                <div className="price-item">
+                  <DollarOutlined className="price-icon" />
+                  <span>Giá khởi điểm: <strong>{item?.startPrice?.toLocaleString()} đ</strong></span>
+                </div>
+                <div className="price-item">
+                  <TrophyOutlined className="price-icon" />
+                  <span>Giá chốt: <strong>{item?.reservePrice?.toLocaleString()} đ</strong></span>
+                </div>
+                <div className="price-item">
+                  <span>Bước nhảy: <strong>{item?.stepPrice?.toLocaleString()} đ</strong></span>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="countdown-card">
+            <div className="countdown-section">
+              <ClockCircleOutlined className="countdown-icon" />
+              <Text className="countdown-label">Thời gian còn lại:</Text>
+              {endTime && !isExpired ? (
+                <Countdown
+                  value={endTime}
+                  format="HH:mm:ss"
+                  onFinish={() => setIsExpired(true)}
+                  className="countdown-timer"
+                />
+              ) : (
+                <Tag color="red" className="expired-tag">Phiên đấu giá đã kết thúc</Tag>
+              )}
+            </div>
+          </Card>
+
+          <Card className="bid-form-card">
+            <Title level={3} className="bid-form-title">Đặt giá ngay</Title>
+            <Form name="bidForm" onFinish={onFinish} layout="vertical" className="bid-form">
+              <Form.Item
+                label="Giá đặt (VND)"
+                name="bidPrice"
+                rules={[{ required: true, message: 'Nhập giá đặt!' }]}
+              >
+                <InputNumber
+                  min={item?.startPrice}
+                  className="bid-input"
+                  disabled={isExpired}
+                  formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={(value) => value!.replace(/(,*)/g, '')}
+                  placeholder="Nhập số tiền"
+                />
+              </Form.Item>
+              <Form.Item>
+                <Button 
+                  type="primary" 
+                  htmlType="submit" 
+                  disabled={isExpired}
+                  className="bid-button"
+                  size="large"
+                >
+                  Đặt giá ngay
+                </Button>
+              </Form.Item>
+            </Form>
+          </Card>
+        </div>
+
+        <div className="auction-sidebar">
+          <Card className="bids-card">
+            <Title level={3} className="bids-title">Lịch sử đặt giá</Title>
+            <List
+              itemLayout="horizontal"
+              dataSource={bids}
+              locale={{ emptyText: 'Chưa có lượt đặt giá nào.' }}
+              className="bids-list"
+              renderItem={(bid) => {
+                const isHighest = bid.amount === highestBid;
+                return (
+                  <List.Item className={`bid-item ${isHighest ? 'highest-bid' : ''}`}>
+                    <List.Item.Meta
+                      avatar={
+                        <Avatar className="bid-avatar">
+                          {bid.user?.email?.charAt(0).toUpperCase() || '?'}
+                        </Avatar>
+                      }
+                      title={
+                        <div className="bid-user">
+                          {bid.user?.email || 'Người dùng ẩn danh'}
+                          {isHighest && (
+                            <Tag color="gold" className="highest-tag">Giá cao nhất</Tag>
+                          )}
+                        </div>
+                      }
+                      description={
+                        <div className="bid-info">
+                          <div className="bid-amount">
+                            {bid.amount.toLocaleString()} đ
+                          </div>
+                          <div className="bid-time">
+                            {new Date(bid.createdAt).toLocaleString('vi-VN')}
+                          </div>
+                        </div>
+                      }
+                    />
+                  </List.Item>
+                );
+              }}
+            />
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };
