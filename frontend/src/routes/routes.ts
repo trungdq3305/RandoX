@@ -91,16 +91,6 @@ const routes: LayoutRoute[] = [
   layout: AdminLayout,
   data: [
     {
-      path: '/admin/dashboard',
-      component: DashboardPage, // hoặc DashboardPage nếu có
-      exact: true,
-    },
-    {
-      path: '/admin/users',
-      component: AdminDashboard,
-      exact: true,
-    },
-    {
       path: '/admin/revenue',
       component: RevenueDashboard, // <-- thêm dòng này
       exact: true,
@@ -145,6 +135,10 @@ const routes: LayoutRoute[] = [
     {
       path: '/manager/confirm-shipping',
       component: AdminShippingCompletePage,
+      exact: true,
+    },{
+      path: '/manager/dashboard',
+      component: RevenueDashboard, // hoặc DashboardPage nếu có
       exact: true,
     },
     ],

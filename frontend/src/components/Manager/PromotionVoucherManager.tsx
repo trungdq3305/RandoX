@@ -14,6 +14,7 @@ import {
   useDeleteVoucherMutation
 } from '../../features/voucher/voucherAPI';
 import dayjs from 'dayjs';
+
 const PromotionVoucherManager: React.FC = () => {
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
@@ -43,12 +44,12 @@ const PromotionVoucherManager: React.FC = () => {
         activeTab === 'promotion'
           ? await updatePromotion({ id: editing.id, body: payload }).unwrap()
           : await updateVoucher({ id: editing.id, body: payload }).unwrap();
-        message.success('Cập nhật thành công');
+        message.success('Updated successfully');
       } else {
         activeTab === 'promotion'
           ? await createPromotion(payload).unwrap()
           : await createVoucher(payload).unwrap();
-        message.success('Thêm thành công');
+        message.success('Created successfully');
       }
 
       setOpen(false);
@@ -57,7 +58,7 @@ const PromotionVoucherManager: React.FC = () => {
       refetchPromotion();
       refetchVoucher();
     } catch (err) {
-      message.error('Lỗi khi lưu');
+      message.error('Error saving');
       console.error(err);
     }
   };
@@ -78,34 +79,34 @@ const PromotionVoucherManager: React.FC = () => {
       tab === 'promotion'
         ? await deletePromotion(id).unwrap()
         : await deleteVoucher(id).unwrap();
-      message.success('Đã xoá');
+      message.success('Deleted successfully');
       refetchPromotion();
       refetchVoucher();
     } catch {
-      message.error('Xoá thất bại');
+      message.error('Delete failed');
     }
   };
 
   const tabItems = [
     {
       key: 'promotion',
-      label: '🎯 Khuyến mãi',
+      label: '🎯 Promotions',
       children: (
         <>
-          <Button type="primary" className="add-category-btn" onClick={() => { setOpen(true); setEditing(null); setActiveTab('promotion'); }}>
-            ➕ Thêm khuyến mãi
+          <Button type="primary" onClick={() => { setOpen(true); setEditing(null); setActiveTab('promotion'); }}>
+            ➕ Add Promotion
           </Button>
           <Table
             dataSource={promotionData?.data?.items || []}
             rowKey="id"
             style={{ marginTop: 16 }}
           >
-            <Table.Column title="Sự kiện" dataIndex="event" />
-            <Table.Column title="Từ ngày" dataIndex="startDate" />
-            <Table.Column title="Đến ngày" dataIndex="endDate" />
-            <Table.Column title="% giảm" dataIndex="percentageDiscountValue" render={(v) => `${v}%`} />
-            <Table.Column title="Giảm giá" dataIndex="discountValue" render={(v) => `${v * 100}%`} />
-            <Table.Column title="Thao tác" render={(record: any) => (
+            <Table.Column title="Event" dataIndex="event" />
+            <Table.Column title="Start Date" dataIndex="startDate" />
+            <Table.Column title="End Date" dataIndex="endDate" />
+            <Table.Column title="Discount (%)" dataIndex="percentageDiscountValue" render={(v) => `${v}%`} />
+            <Table.Column title="Discount Value" dataIndex="discountValue" render={(v) => `${v * 100}%`} />
+            <Table.Column title="Actions" render={(record: any) => (
               <Space>
                 <Button onClick={() => handleEdit(record, 'promotion')}>✏️</Button>
                 <Button danger onClick={() => handleDelete(record.id, 'promotion')}>🗑️</Button>
@@ -117,23 +118,23 @@ const PromotionVoucherManager: React.FC = () => {
     },
     {
       key: 'voucher',
-      label: '🎫 Voucher',
+      label: '🎫 Vouchers',
       children: (
         <>
           <Button type="primary" onClick={() => { setOpen(true); setEditing(null); setActiveTab('voucher'); }}>
-            ➕ Thêm voucher
+            ➕ Add Voucher
           </Button>
           <Table
             dataSource={voucherData?.data?.items || []}
             rowKey="id"
             style={{ marginTop: 16 }}
           >
-            <Table.Column title="Tên voucher" dataIndex="voucherName" />
-            <Table.Column title="Giảm (VND)" dataIndex="voucherDiscountAmount" />
-            <Table.Column title="Số lượng" dataIndex="amount" />
-            <Table.Column title="Từ ngày" dataIndex="startDate" />
-            <Table.Column title="Đến ngày" dataIndex="endDate" />
-            <Table.Column title="Thao tác" render={(record: any) => (
+            <Table.Column title="Voucher Name" dataIndex="voucherName" />
+            <Table.Column title="Discount (VND)" dataIndex="voucherDiscountAmount" />
+            <Table.Column title="Quantity" dataIndex="amount" />
+            <Table.Column title="Start Date" dataIndex="startDate" />
+            <Table.Column title="End Date" dataIndex="endDate" />
+            <Table.Column title="Actions" render={(record: any) => (
               <Space>
                 <Button onClick={() => handleEdit(record, 'voucher')}>✏️</Button>
                 <Button danger onClick={() => handleDelete(record.id, 'voucher')}>🗑️</Button>
@@ -147,11 +148,11 @@ const PromotionVoucherManager: React.FC = () => {
 
   return (
     <>
-      <h2>Quản lý Khuyến mãi & Voucher</h2>
+      <h2>Promotion & Voucher Management</h2>
       <Tabs defaultActiveKey="promotion" items={tabItems} onChange={(key) => setActiveTab(key as any)} />
 
       <Modal
-        title={editing ? 'Chỉnh sửa' : 'Thêm mới'}
+        title={editing ? 'Edit' : 'Create'}
         open={open}
         onCancel={() => { setOpen(false); setEditing(null); }}
         onOk={() => form.submit()}
@@ -159,37 +160,37 @@ const PromotionVoucherManager: React.FC = () => {
         <Form form={form} layout="vertical" onFinish={handleSubmit}>
           {activeTab === 'promotion' ? (
             <>
-              <Form.Item name="event" label="Tên sự kiện" rules={[{ required: true }]}>
+              <Form.Item name="event" label="Event Name" rules={[{ required: true }]}>
                 <Input />
               </Form.Item>
-              <Form.Item name="startDate" label="Từ ngày" rules={[{ required: true }]}>
+              <Form.Item name="startDate" label="Start Date" rules={[{ required: true }]}>
                 <DatePicker style={{ width: '100%' }} />
               </Form.Item>
-              <Form.Item name="endDate" label="Đến ngày" rules={[{ required: true }]}>
+              <Form.Item name="endDate" label="End Date" rules={[{ required: true }]}>
                 <DatePicker style={{ width: '100%' }} />
               </Form.Item>
-              <Form.Item name="percentageDiscountValue" label="% giảm" rules={[{ required: true }]}>
+              <Form.Item name="percentageDiscountValue" label="Discount (%)" rules={[{ required: true }]}>
                 <InputNumber min={0} max={100} style={{ width: '100%' }} />
               </Form.Item>
-              <Form.Item name="discountValue" label="Giá trị giảm" rules={[{ required: true }]}>
+              <Form.Item name="discountValue" label="Discount Value" rules={[{ required: true }]}>
                 <InputNumber min={0} max={1} step={0.01} style={{ width: '100%' }} />
               </Form.Item>
             </>
           ) : (
             <>
-              <Form.Item name="voucherName" label="Tên voucher" rules={[{ required: true }]}>
+              <Form.Item name="voucherName" label="Voucher Name" rules={[{ required: true }]}>
                 <Input />
               </Form.Item>
-              <Form.Item name="voucherDiscountAmount" label="Giảm (%)" rules={[{ required: true }]}>
+              <Form.Item name="voucherDiscountAmount" label="Discount (%)" rules={[{ required: true }]}>
                 <InputNumber min={0} max={100} style={{ width: '100%' }} />
               </Form.Item>
-              <Form.Item name="amount" label="Số lượng" rules={[{ required: true }]}>
+              <Form.Item name="amount" label="Quantity" rules={[{ required: true }]}>
                 <InputNumber min={0} style={{ width: '100%' }} />
               </Form.Item>
-              <Form.Item name="startDate" label="Từ ngày" rules={[{ required: true }]}>
+              <Form.Item name="startDate" label="Start Date" rules={[{ required: true }]}>
                 <DatePicker style={{ width: '100%' }} />
               </Form.Item>
-              <Form.Item name="endDate" label="Đến ngày" rules={[{ required: true }]}>
+              <Form.Item name="endDate" label="End Date" rules={[{ required: true }]}>
                 <DatePicker style={{ width: '100%' }} />
               </Form.Item>
             </>

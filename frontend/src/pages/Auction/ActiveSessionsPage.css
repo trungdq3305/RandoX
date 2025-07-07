@@ -1,0 +1,75 @@
+.active-sessions-container {
+  padding: 24px 32px;
+  background-color: #fdfaff;
+  min-height: 100vh;
+}
+
+.page-title {
+  font-weight: 700;
+  color: #2c2352;
+}
+
+.header-actions {
+  margin-bottom: 24px;
+}
+
+.create-auction-btn {
+  font-size: 16px;
+  background: #925ff0 !important;
+  padding: 10px 20px;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  box-shadow: 0 4px 10px rgba(146, 95, 240, 0.3);
+  transition: 0.3s ease;
+  display: inline-block;
+}
+
+.create-auction-btn:hover {
+  opacity: 0.9;
+}
+
+.auction-card {
+  border-radius: 16px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+  background-color: #fff !important;
+  transition: transform 0.3s;
+}
+
+.card-image {
+  height: 220px;
+  object-fit: cover;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+}
+
+.card-title {
+  font-weight: 600 !important;
+  color: #333;
+}
+
+.price-start {
+  color: #d4380d;
+}
+
+.price-reserve {
+  color: #3f8600;
+}
+
+.tag-endtime {
+  background-color: #2596be !important;
+  color: #fff !important;
+  border: none !important;
+  margin-top: 8px;
+}
+
+.join-btn {
+  margin-top: 12px;
+  border-radius: 6px;
+  background-color: #925ff0 !important;
+  color: #fff !important;
+  border: none !important;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(146, 95, 240, 0.3);
+}

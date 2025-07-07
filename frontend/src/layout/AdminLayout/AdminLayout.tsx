@@ -1,20 +1,19 @@
 // AdminLayout.tsx
-import React, { useState } from 'react'
-import { Link, useLocation, Outlet } from 'react-router-dom'
-import './AdminLayout.css'
+import React, { useState } from 'react';
+import { Link, useLocation, Outlet } from 'react-router-dom';
+import './AdminLayout.css';
 
 const AdminLayout: React.FC = () => {
-  const [collapsed, setCollapsed] = useState(false)
-  const location = useLocation()
+  const [collapsed, setCollapsed] = useState(false);
+  const location = useLocation();
 
   const menuItems = [
-  { icon: '💰', label: 'Revenue Dashboard', path: '/admin/revenue' }, // <-- thêm dòng này
-  { icon: '👥', label: 'Quản lý người dùng', path: '/admin/accounts' },
-  { icon: '⚙️', label: 'Cài đặt hệ thống', path: '/admin/settings' },
+    { icon: '💰', label: 'Revenue Dashboard', path: '/admin/revenue' },
+    { icon: '👥', label: 'User Management', path: '/admin/accounts' },
+    { icon: '⚙️', label: 'System Settings', path: '/admin/settings' },
+  ];
 
-];
-
-  const isActive = (path: string) => location.pathname === path
+  const isActive = (path: string) => location.pathname === path;
 
   return (
     <div className="admin-layout">
@@ -31,7 +30,11 @@ const AdminLayout: React.FC = () => {
 
         <nav className="sidebar-nav">
           {menuItems.map((item, index) => (
-            <Link key={index} to={item.path} className={`nav-item ${isActive(item.path) ? 'active' : ''}`}>
+            <Link
+              key={index}
+              to={item.path}
+              className={`nav-item ${isActive(item.path) ? 'active' : ''}`}
+            >
               <span className="nav-icon">{item.icon}</span>
               {!collapsed && <span className="nav-label">{item.label}</span>}
             </Link>
@@ -44,7 +47,7 @@ const AdminLayout: React.FC = () => {
             {!collapsed && (
               <div className="user-details">
                 <div className="username">Admin</div>
-                <div className="role">Quản trị viên</div>
+                <div className="role">Administrator</div>
               </div>
             )}
           </div>
@@ -53,11 +56,11 @@ const AdminLayout: React.FC = () => {
 
       <div className="main-content">
         <header className="top-header">
-          <div className="header-left"><h1>Bảng điều khiển Admin</h1></div>
+          <div className="header-left"><h1>Admin Dashboard</h1></div>
           <div className="header-right">
             <button className="notification-btn">🔔</button>
             <button className="profile-btn">👤</button>
-            <button className="logout-btn">Đăng xuất</button>
+            <button className="logout-btn">Logout</button>
           </div>
         </header>
 
@@ -66,7 +69,7 @@ const AdminLayout: React.FC = () => {
         </main>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AdminLayout
+export default AdminLayout;
