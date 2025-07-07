@@ -26,22 +26,26 @@ export const productAPI = apiSlice.injectEndpoints({
       query: () => 'Product',
       providesTags: ['products'],
     }),
-    createProduct: builder.mutation<any, any>({
-      query: (body) => ({
-        url: '/Product',
-        method: 'POST',
-        body,
-      }),
-      invalidatesTags: ['products'],
-    }),
-    updateProduct: builder.mutation<any, { id: string; body: any }>({
-      query: ({ id, body }) => ({
-        url: `/Product?id=${id}`,
-        method: 'PUT',
-        body,
-      }),
-      invalidatesTags: ['products'],
-    }),
+    // Thay đổi ở phần mutation
+createProduct: builder.mutation<any, any>({
+  query: (body) => ({
+    url: '/Product',
+    method: 'POST',
+    body,
+    formData: true,
+  }),
+  invalidatesTags: ['products'],
+}),
+updateProduct: builder.mutation<any, { id: string; body: FormData }>({
+  query: ({ id, body }) => ({
+    url: `/Product?id=${id}`,
+    method: 'PUT',
+    body,
+    formData: true,
+  }),
+  invalidatesTags: ['products'],
+}),
+
     deleteProduct: builder.mutation<any, string>({
       query: (id) => ({
         url: `/Product?id=${id}`,
