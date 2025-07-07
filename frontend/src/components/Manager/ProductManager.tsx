@@ -61,31 +61,52 @@ const { data: productDropdownData } = useGetAllProductsDropdownQuery();
   const [activeTab, setActiveTab] = useState<'product' | 'productSet'>('product');
 
   const handleSubmit = async (values: any) => {
-    try {
-      if (editing) {
-        if (activeTab === 'product') {
-          await updateProduct({ id: editing.id, ...values }).unwrap();
-        } else {
-          await updateProductSet({ id: editing.id, ...values }).unwrap();
+  try {
+    const formData = new FormData();
+
+    for (const key in values) {
+      if (key === 'image') {
+        const file = values[key];
+        if (file && file instanceof File) {
+          formData.append('image', file);
         }
-        message.success('Cập nhật thành công');
       } else {
-        if (activeTab === 'product') {
-          await createProduct(values).unwrap();
-        } else {
-          await createProductSet(values).unwrap();
+        const value = values[key];
+        if (value !== undefined && value !== null) {
+          formData.append(key, String(value));
         }
-        message.success('Thêm thành công');
       }
-      setOpen(false);
-      setEditing(null);
-      form.resetFields();
-      refetchProduct();
-      refetchProductSet();
-    } catch (err) {
-      message.error('Lỗi khi lưu dữ liệu');
     }
-  };
+
+    if (editing) {
+      if (activeTab === 'product') {
+        await updateProduct({ id: editing.id, body: formData }).unwrap();
+      } else {
+        await updateProductSet({ id: editing.id, ...values }).unwrap(); // productSet chưa hỗ trợ image
+      }
+      message.success('Cập nhật thành công');
+    } else {
+      if (activeTab === 'product') {
+        await createProduct(formData).unwrap();
+      } else {
+        await createProductSet(values).unwrap();
+      }
+      message.success('Thêm thành công');
+    }
+
+    setOpen(false);
+    setEditing(null);
+    form.resetFields();
+    refetchProduct();
+    refetchProductSet();
+  } catch (err) {
+    console.error(err);
+    message.error('Lỗi khi lưu dữ liệu');
+  }
+};
+
+
+
 
   const handleEdit = (record: any, tab: 'product' | 'productSet') => {
   setActiveTab(tab);
@@ -225,6 +246,19 @@ const { data: productDropdownData } = useGetAllProductsDropdownQuery();
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
           {/* Nếu cần dropdown, sẽ thêm ở đây sau */}
+          <Form.Item
+  name="image"
+  label="Ảnh sản phẩm"
+  valuePropName="file"
+  getValueFromEvent={(e) => {
+    if (Array.isArray(e)) return e;
+    return e?.target?.files?.[0];
+  }}
+>
+  <Input type="file" accept="image/*" />
+</Form.Item>
+
+
           {activeTab === 'product' && (
   <>
     <Form.Item name="manufacturerId" label="Hãng sản xuất" rules={[{ required: true }]}>
