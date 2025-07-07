@@ -51,15 +51,17 @@ const Navbar: React.FC = () => {
         <Flex justify='space-between' align='center'>
           {/* Phần bên trái: Logo và Menu */}
           <Flex align='center' gap='large'>
-            <div className='logo-placeholder'>
-              {/* ---------> Chèn component Logo của bạn vào đây <--------- */}
-              <img
-                src='/Logo.png'
-                alt='Logo'
-                className='logo-image'
-                style={{ width: '150px' }}
-              />
-            </div>
+            <Link href='/' className='logo-link'>
+              <div className='logo-placeholder'>
+                {/* ---------> Chèn component Logo của bạn vào đây <--------- */}
+                <img
+                  src='/Logo.png'
+                  alt='Logo'
+                  className='logo-image'
+                  style={{ width: '150px' }}
+                />
+              </div>
+            </Link>
             <Space size='large'>
               <Link href='#' className='main-nav-link'>
                 Blind box
@@ -85,7 +87,9 @@ const Navbar: React.FC = () => {
             />
             <Space size='large'>
               <HeartOutlined className='nav-icon' />
-              <ShoppingOutlined className='nav-icon' />
+              <Link href='/cart' className='nav-icon-link'>
+                <ShoppingOutlined className='nav-icon' />
+              </Link>
             </Space>
           </Flex>
         </Flex>
