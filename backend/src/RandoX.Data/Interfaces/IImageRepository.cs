@@ -10,5 +10,7 @@ namespace RandoX.Data.Interfaces
     public interface IImageRepository
     {
         Task<Image> AddImageAsync(Image image);
+        Task<Image> GetImagesByOrderIdAsync(Guid orderId);
+        Task<Image> GetImagesByProductIdAsync(Guid productId);
     }
 }

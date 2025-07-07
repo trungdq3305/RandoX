@@ -12,5 +12,9 @@ namespace RandoX.Data.Models.CartModel
         public int? Amount { get; set; }
         public string? ProductName { get; set; }
         public string? ProductSetName { get; set; }
+        public decimal? Price { get; set; } // 👈 Giá gốc
+        public int? PercentageDiscountValue { get; set; } // 👈 Phần trăm giảm
+        public decimal? DiscountValue { get; set; } // 👈 Giá sau giảm
+        public string? ImageUrl { get; set; }
     }
 }

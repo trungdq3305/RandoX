@@ -20,6 +20,8 @@ namespace RandoX.Data.Models.ProductModel
         public string? PromotionEvent { get; set; }
         public double? PercentageDiscountValue { get; set; }
         public decimal? DiscountValue { get; set; }
+
+        public string? ImageUrl { get; set; }
     }
 
 }

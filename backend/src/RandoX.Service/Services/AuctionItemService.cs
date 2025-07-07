@@ -1,4 +1,5 @@
-﻿using RandoX.Data;
+﻿using RandoX.Common;
+using RandoX.Data;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models.AutionModel;
@@ -16,22 +17,30 @@ namespace RandoX.Service.Services
         private readonly IAuctionRepository _repo;
         private readonly IEmailService _emailService;
         private readonly IAccountRepository _accountRepository;
-
-        public AuctionItemService(IAuctionRepository repo, IEmailService emailService, IAccountRepository accountRepository)
+        private readonly BlobService _blobService;
+        public AuctionItemService(IAuctionRepository repo, IEmailService emailService, IAccountRepository accountRepository, BlobService blobService)
         {
             _repo = repo;
             _emailService = emailService;
             _accountRepository = accountRepository;
+            _blobService = blobService;
         }
 
         public async Task<AuctionItem> SubmitAuctionItemAsync(AuctionItemRequest request, Guid userId)
         {
+            // Upload ảnh
+            string imageUrl = null;
+            if (request.Image != null && request.Image.Length > 0)
+            {
+                imageUrl = await _blobService.UploadImageAsync(request.Image);
+            }
+
             var item = new AuctionItem
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name,
                 Description = request.Description,
-                ImageUrl = request.ImageUrl,
+                ImageUrl = imageUrl,
                 StartPrice = request.StartPrice,
                 StepPrice = request.StepPrice,
                 ReservePrice = request.ReservePrice,
@@ -44,6 +53,7 @@ namespace RandoX.Service.Services
             await _repo.CreateItemAsync(item);
             return item;
         }
+
         public async Task<bool> ApproveAuctionItemAsync(Guid itemId, DateTime startTime, DateTime endTime)
         {
             var item = await _repo.GetItemByIdAsync(itemId);
