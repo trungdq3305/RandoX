@@ -13,12 +13,13 @@ interface Product {
     productName: string;
     description: string;
     price: number;
-    image?: string[];
+    imageUrl?: string;
     isDeleted: boolean;
     manufacturerName: string;
     categoryName: string;
     quantity: number;
     discountValue: number;
+    productSetId: string;
 }
 
 interface ProductListResponse {
@@ -43,8 +44,6 @@ const DetailProduct: React.FC = () => {
     const navigate = useNavigate();
     const [stock] = useState(1);
     const [addToCart] = useAddProductToCartMutation();
-
-
     // Fetch product details
     const { data: productDetailData, isLoading: isProductLoading, error: productError } = useGetProductDetailQuery<ProductResponse>(id!);
     const product = productDetailData?.data;
@@ -88,13 +87,6 @@ const DetailProduct: React.FC = () => {
             }
         } else {
             message.warning('Product is out of stock or deleted');
-        }
-    };
-
-    const handleBuyNow = () => {
-        if (!product.isDeleted) {
-            console.log(`Buying ${stock} of ${product.productName}`);
-            navigate('/checkout');
         }
     };
     const children = (
@@ -194,7 +186,7 @@ const DetailProduct: React.FC = () => {
                         <img
                             key={img}
                             src={
-                                product.image?.[0] ||
+                                product?.imageUrl ||
                                 'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'
                             }
                             alt={`${product.productName} thumbnail ${img}`}
@@ -205,7 +197,7 @@ const DetailProduct: React.FC = () => {
                 <div className="product-main">
                     <img
                         src={
-                            product.image?.[0] ||
+                            product.imageUrl ||
                             'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'
                         }
                         alt={product.productName}
@@ -236,14 +228,43 @@ const DetailProduct: React.FC = () => {
                         >
                             ADD TO CART
                         </Button>
+                        {/* Thêm các nút mới */}
                         <Button
-                            type="primary"
-                            onClick={handleBuyNow}
-                            style={{ background: '#f5222d', borderColor: '#f5222d' }}
+                            type="default"
+                            onClick={() => {
+                                if (!product.isDeleted) {
+                                    console.log(`Selected Single Box for productSetId: ${product.productSetId}`);
+                                    // Thêm logic xử lý cho Single Box (ví dụ: navigate hoặc gọi API)
+                                    navigate(`/products/${product.productSetId}`);
+                                }
+                            }}
                             disabled={product.isDeleted}
-                            className="buy-now-button"
+                            style={{ marginRight: '10px' }}
                         >
-                            BUY NOW
+                            <img
+                                src={product?.imageUrl || 'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'}
+                                alt="Single Box"
+                                style={{ width: '20px', marginRight: '8px', objectFit: "cover" }}
+                            />
+                            Single Box
+                        </Button>
+                        <Button
+                            type="default"
+                            onClick={() => {
+                                if (!product.isDeleted) {
+                                    console.log(`Selected Whole Set for productSetId: ${product.productSetId}`);
+                                    // Thêm logic xử lý cho Whole Set (ví dụ: navigate hoặc gọi API)
+                                    navigate(`/products/${product.productSetId}`);
+                                }
+                            }}
+                            disabled={product.isDeleted}
+                        >
+                            <img
+                                src={product?.imageUrl || 'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'}
+                                alt="Whole Set"
+                                style={{ width: '20px', marginRight: '8px', objectFit: "cover", borderRadius: "10px" }}
+                            />
+                            Whole Set
                         </Button>
                     </div>
                     <div className="details-section">

@@ -3,7 +3,6 @@ export interface Cart {
     cartProducts: CartItem[];
 }
 export interface CartItem {
-
     id: string;
     productName: string;
     productSetName: string;

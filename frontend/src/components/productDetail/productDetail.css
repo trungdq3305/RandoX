@@ -7,7 +7,8 @@
   margin-bottom: 20px;
   background-color: #fff5e6;
   border-radius: 20px;
-  /* Light peach background like in the screenshot */
+  min-height: 600px;
+  /* Đảm bảo chiều cao đủ để sticky hoạt động */
 }
 
 .product-images {
@@ -17,12 +18,9 @@
   padding-right: 20px;
   width: 80px;
   margin-right: 10px;
-  /* Fixed width to match thumbnail column */
-  /* Changed to sticky */
+  position: sticky;
   top: 20px;
-  /* Distance from the top of the viewport */
   align-self: flex-start;
-  /* Ensures it sticks to the top within flex context */
 }
 
 .thumbnail {
@@ -31,18 +29,14 @@
   object-fit: cover;
   cursor: pointer;
   border: 1px solid #eee;
-  /* Light border for thumbnails */
 }
 
 .product-main {
   flex: 2;
   text-align: center;
   position: sticky;
-  /* Changed to sticky */
   top: 20px;
-  /* Distance from the top of the viewport */
   align-self: flex-start;
-  /* Ensures it sticks to the top within flex context */
 }
 
 .main-image {
@@ -83,26 +77,40 @@
   display: flex;
   gap: 10px;
   margin: 20px 0;
+  flex-wrap: wrap;
+  /* Cho phép xuống dòng trên màn hình nhỏ */
 }
 
-/* Fix the buy-now-button class */
+/* Kiểu dáng cho các nút mới */
+.single-box-button,
+.whole-set-button {
+  display: flex;
+  align-items: center;
+  background: #fff !important;
+  /* Nền trắng để phân biệt */
+  border: 1px solid #000 !important;
+  color: #000 !important;
+  border-radius: 10px;
+  padding: 5px 10px;
+}
+
+.single-box-button img,
+.whole-set-button img {
+  width: 40px;
+  margin-right: 8px;
+}
+
 .buy-now-button {
   background: #f5222d !important;
-  /* Corrected syntax, red background */
   border-color: #f5222d !important;
-  /* Matching border color */
   color: #fff !important;
-  /* White text for contrast */
   border-radius: 10px;
 }
 
 .add-to-cart-button {
   background: #000 !important;
-  /* Blue background for add to cart */
   border-color: #000 !important;
-  /* Matching border color */
   color: #fff !important;
-  /* White text for contrast */
   border-radius: 10px;
 }
 
@@ -116,4 +124,41 @@
 h3 {
   font-size: 16px;
   margin-bottom: 10px;
+}
+
+/* Media query cho responsive */
+@media (max-width: 768px) {
+  .product-detail-container {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .product-images {
+    position: static;
+    width: 100%;
+    flex-direction: row;
+    overflow-x: auto;
+    margin-bottom: 10px;
+  }
+
+  .product-main {
+    position: static;
+    margin-bottom: 10px;
+  }
+
+  .product-info {
+    padding-left: 0;
+  }
+
+  .actions {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .single-box-button,
+  .whole-set-button,
+  .add-to-cart-button,
+  .buy-now-button {
+    width: 100%;
+  }
 }
