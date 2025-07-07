@@ -31,6 +31,8 @@ namespace RandoX.Data.Repositories
                 .Include(p => p.ProductSets)
                 .Include(p => p.Promotion)
                 .Include(p => p.Category)
+                .Include(p => p.Images)
+                .Where(p => p.Quantity != null)
                 .ToListAsync();
             return products;
         }
@@ -41,6 +43,7 @@ namespace RandoX.Data.Repositories
                 .Include(p => p.Promotion)
                 .Include(p => p.Category)
                 .Include(p => p.ProductSets)
+                .Include(p => p.Images)
                 .Where(a => a.IsDeleted != true)
                 .FirstOrDefaultAsync(p => p.Id == Guid.Parse(id));
             return product;
