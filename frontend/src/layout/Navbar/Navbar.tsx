@@ -18,29 +18,29 @@ const Navbar: React.FC = () => {
           {/* Top-bar bên trái */}
           <Space split={<Divider type='vertical' />}>
             <Link href='#' className='top-bar-link'>
-              Kênh người bán
+              Seller Channel 
             </Link>
             <Link href='#' className='top-bar-link'>
-              Kết nối
+              Connect
             </Link>
           </Space>
 
           {/* Top-bar bên phải */}
           <Space split={<Divider type='vertical' />}>
             <Link href='/login' className='top-bar-link'>
-              Đăng nhập
+              Login
             </Link>
             <Link href='#' className='top-bar-link'>
-              Giới thiệu
+              About
             </Link>
             <Link href='#' className='top-bar-link'>
-              Liên hệ
+              Contact
             </Link>
             <Link href='#' className='top-bar-link'>
-              Hỗ trợ
+              Support
             </Link>
             <Link href='#' className='top-bar-link'>
-              Thông báo
+              Notification
             </Link>
           </Space>
         </Flex>
@@ -65,10 +65,10 @@ const Navbar: React.FC = () => {
                 Blind box
               </Link>
               <Link href='/RandomWheel' className='main-nav-link'>
-                Vòng quay may mắn
+                Lucky Draws
               </Link>
-              <Link href='#' className='main-nav-link'>
-                Đấu giá
+              <Link href='/sessions' className='main-nav-link'>
+                Autions
               </Link>
               <Link href='#' className='main-nav-link'>
                 Livestream

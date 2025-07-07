@@ -12,7 +12,6 @@ import {
   InputNumber,
   Space,
   notification,
-  Popconfirm,
   Typography,
 } from 'antd';
 
@@ -27,54 +26,54 @@ const ManagerApprovalPage: React.FC = () => {
   const [durationMap, setDurationMap] = useState<Record<string, number>>({});
 
   const handleApprove = async (itemId: string) => {
-    const duration = durationMap[itemId] || 10; // default 10 phút
+    const duration = durationMap[itemId] || 10; // default 10 minutes
     try {
       await approveItem({ itemId, durationMinutes: duration }).unwrap();
-      notification.success({ message: 'Đã duyệt vật phẩm' });
+      notification.success({ message: 'Item approved' });
       refetch();
     } catch {
-      notification.error({ message: 'Duyệt thất bại' });
+      notification.error({ message: 'Approval failed' });
     }
   };
 
   const handleReject = async () => {
     try {
       await rejectItem({ itemId: rejectModal.itemId, reason: rejectReason }).unwrap();
-      notification.success({ message: 'Đã từ chối vật phẩm' });
+      notification.success({ message: 'Item rejected' });
       setRejectModal({ itemId: '', visible: false });
       setRejectReason('');
       refetch();
     } catch (err: any) {
-  console.error('Reject error:', err);
-  notification.error({ message: 'Từ chối thất bại' });
-}
+      console.error('Reject error:', err);
+      notification.error({ message: 'Rejection failed' });
+    }
   };
 
   return (
     <>
-      <h2>Danh sách vật phẩm chờ duyệt</h2>
+      <h2>Pending Auction Items</h2>
       <Table
         dataSource={items}
         loading={isLoading}
         rowKey="id"
         pagination={{ pageSize: 5 }}
       >
-        <Table.Column title="Tên vật phẩm" dataIndex="name" />
+        <Table.Column title="Item Name" dataIndex="name" />
         <Table.Column
-          title="Mô tả"
+          title="Description"
           dataIndex="description"
           render={(text) => <Paragraph ellipsis={{ rows: 2 }}>{text}</Paragraph>}
         />
         <Table.Column
-          title="Hình ảnh"
+          title="Image"
           dataIndex="imageUrl"
           render={(url: string) => <img src={url} alt="preview" style={{ width: 80 }} />}
         />
-        <Table.Column title="Giá khởi điểm" dataIndex={['startPrice']} />
-        <Table.Column title="Giá chốt" dataIndex={['reservePrice']} />
-        <Table.Column title="Bước nhảy" dataIndex={['stepPrice']} />
+        <Table.Column title="Starting Price" dataIndex="startPrice" />
+        <Table.Column title="Reserve Price" dataIndex="reservePrice" />
+        <Table.Column title="Step Price" dataIndex="stepPrice" />
         <Table.Column
-          title="Thời gian đấu giá (phút)"
+          title="Auction Duration (minutes)"
           render={(_, record: any) => (
             <InputNumber
               min={5}
@@ -84,14 +83,14 @@ const ManagerApprovalPage: React.FC = () => {
           )}
         />
         <Table.Column
-          title="Hành động"
+          title="Actions"
           render={(_, record: any) => (
             <Space>
-              <Button type="primary" onClick={() => handleApprove(record.id)}>
-                Duyệt
+              <Button  onClick={() => handleApprove(record.id)}>
+                Approve
               </Button>
               <Button danger onClick={() => setRejectModal({ itemId: record.id, visible: true })}>
-                Từ chối
+                Reject
               </Button>
             </Space>
           )}
@@ -99,17 +98,17 @@ const ManagerApprovalPage: React.FC = () => {
       </Table>
 
       <Modal
-        title="Lý do từ chối vật phẩm"
+        title="Reason for Rejection"
         open={rejectModal.visible}
         onCancel={() => setRejectModal({ itemId: '', visible: false })}
         onOk={handleReject}
-        okText="Xác nhận"
+        okText="Confirm"
       >
         <Input.TextArea
           rows={4}
           value={rejectReason}
           onChange={(e) => setRejectReason(e.target.value)}
-          placeholder="Nhập lý do từ chối"
+          placeholder="Enter reason for rejection"
         />
       </Modal>
     </>

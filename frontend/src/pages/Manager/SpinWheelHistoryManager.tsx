@@ -9,49 +9,49 @@ const SpinWheelHistoryManager: React.FC = () => {
 
   const columns = [
     {
-      title: 'Vòng quay',
+      title: 'Wheel',
       dataIndex: 'wheelName',
       key: 'wheelName',
       align: 'center' as const,
     },
     {
-      title: 'Phần thưởng',
+      title: 'Reward',
       dataIndex: 'rewardName',
       key: 'rewardName',
       align: 'center' as const,
     },
     {
-      title: 'Loại',
+      title: 'Type',
       dataIndex: 'rewardType',
       key: 'rewardType',
       align: 'center' as const,
       render: (type: string) => {
         const color = type === 'product' ? 'blue' : 'green';
-        return <Tag color={color}>{type === 'product' ? 'Sản phẩm' : 'Voucher'}</Tag>;
+        return <Tag color={color}>{type === 'product' ? 'Product' : 'Voucher'}</Tag>;
       },
     },
     {
-      title: 'Giá trị',
+      title: 'Value',
       dataIndex: 'rewardValue',
       key: 'rewardValue',
       align: 'center' as const,
-      render: (value: number) => value?.toLocaleString() + ' đ',
+      render: (value: number) => value?.toLocaleString() + ' VND',
     },
     {
-      title: 'Giá quay',
+      title: 'Spin Price',
       dataIndex: 'pricePaid',
       key: 'pricePaid',
       align: 'center' as const,
-      render: (value: number) => value?.toLocaleString() + ' đ',
+      render: (value: number) => value?.toLocaleString() + ' VND',
     },
     {
-      title: 'Người dùng',
+      title: 'User',
       dataIndex: 'userEmail',
       key: 'userEmail',
       align: 'center' as const,
     },
     {
-      title: 'Thời gian',
+      title: 'Time',
       dataIndex: 'createdAt',
       key: 'createdAt',
       align: 'center' as const,
@@ -61,7 +61,7 @@ const SpinWheelHistoryManager: React.FC = () => {
 
   return (
     <div>
-      <Typography.Title level={3}>📜 Lịch sử quay vòng</Typography.Title>
+      <Typography.Title level={3}>📜 Spin Wheel History</Typography.Title>
       <Table
         dataSource={data}
         columns={columns}

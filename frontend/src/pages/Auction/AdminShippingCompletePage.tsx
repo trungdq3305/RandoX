@@ -15,15 +15,15 @@ const AdminShippingCompletePage: React.FC = () => {
   const handleConfirm = async (sessionId: string) => {
     try {
       await confirmDelivery(sessionId).unwrap();
-      notification.success({ message: 'Đã xác nhận giao hàng và chuyển tiền cho người bán' });
+      notification.success({ message: 'Delivery confirmed and payment sent to seller' });
     } catch {
-      notification.error({ message: 'Xác nhận thất bại' });
+      notification.error({ message: 'Confirmation failed' });
     }
   };
 
   return (
     <>
-      <h2>Phiên đã kết thúc chờ xác nhận giao hàng</h2>
+      <h2>Completed Auction Sessions Awaiting Delivery Confirmation</h2>
       <Table
         dataSource={sessions}
         loading={isLoading}
@@ -35,14 +35,18 @@ const AdminShippingCompletePage: React.FC = () => {
           ),
         }}
       >
-        <Table.Column title="Tên vật phẩm" dataIndex={['auctionItem', 'name']} />
-        <Table.Column title="Giá cuối" dataIndex="finalPrice" />
-        <Table.Column title="Kết thúc lúc" dataIndex="endTime" render={(text) => new Date(text).toLocaleString()} />
+        <Table.Column title="Item Name" dataIndex={['auctionItem', 'name']} />
+        <Table.Column title="Final Price" dataIndex="finalPrice" />
         <Table.Column
-          title="Thao tác"
+          title="Ended At"
+          dataIndex="endTime"
+          render={(text) => new Date(text).toLocaleString()}
+        />
+        <Table.Column
+          title="Action"
           render={(_, record) => (
             <Button type="primary" onClick={() => handleConfirm(record.id)}>
-              Xác nhận giao hàng
+              Confirm Delivery
             </Button>
           )}
         />
@@ -51,19 +55,19 @@ const AdminShippingCompletePage: React.FC = () => {
   );
 };
 
-// 👉 Sub-component để hiển thị địa chỉ giao hàng
+// 👉 Sub-component to display shipping address
 const ShippingInfo: React.FC<{ sessionId: string }> = ({ sessionId }) => {
   const { data, isLoading } = useGetShippingInfoQuery(sessionId);
 
-  if (isLoading) return <p>Đang tải thông tin giao hàng...</p>;
-  if (!data) return <p style={{ color: 'red' }}>❌ Chưa có địa chỉ xác nhận</p>;
+  if (isLoading) return <p>Loading shipping info...</p>;
+  if (!data) return <p style={{ color: 'red' }}>❌ No confirmed address available</p>;
 
   return (
     <div style={{ paddingLeft: 16 }}>
-      <Paragraph strong>Địa chỉ nhận hàng:</Paragraph>
+      <Paragraph strong>Shipping Address:</Paragraph>
       <Paragraph>{data.address}</Paragraph>
-      <Paragraph italic>Email người nhận: {data.email}</Paragraph>
-      <Paragraph>Thời gian xác nhận: {new Date(data.confirmedAt).toLocaleString()}</Paragraph>
+      <Paragraph italic>Recipient Email: {data.email}</Paragraph>
+      <Paragraph>Confirmed At: {new Date(data.confirmedAt).toLocaleString()}</Paragraph>
     </div>
   );
 };
