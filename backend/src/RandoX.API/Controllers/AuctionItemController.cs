@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RandoX.Common;
 using RandoX.Data;
@@ -21,7 +22,8 @@ namespace RandoX.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Submit([FromBody] AuctionItemRequest request)
+        [Authorize]
+        public async Task<IActionResult> Submit([FromForm] AuctionItemRequest request)
         {
             var identity = this.HttpContext.User.Identity as ClaimsIdentity;
 
@@ -31,10 +33,12 @@ namespace RandoX.API.Controllers
             var claims = identity.Claims;
             var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
             var user = await _accountService.GetAccountByEmailAsync(email);
-            var userId = user.Id; // Lấy từ Claims
+            var userId = user.Id;
+
             var item = await _service.SubmitAuctionItemAsync(request, userId);
             return Ok(item);
         }
+
         [HttpPost("{itemId}/approve")]
         public async Task<IActionResult> Approve(Guid itemId, [FromQuery] int durationMinutes = 30)
         {
