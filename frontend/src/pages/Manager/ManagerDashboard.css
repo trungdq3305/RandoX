@@ -45,6 +45,79 @@
 }
 
 .table-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #4a00e0;
+}
+
+.table-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-box input {
+  padding: 10px 40px 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.search-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+}
+
+.add-btn {
+  background: linear-gradient(to right, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+.management-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.management-table th,
+.management-table td {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.management-table th {
+  background: #f9f9f9;
+  font-weight: 600;
+  color: #555;
+}
+
+.product-image {
+  font-size: 24px;
+}
+
+.product-name {
+  font-weight: 600;
+  font-size: 15px;
   color: #333;
 }
 

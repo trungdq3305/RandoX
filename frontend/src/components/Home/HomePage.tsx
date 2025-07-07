@@ -22,7 +22,7 @@ const Homepage: React.FC = () => {
     pageSize: 5,
   })
   const productList = data?.data?.items || null;
-  console.log(productList)
+
   return (
     <div
       style={{

@@ -12,7 +12,7 @@ const baseQuery = fetchBaseQuery({
 
     return headers
   },
-responseHandler: async (response) => {
+  responseHandler: async (response) => {
     const contentType = response.headers.get("content-type");
     if (contentType && contentType.includes("application/json")) {
       return await response.json();
@@ -37,10 +37,12 @@ export const apiSlice = createApi({
     'dashboard',
     'products',
     'categories',
+    'carts',
     'promotions',
     'vouchers',
     'accounts',
     'SpinWheels',
+    'productSets'
   ],
   endpoints: () => ({}),
 })

@@ -1,25 +1,23 @@
 import React, { useState } from 'react';
 import { Button, Collapse, Spin, message, type CollapseProps } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
-import './productDetail.css';
+import '../productDetail/productDetail.css';
 import ProductsCardSlider from '../productSlider/productSlider';
 import Content from '../Content/content';
 import type { Products } from '../../types/product';
-import { useGetProductDetailQuery, useGetProductListQuery, useAddProductToCartMutation } from '../../features/product/productAPI';
+import { useGetProductListQuery } from '../../features/product/productAPI';
 import { LoadingOutlined } from '@ant-design/icons';
+import { useAddProductSetToCartMutation, useGetProductSetDetailQuery } from '../../features/productSet/productSetAPI';
 
-interface Product {
+interface ProductSet {
     id: string;
-    productName: string;
+    productSetName: string;
     description: string;
     price: number;
-    imageUrl?: string;
-    isDeleted: boolean;
-    manufacturerName: string;
-    categoryName: string;
-    quantity: number;
+    promotionEvent: string;
+    setQuantity: number;
     discountValue: number;
-    productSetId: string;
+    imageUrl: string;
 }
 
 interface ProductListResponse {
@@ -33,20 +31,20 @@ interface ProductListResponse {
 
 interface ProductResponse {
     data: {
-        data: Product;
+        data: ProductSet;
     };
     isLoading: boolean;
     error?: unknown;
 }
 
-const DetailProduct: React.FC = () => {
+const SetDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [stock] = useState(1);
-    const [addToCart] = useAddProductToCartMutation();
+    const [addSetToCart] = useAddProductSetToCartMutation();
     // Fetch product details
-    const { data: productDetailData, isLoading: isProductLoading, error: productError } = useGetProductDetailQuery<ProductResponse>(id!);
-    const product = productDetailData?.data;
+    const { data: productDetailData, isLoading: isProductLoading, error: productError } = useGetProductSetDetailQuery<ProductResponse>(id!);
+    const set = productDetailData?.data;
 
     // Fetch product list for the slider
     const { data, isLoading: isProductListLoading } = useGetProductListQuery<ProductListResponse>({
@@ -65,7 +63,7 @@ const DetailProduct: React.FC = () => {
     }
 
     // Handle error or no product
-    if (productError || !product) {
+    if (productError || !set) {
         return (
             <div style={{ textAlign: 'center', padding: '24px' }}>
                 Product not found
@@ -73,11 +71,11 @@ const DetailProduct: React.FC = () => {
         );
     }
 
-    const handleAddToCart = async () => {
-        if (!product.isDeleted && product.quantity >= stock) {
+    const handleAddSetToCart = async () => {
+        if (set.setQuantity >= stock) {
             try {
-                await addToCart({ productId: product.id, amount: stock }).unwrap();
-                message.success(`Added ${stock} of ${product.productName} to cart`);
+                await addSetToCart({ setId: set.id, amount: stock }).unwrap();
+                message.success(`Added ${stock} of ${set.productSetName} to cart`);
             } catch (error: any) {
                 message.error(`${error}`);
                 console.error('Full error details:', error);
@@ -92,16 +90,13 @@ const DetailProduct: React.FC = () => {
     const children = (
         <div >
             <p style={{ fontWeight: "lighter", fontStyle: "oblique" }}>
-                Bộ sưu tập: {product.categoryName}
+                Mô tả: {set.description}
             </p>
             <p style={{ fontWeight: "lighter", fontStyle: "oblique" }}>
-                Mô tả: {product.description}
-            </p>
-            <p style={{ fontWeight: "lighter", fontStyle: "oblique" }}>
-                Nhà phát hành: {product.manufacturerName}
+                Event phát hành: {set.promotionEvent}
             </p>
             <p style={{ color: '#F57F17' }}>
-                Giảm giá: {product.discountValue * 100}%
+                Giảm giá: {set.discountValue * 100}%
             </p>
         </div>
     )
@@ -186,10 +181,10 @@ const DetailProduct: React.FC = () => {
                         <img
                             key={img}
                             src={
-                                product?.imageUrl ||
+                                set?.imageUrl ||
                                 'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'
                             }
-                            alt={`${product.productName} thumbnail ${img}`}
+                            alt={`${set.productSetName} thumbnail ${img}`}
                             className="thumbnail"
                         />
                     ))}
@@ -197,74 +192,37 @@ const DetailProduct: React.FC = () => {
                 <div className="product-main">
                     <img
                         src={
-                            product.imageUrl ||
+                            set.imageUrl ||
                             'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'
                         }
-                        alt={product.productName}
+                        alt={set.productSetName}
                         className="main-image"
                     />
                 </div>
                 <div className="product-info">
-                    <div className="new-tag">{product.discountValue ? `-${product.discountValue * 100}%` : "NEW"}</div>
-                    <h1>{product.productName}</h1>
+                    <div className="new-tag">{set.discountValue ? `-${set.discountValue * 100}%` : "NEW"}</div>
+                    <h1>{set.productSetName}</h1>
                     <p className="price">
-                        {product.discountValue ? (
+                        {set.discountValue ? (
                             <div style={{ display: "flex", gap: "10px" }}>
                                 <p style={{ textDecoration: "line-through", color: "gray" }}>
-                                    {product.price.toLocaleString('vi-VN')}đ
+                                    {set.price.toLocaleString('vi-VN')}đ
                                 </p>
                                 <p>
-                                    {(product.price - product.price * product.discountValue).toLocaleString('vi-VN')}đ
+                                    {(set.price - set.price * set.discountValue).toLocaleString('vi-VN')}đ
                                 </p>
                             </div>
-                        ) : product.price.toLocaleString('vi-VN')} </p>
+                        ) : set.price.toLocaleString('vi-VN')} </p>
                     <div className="actions">
                         <Button
                             type="primary"
-                            onClick={handleAddToCart}
+                            onClick={handleAddSetToCart}
                             style={{ background: '#000', borderColor: '#000' }}
-                            disabled={product.isDeleted}
                             className="add-to-cart-button"
                         >
                             ADD TO CART
                         </Button>
                         {/* Thêm các nút mới */}
-                        <Button
-                            type="default"
-                            onClick={() => {
-                                if (!product.isDeleted) {
-                                    // Thêm logic xử lý cho Single Box (ví dụ: navigate hoặc gọi API)
-                                    navigate(`/products/${product.productSetId}`);
-                                }
-                            }}
-                            disabled={product.isDeleted}
-                            style={{ marginRight: '10px' }}
-                        >
-                            <img
-                                src={product?.imageUrl || 'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'}
-                                alt="Single Box"
-                                style={{ width: '20px', marginRight: '8px', objectFit: "cover" }}
-                            />
-                            Single Box
-                        </Button>
-                        <Button
-                            type="default"
-                            onClick={() => {
-                                if (!product.isDeleted) {
-                                    console.log(`Selected Whole Set for productSetId: ${product.productSetId}`);
-                                    // Thêm logic xử lý cho Whole Set (ví dụ: navigate hoặc gọi API)
-                                    navigate(`/productSet/${product.productSetId}`);
-                                }
-                            }}
-                            disabled={product.isDeleted}
-                        >
-                            <img
-                                src={product?.imageUrl || 'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'}
-                                alt="Whole Set"
-                                style={{ width: '20px', marginRight: '8px', objectFit: "cover", borderRadius: "10px" }}
-                            />
-                            Whole Set
-                        </Button>
                     </div>
                     <div className="details-section">
                         <Collapse defaultActiveKey={['1']} items={items} expandIconPosition='end' bordered={true} />
@@ -283,4 +241,4 @@ const DetailProduct: React.FC = () => {
     );
 };
 
-export default DetailProduct;
+export default SetDetail;
