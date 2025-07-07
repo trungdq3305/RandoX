@@ -80,7 +80,7 @@ const DetailProduct: React.FC = () => {
                 await addToCart({ productId: product.id, amount: stock }).unwrap();
                 message.success(`Added ${stock} of ${product.productName} to cart`);
             } catch (error: any) {
-                message.error('Failed to add to cart. Please check the product ID and quantity.');
+                message.error(`${error}`);
                 console.error('Full error details:', error);
                 if (error.status === 400) {
                     console.log('Bad Request Details:', error.data || 'No additional data');

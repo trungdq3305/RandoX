@@ -5,7 +5,10 @@ export interface Cart {
 export interface CartItem {
 
     id: string;
-    productId: string;
-    cartId: string;
+    productName: string;
+    productSetName: string;
     amount: number;
+    price: number;
+    imageUrl: string
+    discountValue: number;
 }
