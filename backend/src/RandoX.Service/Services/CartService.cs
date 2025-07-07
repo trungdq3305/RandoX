@@ -70,16 +70,30 @@ namespace RandoX.Service.Services
                     {
                         var product = await _productRepository.GetProductByIdAsync(cp.ProductId.ToString());
                         dto.ProductName = product?.ProductName;
+                        dto.Price = product?.Price;
+                        dto.PercentageDiscountValue = product?.Promotion?.PercentageDiscountValue;
+                        dto.DiscountValue = product?.Promotion?.DiscountValue;
+
+                        // 👇 Lấy ảnh từ bảng Images (nếu có)
+                        dto.ImageUrl = product?.Images?.FirstOrDefault(i => i.IsDeleted != true)?.ImageUrl;
                     }
 
                     if (cp.ProductSetId != null)
                     {
                         var productSet = await _productSetRepository.GetProductSetByIdAsync(cp.ProductSetId.ToString());
                         dto.ProductSetName = productSet?.ProductSetName;
+                        dto.Price = productSet?.Price;
+                        dto.PercentageDiscountValue = productSet?.Promotion?.PercentageDiscountValue;
+                        dto.DiscountValue = productSet?.Promotion?.DiscountValue;
+
+                        // 👇 Lấy ảnh từ Product gốc nếu ProductSet không có ảnh riêng
+                        dto.ImageUrl = productSet?.Product?.Images?.FirstOrDefault(i => i.IsDeleted != true)?.ImageUrl;
                     }
 
                     cartProductDtos.Add(dto);
                 }
+
+
 
                 var response = new CartResponse
                 {
@@ -110,7 +124,7 @@ namespace RandoX.Service.Services
                     {
                         if(product.Product.PromotionId != null)
                         {
-                            total = (decimal)(total + product.Product.Price * product.Product.Promotion.DiscountValue);
+                            total = (decimal)(total + (product.Product.Price  - (product.Product.Price * product.Product.Promotion.DiscountValue)));
                         }
                         else
                         {
@@ -122,7 +136,7 @@ namespace RandoX.Service.Services
                     {
                         if (product.ProductSet.PromotionId != null)
                         {
-                            total = (decimal)(total + product.ProductSet.Price * product.ProductSet.Promotion.DiscountValue);
+                            total = (decimal)(total + product.ProductSet.Price -  product.ProductSet.Price * product.ProductSet.Promotion.DiscountValue);
                         }
                         else
                         {

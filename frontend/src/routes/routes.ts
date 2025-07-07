@@ -123,7 +123,6 @@ const routes: LayoutRoute[] = [
         component: AdminAccountManager,
         exact: true,
       },
-
     ],
   },
   {
@@ -139,27 +138,31 @@ const routes: LayoutRoute[] = [
         component: CategoryManager,
         exact: true,
       },
-      {
-        path: '/manager/promotions-vouchers',
-        component: PromotionVoucherManager,
-        exact: true,
-      },
-
-      {
-        path: '/manager/spinwheel-history',
-        component: SpinWheelHistoryManager,
-        exact: true,
-      },
-      {
-        path: '/manager/approval',
-        component: ManagerApprovalPage,
-        exact: true,
-      },
-      {
-        path: '/manager/confirm-shipping',
-        component: AdminShippingCompletePage,
-        exact: true,
-      },
+    {
+      path: '/manager/promotions-vouchers',
+      component: PromotionVoucherManager,
+      exact: true,
+    },
+    
+    {
+      path: '/manager/spinwheel-history',
+      component: SpinWheelHistoryManager,
+      exact: true,
+    },
+    {
+      path: '/manager/approval',
+      component: ManagerApprovalPage,
+      exact: true,
+    },
+    {
+      path: '/manager/confirm-shipping',
+      component: AdminShippingCompletePage,
+      exact: true,
+    },{
+      path: '/manager/dashboard',
+      component: RevenueDashboard, // hoặc DashboardPage nếu có
+      exact: true,
+    },
     ],
   },
 ]

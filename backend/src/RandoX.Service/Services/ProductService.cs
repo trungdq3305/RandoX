@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RandoX.Common;
 using RandoX.Data;
+using RandoX.Data.DBContext;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models;
@@ -22,12 +23,16 @@ namespace RandoX.Service.Services
         private readonly IAccountRepository _accountRepository;
         private readonly ICartRepository _cartRepository;
         private readonly ICartService _cartService;
-        public ProductService(IProductRepository productRepository, IAccountRepository accountRepository, ICartRepository cartRepository, ICartService cartService)
+        private readonly randox_dbContext _context;
+        private readonly BlobService _blobService;
+        public ProductService(IProductRepository productRepository, IAccountRepository accountRepository, ICartRepository cartRepository, ICartService cartService, randox_dbContext context, BlobService blobService)
         {
             _productRepository = productRepository;
             _accountRepository = accountRepository;
             _cartRepository = cartRepository;
             _cartService = cartService;
+            _context = context;
+            _blobService = blobService;
         }
         public async Task<ApiResponse<PaginationResult<ProductDetailDto>>> GetAllProductsAsync(int pageNumber, int pageSize)
         {
@@ -66,6 +71,13 @@ namespace RandoX.Service.Services
 
         private ProductDetailDto MapToDto(Product product)
         {
+            var image = _context.Images
+                .Where(i => i.ProductId == product.Id && i.IsDeleted != true)
+                .Select(i => i.ImageUrl)
+                .FirstOrDefault();
+
+            var productSetId = product.ProductSets?.FirstOrDefault()?.Id;
+
             return new ProductDetailDto
             {
                 Id = product.Id,
@@ -77,14 +89,20 @@ namespace RandoX.Service.Services
                 CategoryName = product.Category?.CategoryName,
                 PromotionEvent = product.Promotion?.Event,
                 PercentageDiscountValue = product.Promotion?.PercentageDiscountValue,
-                DiscountValue = product.Promotion?.DiscountValue
+                DiscountValue = product.Promotion?.DiscountValue,
+                ImageUrl = image,
+
+                // ✅ Gán ProductSetId
+                ProductSetId = productSetId
             };
         }
+
+
         public async Task<ApiResponse<ProductRequest>> CreateProductAsync(ProductRequest productRequest)
         {
             try
             {
-                Product product = new Product
+                var product = new Product
                 {
                     Id = Guid.NewGuid(),
                     ProductName = productRequest.ProductName,
@@ -92,18 +110,37 @@ namespace RandoX.Service.Services
                     Quantity = productRequest.Quantity,
                     Price = productRequest.Price,
                     ManufacturerId = Guid.Parse(productRequest.ManufacturerId),
-                    CategoryId = Guid.Parse(productRequest.CategoryId),
+                    CategoryId = Guid.Parse(productRequest.CategoryId)
                 };
-                
+
                 await _productRepository.CreateProductAsync(product);
 
-                return ApiResponse<ProductRequest>.Success(productRequest, "success");
+                // 👇 Nếu có ảnh, upload lên Blob và lưu vào bảng Images
+                if (productRequest.Image != null && productRequest.Image.Length > 0)
+                {
+                    var imageUrl = await _blobService.UploadImageAsync(productRequest.Image);
+
+                    var image = new Image
+                    {
+                        Id = Guid.NewGuid(),
+                        ProductId = product.Id,
+                        ImageUrl = imageUrl,
+                        CreatedAt = TimeHelper.GetVietnamTime(),
+                        IsDeleted = false
+                    };
+
+                    _context.Images.Add(image);
+                    await _context.SaveChangesAsync();
+                }
+
+                return ApiResponse<ProductRequest>.Success(productRequest, "Product created successfully");
             }
             catch (Exception)
             {
-                return ApiResponse<ProductRequest>.Failure("Fail to create product ");
+                return ApiResponse<ProductRequest>.Failure("Failed to create product");
             }
         }
+
 
         public async Task<ApiResponse<ProductRequest>> UpdateProductAsync(string id, ProductRequest productRequest)
         {

@@ -6,7 +6,7 @@ using RandoX.Service.Interfaces;
 
 namespace RandoX.API.Controllers
 {
-    [Authorize]
+    
     public class ManufacturerController : BaseAPIController
     {
         private readonly IManufacturerService _manufacturerService;
@@ -31,6 +31,7 @@ namespace RandoX.API.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateManufacturer([FromBody] ManufacturerRequest manufacturerRequest)
         {
             var response = await _manufacturerService.CreateManufacturerAsync(manufacturerRequest);
@@ -38,12 +39,14 @@ namespace RandoX.API.Controllers
         }
 
         [HttpPut]
+        [Authorize]
         public async Task<IActionResult> UpdateManufacturer(string id, [FromBody] ManufacturerRequest manufacturerRequest)
         {
             var response = await _manufacturerService.UpdateManufacturerAsync(id, manufacturerRequest);
             return Ok(response);
         }
         [HttpDelete]
+        [Authorize]
         public async Task<IActionResult> DeleteManufacturer(string id)
         {
             var response = await _manufacturerService.DeleteManufacturerAsync(id);
