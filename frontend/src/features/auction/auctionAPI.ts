@@ -3,13 +3,15 @@ import { apiSlice } from '../../apis/apiSlice';
 export const auctionAPI = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // [1] Gửi vật phẩm đấu giá
-    submitAuctionItem: builder.mutation<any, any>({
-      query: (body) => ({
-        url: '/AuctionItem',
-        method: 'POST',
-        body,
-      }),
-    }),
+    submitAuctionItem: builder.mutation<any, FormData>({
+  query: (body) => ({
+    url: '/AuctionItem',
+    method: 'POST',
+    body,
+    formData: true,
+  }),
+}),
+
 
     // [2] Duyệt vật phẩm
     approveAuctionItem: builder.mutation<any, { itemId: string; durationMinutes: number }>({
