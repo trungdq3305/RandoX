@@ -76,6 +76,8 @@ namespace RandoX.Service.Services
                 .Select(i => i.ImageUrl)
                 .FirstOrDefault();
 
+            var productSetId = product.ProductSets?.FirstOrDefault()?.Id;
+
             return new ProductDetailDto
             {
                 Id = product.Id,
@@ -88,9 +90,13 @@ namespace RandoX.Service.Services
                 PromotionEvent = product.Promotion?.Event,
                 PercentageDiscountValue = product.Promotion?.PercentageDiscountValue,
                 DiscountValue = product.Promotion?.DiscountValue,
-                ImageUrl = image 
+                ImageUrl = image,
+
+                // ✅ Gán ProductSetId
+                ProductSetId = productSetId
             };
         }
+
 
         public async Task<ApiResponse<ProductRequest>> CreateProductAsync(ProductRequest productRequest)
         {

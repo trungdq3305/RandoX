@@ -22,6 +22,7 @@ namespace RandoX.Data.Models.ProductModel
         public decimal? DiscountValue { get; set; }
 
         public string? ImageUrl { get; set; }
+        public Guid? ProductSetId { get; set; }
     }
 
 }
