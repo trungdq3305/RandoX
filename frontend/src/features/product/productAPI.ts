@@ -30,7 +30,6 @@ export const productAPI = apiSlice.injectEndpoints({
       query: ({ productId, amount }) => ({
         url: `/Product/add-to-cart?productId=${productId}&amount=${amount}`,
         method: 'POST',
-
       }),
       transformResponse: (res) => res,
       invalidatesTags: ['products'],

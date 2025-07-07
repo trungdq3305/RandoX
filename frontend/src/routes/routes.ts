@@ -23,6 +23,7 @@ import ShippingConfirmPage from '../pages/Auction/ShippingConfirmPage';
 import ManagerApprovalPage from '../pages/Auction/ManagerApprovalPage';
 import AdminShippingCompletePage from '../pages/Auction/AdminShippingCompletePage';
 import ActiveSessionsPage from '../pages/Auction/ActiveSessionsPage'
+import ProductSetDetail from '../pages/ProductSetDetail/productSetDetail'
 
 const routes: LayoutRoute[] = [
   {
@@ -54,6 +55,11 @@ const routes: LayoutRoute[] = [
       {
         path: '/products/:id',
         component: ProductDetail,
+        exact: true,
+      },
+      {
+        path: '/productSet/:id',
+        component: ProductSetDetail,
         exact: true,
       },
       {

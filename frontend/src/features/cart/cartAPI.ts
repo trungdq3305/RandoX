@@ -22,6 +22,14 @@ export const cartAPI = apiSlice.injectEndpoints({
             transformResponse: (res) => res,
             providesTags: ['carts'],
         }),
+        clearCart: builder.mutation({
+            query: () => ({
+                url: `/Cart/clear`,
+                method: 'DELETE',
+            }),
+            transformResponse: (res) => res,
+            invalidatesTags: ['carts'],
+        }),
     }),
 })
-export const { useGetCartQuery, useGetTotalAmountQuery } = cartAPI
+export const { useGetCartQuery, useGetTotalAmountQuery, useClearCartMutation } = cartAPI
