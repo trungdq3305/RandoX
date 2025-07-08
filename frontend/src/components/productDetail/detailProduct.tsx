@@ -234,7 +234,7 @@ const DetailProduct: React.FC = () => {
                             onClick={() => {
                                 if (!product.isDeleted) {
                                     // Thêm logic xử lý cho Single Box (ví dụ: navigate hoặc gọi API)
-                                    navigate(`/products/${product.productSetId}`);
+                                    navigate(`/products/${product.id}`);
                                 }
                             }}
                             disabled={product.isDeleted}

@@ -7,4 +7,5 @@ export interface ProductSets {
     setQuantity: number;
     discountValue: number;
     imageUrl: string;
+    productId: string;
 }

@@ -18,6 +18,7 @@ interface ProductSet {
     setQuantity: number;
     discountValue: number;
     imageUrl: string;
+    productId: string;
 }
 
 interface ProductListResponse {
@@ -223,6 +224,34 @@ const SetDetail: React.FC = () => {
                             ADD TO CART
                         </Button>
                         {/* Thêm các nút mới */}
+                        <Button
+                            type="default"
+                            onClick={() => {
+                                navigate(`/products/${set.productId}`);
+                            }}
+                            style={{ marginRight: '10px' }}
+                        >
+                            <img
+                                src={set?.imageUrl || 'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'}
+                                alt="Single Box"
+                                style={{ width: '20px', marginRight: '8px', objectFit: "cover" }}
+                            />
+                            Single Box
+                        </Button>
+                        <Button
+                            type="default"
+                            onClick={() => {
+                                // Thêm logic xử lý cho Whole Set (ví dụ: navigate hoặc gọi API)
+                                navigate(`/productSet/${set.id}`);
+                            }}
+                        >
+                            <img
+                                src={set?.imageUrl || 'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'}
+                                alt="Whole Set"
+                                style={{ width: '20px', marginRight: '8px', objectFit: "cover", borderRadius: "10px" }}
+                            />
+                            Whole Set
+                        </Button>
                     </div>
                     <div className="details-section">
                         <Collapse defaultActiveKey={['1']} items={items} expandIconPosition='end' bordered={true} />
