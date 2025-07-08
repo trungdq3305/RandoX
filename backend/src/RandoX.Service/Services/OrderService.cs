@@ -29,20 +29,36 @@ namespace RandoX.Service.Services
             return await _orderRepository.GetOrderByIdAsync(orderId);
         }
 
-        public async Task<ApiResponse<Order>> CreateOrderAsync(string cartId, decimal shippingCost, string voucherId)
+        public async Task<ApiResponse<Order>> CreateOrderAsync(string cartId, decimal shippingCost, string? voucherId)
         {
             try
             {
                 var cart = await _accountRepository.GetCartByUserIdAsync(cartId);
-                var voucher = await _voucherRepository.GetVoucherByIdAsync(voucherId);
-                Order order = new Order
+                Order order = new Order();
+                if (voucherId != null)
                 {
-                    Id = Guid.NewGuid(),
-                    CartId = Guid.Parse(cartId),
-                    TotalAmount = cart.TotalAmount * voucher.VoucherDiscountAmount,
-                    ShippingCost = shippingCost,
-                    VoucherId = Guid.Parse(voucherId),
-                };
+                    var voucher = await _voucherRepository.GetVoucherByIdAsync(voucherId);
+                    order = new Order
+                    {
+                        Id = Guid.NewGuid(),
+                        CartId = Guid.Parse(cartId),
+                        TotalAmount = cart.TotalAmount * voucher.VoucherDiscountAmount,
+                        ShippingCost = shippingCost,
+                        VoucherId = Guid.Parse(voucherId),
+                    };
+                }
+                else {                     
+                    order = new Order
+                    {
+                        Id = Guid.NewGuid(),
+                        CartId = Guid.Parse(cartId),
+                        TotalAmount = cart.TotalAmount,
+                        ShippingCost = shippingCost,
+                        VoucherId = null,
+                    };
+                }
+
+
 
                 await _orderRepository.CreateOrderAsync(order);
 
