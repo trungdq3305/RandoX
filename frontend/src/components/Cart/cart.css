@@ -33,6 +33,19 @@
     padding: 5px 15px;
 }
 
+.order-cart-button {
+    background: linear-gradient(to right, #F06292, #1E88E5) !important;
+    /* Màu đỏ nhạt */
+    color: #fff;
+    font-style: italic;
+    /* Văn bản trắng */
+    border-radius: 10px;
+    padding: 5px 15px;
+    width: 200px;
+    height: 40px;
+    border-color: #000;
+}
+
 .item-main-image {
     width: 100%;
     height: auto;
@@ -62,7 +75,7 @@
 
 .cart-detail-container {
     flex: 1;
-    max-height: 200px;
+    max-height: auto;
     margin-left: 20px;
     padding: 20px;
     margin-top: 20px;
@@ -83,6 +96,7 @@
     display: flex;
     gap: 10px;
     margin: 20px 0;
+    justify-self: center;
 }
 
 /* Fix the buy-now-button class */

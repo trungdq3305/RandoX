@@ -19,7 +19,7 @@ interface ProductListResponse {
 const Homepage: React.FC = () => {
   const { data, isLoading } = useGetProductListQuery<ProductListResponse>({
     pageNumber: 1,
-    pageSize: 5,
+    pageSize: 10,
   })
   const productList = data?.data?.items || null;
 
