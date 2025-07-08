@@ -19,6 +19,7 @@ namespace RandoX.Data.Models.ProductSetModel
         public double? PercentageDiscountValue { get; set; }
         public decimal? DiscountValue { get; set; }
 
+        public Guid ProductId { get; set; }
         public string? ProductName { get; set; }
         public string? ImageUrl { get; set; } // 👈 Thêm dòng này
 
