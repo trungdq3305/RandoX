@@ -12,7 +12,7 @@ namespace RandoX.Service.Interfaces
     public interface IOrderService
     {
         Task<Order> GetOrderByIdAsync(string orderId);
-        Task<ApiResponse<Order>> CreateOrderAsync(string cartId, decimal shippingCost, string voucherId);
+        Task<ApiResponse<Order>> CreateOrderAsync(string cartId, decimal shippingCost, string? voucherId);
 
     }
 }

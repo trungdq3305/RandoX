@@ -16,7 +16,7 @@ namespace RandoX.API.Controllers
             _accountService = accountService;
         }
         [HttpPost]
-        public async Task<IActionResult> CreateOrder(decimal shippingCost, string voucherId)
+        public async Task<IActionResult> CreateOrder([FromQuery] decimal shippingCost,[FromQuery] string? voucherId)
         {
             var identity = this.HttpContext.User.Identity as ClaimsIdentity;
 
