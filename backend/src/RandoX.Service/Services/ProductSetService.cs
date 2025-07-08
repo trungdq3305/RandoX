@@ -89,7 +89,7 @@ namespace RandoX.Service.Services
                 PromotionEvent = productSet.Promotion?.Event,
                 PercentageDiscountValue = productSet.Promotion?.PercentageDiscountValue,
                 DiscountValue = productSet.Promotion?.DiscountValue,
-
+                ProductId = productSet.Product.Id,
                 ProductName = productSet.Product?.ProductName,
                 ImageUrl = imageUrl // 👈 Gán URL ảnh
             };
