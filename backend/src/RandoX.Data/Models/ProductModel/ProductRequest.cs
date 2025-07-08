@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,5 +20,6 @@ namespace RandoX.Data.Models.ProductModel
         public string? ManufacturerId { get; set; }
 
         public string? CategoryId { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }

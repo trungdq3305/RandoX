@@ -1,4 +1,5 @@
 ﻿using RandoX.Common;
+using RandoX.Data.DBContext;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
 using RandoX.Data.Models;
@@ -19,12 +20,18 @@ namespace RandoX.Service.Services
         private readonly IAccountRepository _accountRepository;
         private readonly ICartRepository _cartRepository;
         private readonly ICartService _cartService;
-        public ProductSetService(IProductSetRepository productSetRepository, IAccountRepository accountRepository, ICartRepository cartRepository, ICartService cartService)
+        private readonly randox_dbContext _context;
+        public ProductSetService(IProductSetRepository productSetRepository,
+                         IAccountRepository accountRepository,
+                         ICartRepository cartRepository,
+                         ICartService cartService,
+                         randox_dbContext context) // 👈 thêm vào
         {
             _productSetRepository = productSetRepository;
             _accountRepository = accountRepository;
             _cartRepository = cartRepository;
             _cartService = cartService;
+            _context = context;
         }
 
         public async Task<ApiResponse<PaginationResult<ProductSetDetailDto>>> GetAllProductSetsAsync(int pageNumber, int pageSize)
@@ -65,6 +72,11 @@ namespace RandoX.Service.Services
 
         private ProductSetDetailDto MapToDto(ProductSet productSet)
         {
+            var imageUrl = _context.Images
+                .Where(i => i.ProductId == productSet.ProductId && i.IsDeleted != true)
+                .Select(i => i.ImageUrl)
+                .FirstOrDefault();
+
             return new ProductSetDetailDto
             {
                 Id = productSet.Id,
@@ -78,9 +90,11 @@ namespace RandoX.Service.Services
                 PercentageDiscountValue = productSet.Promotion?.PercentageDiscountValue,
                 DiscountValue = productSet.Promotion?.DiscountValue,
 
-                ProductName = productSet.Product?.ProductName
+                ProductName = productSet.Product?.ProductName,
+                ImageUrl = imageUrl // 👈 Gán URL ảnh
             };
         }
+
         public async Task<ApiResponse<ProductSet>> CreateProductSetAsync(ProductSetRequest productSetRequest)
         {
             try

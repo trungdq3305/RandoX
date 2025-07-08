@@ -1,4 +1,5 @@
-﻿using RandoX.Data.Bases;
+﻿using Microsoft.EntityFrameworkCore;
+using RandoX.Data.Bases;
 using RandoX.Data.DBContext;
 using RandoX.Data.Entities;
 using RandoX.Data.Interfaces;
@@ -25,6 +26,14 @@ namespace RandoX.Data.Repositories
             Entities.Add(image);
             await _uow.SaveChangesAsync();
             return image;
+        }
+        public async Task<Image> GetImagesByProductIdAsync(Guid productId)
+        {
+            return await Entities.FirstOrDefaultAsync(i => i.ProductId == productId && i.IsDeleted == false);
+        }
+        public async Task<Image> GetImagesByOrderIdAsync(Guid orderId)
+        {
+            return await Entities.FirstOrDefaultAsync(i => i.OrderId == orderId && i.IsDeleted == false);
         }
     }
 }

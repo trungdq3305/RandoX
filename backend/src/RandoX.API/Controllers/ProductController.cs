@@ -34,14 +34,14 @@ namespace RandoX.API.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateProduct(ProductRequest productRequest)
+        public async Task<IActionResult> CreateProduct([FromForm] ProductRequest productRequest)
         {
             var productResponse = await _productService.CreateProductAsync(productRequest);
             return Ok(productResponse);
         }
         [HttpPut]
         [Authorize]
-        public async Task<IActionResult> UpdateProduct(string id, ProductRequest productRequest)
+        public async Task<IActionResult> UpdateProduct(string id, [FromForm] ProductRequest productRequest)
         {
             var productResponse = await _productService.UpdateProductAsync(id, productRequest);
             return Ok(productResponse);
