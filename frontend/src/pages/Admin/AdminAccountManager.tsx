@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Table,
   Button,
@@ -11,82 +11,82 @@ import {
   Popconfirm,
   Tag,
   message,
-} from 'antd';
-import moment from 'moment';
+} from 'antd'
+import moment from 'moment'
 import {
   useGetAllAccountsQuery,
   useUpdateAccountMutation,
   useDeleteAccountMutation,
-} from '../../features/account/accountAPI';
-import type { ColumnsType } from 'antd/es/table';
+} from '../../features/account/accountAPI'
+import type { ColumnsType } from 'antd/es/table'
 
-const { Option } = Select;
+const { Option } = Select
 
 const ROLE_MAP: { [key: string]: string } = {
   'C6AF9EEA-C011-4B98-9963-009A859D060B': 'Admin',
   '532FCF02-916F-4F2D-A095-60ED4DA8924E': 'Manager',
   'A1FDB0C2-0DAF-4BB0-B075-A3CC0B2FEBEB': 'Customer',
   '59E7061E-5B9C-4DFA-93D2-BAEA9717F37A': 'Staff',
-};
+}
 const ROLE_OPTIONS = [
   { label: 'Admin', value: 'c6af9eea-c011-4b98-9963-009a859d060b' },
   { label: 'Manager', value: '532fcf02-916f-4f2d-a095-60ed4da8924e' },
   { label: 'Customer', value: 'a1fdb0c2-0daf-4bb0-b075-a3cc0b2febeb' },
   { label: 'Staff', value: '59e7061e-5b9c-4dfa-93d2-baea9717f37a' },
-];
+]
 
 const ROLE_COLOR: { [key: string]: string } = {
   Admin: 'purple',
   Manager: 'blue',
   Customer: 'green',
   Staff: 'orange',
-};
+}
 
 const AdminAccountManager: React.FC = () => {
-  const { data: accounts = [], refetch } = useGetAllAccountsQuery();
-  const [updateAccount] = useUpdateAccountMutation();
-  const [deleteAccount] = useDeleteAccountMutation();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedAccount, setSelectedAccount] = useState<any>(null);
-  const [form] = Form.useForm();
+  const { data: accounts = [], refetch } = useGetAllAccountsQuery()
+  const [updateAccount] = useUpdateAccountMutation()
+  const [deleteAccount] = useDeleteAccountMutation()
+  const [isModalVisible, setIsModalVisible] = useState(false)
+  const [selectedAccount, setSelectedAccount] = useState<any>(null)
+  const [form] = Form.useForm()
 
   const showEditModal = (account: any) => {
-    setSelectedAccount(account);
+    setSelectedAccount(account)
     form.setFieldsValue({
       ...account,
       dob: account.dob ? moment(account.dob) : null,
       roleId: account.roleId?.toLowerCase(),
-    });
-    setIsModalVisible(true);
-  };
+    })
+    setIsModalVisible(true)
+  }
 
   const handleUpdate = async () => {
     try {
-      const values = await form.validateFields();
+      const values = await form.validateFields()
       await updateAccount({
         id: selectedAccount.id,
         body: {
           ...values,
           dob: values.dob?.format('YYYY-MM-DD'),
         },
-      }).unwrap();
-      message.success('Account updated successfully');
-      setIsModalVisible(false);
-      refetch();
+      }).unwrap()
+      message.success('Account updated successfully')
+      setIsModalVisible(false)
+      refetch()
     } catch (error) {
-      message.error('Failed to update account');
+      message.error('Failed to update account')
     }
-  };
+  }
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteAccount(id).unwrap();
-      message.success('Account deleted successfully');
-      refetch();
+      await deleteAccount(id).unwrap()
+      message.success('Account deleted successfully')
+      refetch()
     } catch {
-      message.error('Failed to delete account');
+      message.error('Failed to delete account')
     }
-  };
+  }
 
   const columns: ColumnsType<any> = [
     {
@@ -114,7 +114,11 @@ const AdminAccountManager: React.FC = () => {
       key: 'status',
       align: 'center',
       render: (status: number) =>
-        status === 1 ? <Tag color="green">Active</Tag> : <Tag color="red">Locked</Tag>,
+        status === 1 ? (
+          <Tag color='green'>Active</Tag>
+        ) : (
+          <Tag color='red'>Locked</Tag>
+        ),
     },
     {
       title: 'Role',
@@ -127,9 +131,9 @@ const AdminAccountManager: React.FC = () => {
           Manager: 'gold',
           Customer: 'cyan',
           Staff: 'purple',
-        };
-        const color = colorMap[roleName] || 'default';
-        return <Tag color={color}>{roleName || 'Other'}</Tag>;
+        }
+        const color = colorMap[roleName] || 'default'
+        return <Tag color={color}>{roleName || 'Other'}</Tag>
       },
     },
     {
@@ -140,46 +144,46 @@ const AdminAccountManager: React.FC = () => {
         <Space>
           <Button onClick={() => showEditModal(record)}>Edit</Button>
           <Popconfirm
-            title="Are you sure to delete this account?"
+            title='Are you sure to delete this account?'
             onConfirm={() => handleDelete(record.id)}
-            okText="Delete"
-            cancelText="Cancel"
+            okText='Delete'
+            cancelText='Cancel'
           >
             <Button danger>Delete</Button>
           </Popconfirm>
         </Space>
       ),
     },
-  ];
+  ]
 
   return (
     <div>
       <h2>🛠️ Account Management</h2>
-      <Table dataSource={accounts} columns={columns} rowKey="id" />
+      <Table dataSource={accounts} columns={columns} rowKey='id' />
 
       <Modal
-        title="Edit Account"
+        title='Edit Account'
         open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         onOk={handleUpdate}
-        okText="Save"
-        cancelText="Cancel"
+        okText='Save'
+        cancelText='Cancel'
       >
-        <Form form={form} layout="vertical">
-          <Form.Item name="phoneNumber" label="Phone Number">
+        <Form form={form} layout='vertical'>
+          <Form.Item name='phoneNumber' label='Phone Number'>
             <Input />
           </Form.Item>
-          <Form.Item name="dob" label="Date of Birth">
-            <DatePicker format="YYYY-MM-DD" />
+          <Form.Item name='dob' label='Date of Birth'>
+            <DatePicker format='YYYY-MM-DD' />
           </Form.Item>
-          <Form.Item name="status" label="Status">
+          <Form.Item name='status' label='Status'>
             <Select>
               <Option value={1}>Active</Option>
               <Option value={0}>Locked</Option>
             </Select>
           </Form.Item>
-          <Form.Item name="roleId" label="Role">
-            <Select placeholder="Select role">
+          <Form.Item name='roleId' label='Role'>
+            <Select placeholder='Select role'>
               {ROLE_OPTIONS.map((r) => (
                 <Option key={r.value} value={r.value}>
                   {r.label}
@@ -190,7 +194,7 @@ const AdminAccountManager: React.FC = () => {
         </Form>
       </Modal>
     </div>
-  );
-};
+  )
+}
 
-export default AdminAccountManager;
+export default AdminAccountManager

@@ -18,12 +18,13 @@ import PromotionVoucherManager from '../components/Manager/PromotionVoucherManag
 import RevenueDashboard from '../pages/Admin/RevenueDashboard'
 import AdminAccountManager from '../pages/Admin/AdminAccountManager'
 import SpinWheelHistoryManager from '../pages/Manager/SpinWheelHistoryManager'
-import AuctionCreatePage from '../pages/Auction/AuctionCreatePage';
-import ShippingConfirmPage from '../pages/Auction/ShippingConfirmPage';
-import ManagerApprovalPage from '../pages/Auction/ManagerApprovalPage';
-import AdminShippingCompletePage from '../pages/Auction/AdminShippingCompletePage';
+import AuctionCreatePage from '../pages/Auction/AuctionCreatePage'
+import ShippingConfirmPage from '../pages/Auction/ShippingConfirmPage'
+import ManagerApprovalPage from '../pages/Auction/ManagerApprovalPage'
+import AdminShippingCompletePage from '../pages/Auction/AdminShippingCompletePage'
 import ActiveSessionsPage from '../pages/Auction/ActiveSessionsPage'
 import ProductSetDetail from '../pages/ProductSetDetail/productSetDetail'
+import PaymentPage from '../pages/PaymentPage/paymentPage'
 
 const routes: LayoutRoute[] = [
   {
@@ -82,6 +83,11 @@ const routes: LayoutRoute[] = [
         component: Cart,
         exact: true,
       },
+      {
+        path: '/payment-success',
+        component: PaymentPage,
+        exact: true,
+      },
     ],
   },
   {
@@ -138,31 +144,32 @@ const routes: LayoutRoute[] = [
         component: CategoryManager,
         exact: true,
       },
-    {
-      path: '/manager/promotions-vouchers',
-      component: PromotionVoucherManager,
-      exact: true,
-    },
-    
-    {
-      path: '/manager/spinwheel-history',
-      component: SpinWheelHistoryManager,
-      exact: true,
-    },
-    {
-      path: '/manager/approval',
-      component: ManagerApprovalPage,
-      exact: true,
-    },
-    {
-      path: '/manager/confirm-shipping',
-      component: AdminShippingCompletePage,
-      exact: true,
-    },{
-      path: '/manager/dashboard',
-      component: RevenueDashboard, // hoặc DashboardPage nếu có
-      exact: true,
-    },
+      {
+        path: '/manager/promotions-vouchers',
+        component: PromotionVoucherManager,
+        exact: true,
+      },
+
+      {
+        path: '/manager/spinwheel-history',
+        component: SpinWheelHistoryManager,
+        exact: true,
+      },
+      {
+        path: '/manager/approval',
+        component: ManagerApprovalPage,
+        exact: true,
+      },
+      {
+        path: '/manager/confirm-shipping',
+        component: AdminShippingCompletePage,
+        exact: true,
+      },
+      {
+        path: '/manager/dashboard',
+        component: RevenueDashboard, // hoặc DashboardPage nếu có
+        exact: true,
+      },
     ],
   },
 ]

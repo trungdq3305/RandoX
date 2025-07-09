@@ -62,10 +62,13 @@ export const productAPI = apiSlice.injectEndpoints({
     }),
   }),
 })
-export const { useGetProductListQuery, useGetProductDetailQuery, useGetAllProductsQuery,
+export const {
+  useGetProductListQuery,
+  useGetProductDetailQuery,
+  useGetAllProductsQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
   useGetAllProductsDropdownQuery,
-  useAddProductToCartMutation } = productAPI
-
+  useAddProductToCartMutation,
+} = productAPI

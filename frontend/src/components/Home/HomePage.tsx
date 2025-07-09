@@ -1,11 +1,11 @@
-import React from 'react';
-import Content from '../Content/content';
-import { LoadingOutlined } from '@ant-design/icons';
-import ProductsCardSlider from '../productSlider/productSlider';
+import React from 'react'
+import Content from '../Content/content'
+import { LoadingOutlined } from '@ant-design/icons'
+import ProductsCardSlider from '../productSlider/productSlider'
 import auctions from '../../data/auction.json'
-import AuctionSlider from '../auctionSlider/auctionSlider';
-import { useGetProductListQuery } from '../../features/product/productAPI';
-import type { Products } from '../../types/product';
+import AuctionSlider from '../auctionSlider/auctionSlider'
+import { useGetProductListQuery } from '../../features/product/productAPI'
+import type { Products } from '../../types/product'
 
 interface ProductListResponse {
   data: {
@@ -21,7 +21,7 @@ const Homepage: React.FC = () => {
     pageNumber: 1,
     pageSize: 10,
   })
-  const productList = data?.data?.items || null;
+  const productList = data?.data?.items || null
 
   return (
     <div
@@ -47,22 +47,19 @@ const Homepage: React.FC = () => {
             btnContent='Xem thêm'
             linkURL='/sessions'
           />
-          {
-            isLoading ? (
-
-              <LoadingOutlined
-                style={{
-                  fontSize: '50px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '30vh',
-                }}
-              />
-            ) : (
-              <ProductsCardSlider products={productList || []} />
-            )
-          }
+          {isLoading ? (
+            <LoadingOutlined
+              style={{
+                fontSize: '50px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '30vh',
+              }}
+            />
+          ) : (
+            <ProductsCardSlider products={productList || []} />
+          )}
         </div>
         <div style={{ marginBottom: '48px' }}>
           <Content
@@ -70,26 +67,23 @@ const Homepage: React.FC = () => {
             btnContent='Xem thêm'
             linkURL='/sessions'
           />
-          {
-            auctions.length < 0 ? (
-
-              <LoadingOutlined
-                style={{
-                  fontSize: '50px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '30vh',
-                }}
-              />
-            ) : (
-              <AuctionSlider auctions={auctions || []} />
-            )
-          }
+          {auctions.length < 0 ? (
+            <LoadingOutlined
+              style={{
+                fontSize: '50px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '30vh',
+              }}
+            />
+          ) : (
+            <AuctionSlider auctions={auctions || []} />
+          )}
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Homepage;
+export default Homepage

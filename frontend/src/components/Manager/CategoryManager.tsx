@@ -1,57 +1,57 @@
 // src/components/Manager/CategoryManager.tsx
-import React, { useState } from 'react';
-import { Button, Modal, Table, Form, Input, Space, message } from 'antd';
+import React, { useState } from 'react'
+import { Button, Modal, Table, Form, Input, Space, message } from 'antd'
 import {
   useGetAllCategoriesQuery,
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
-} from '../../features/category/categoryAPI';
+} from '../../features/category/categoryAPI'
 
 const CategoryManager: React.FC = () => {
-  const { data, isLoading, refetch } = useGetAllCategoriesQuery();
-  const [createCategory] = useCreateCategoryMutation();
-  const [updateCategory] = useUpdateCategoryMutation();
-  const [deleteCategory] = useDeleteCategoryMutation();
+  const { data, isLoading, refetch } = useGetAllCategoriesQuery()
+  const [createCategory] = useCreateCategoryMutation()
+  const [updateCategory] = useUpdateCategoryMutation()
+  const [deleteCategory] = useDeleteCategoryMutation()
 
-  const [form] = Form.useForm();
-  const [open, setOpen] = useState(false);
-  const [editing, setEditing] = useState<any>(null);
+  const [form] = Form.useForm()
+  const [open, setOpen] = useState(false)
+  const [editing, setEditing] = useState<any>(null)
 
   const handleSubmit = async (values: any) => {
     try {
       if (editing) {
-        await updateCategory({ id: editing.id, ...values }).unwrap();
-        message.success('Category updated successfully');
+        await updateCategory({ id: editing.id, ...values }).unwrap()
+        message.success('Category updated successfully')
       } else {
-        await createCategory(values).unwrap();
-        message.success('Category added successfully');
+        await createCategory(values).unwrap()
+        message.success('Category added successfully')
       }
-      refetch();
-      setOpen(false);
-      form.resetFields();
-      setEditing(null);
+      refetch()
+      setOpen(false)
+      form.resetFields()
+      setEditing(null)
     } catch (err) {
-      message.error('Error saving category');
+      message.error('Error saving category')
     }
-  };
+  }
 
   const handleDelete = async (id: string) => {
     try {
-      await deleteCategory(id).unwrap();
-      message.success('Category deleted successfully');
-      refetch();
+      await deleteCategory(id).unwrap()
+      message.success('Category deleted successfully')
+      refetch()
     } catch {
-      message.error('Unable to delete category');
+      message.error('Unable to delete category')
     }
-  };
+  }
 
   return (
     <div>
       <h2>Category Management</h2>
       <Button
-        type="primary"
-        className="add-category-btn"
+        type='primary'
+        className='add-category-btn'
         onClick={() => setOpen(true)}
         style={{ marginBottom: 16 }}
       >
@@ -61,39 +61,40 @@ const CategoryManager: React.FC = () => {
       <Table
         loading={isLoading}
         dataSource={data?.data?.items || []}
-        rowKey="id"
+        rowKey='id'
         pagination={{ pageSize: 10 }}
       >
-        
-        <Table.Column title="Category Name" dataIndex="categoryName" />
-        <Table.Column title="Description" dataIndex="description" />
+        <Table.Column title='Category Name' dataIndex='categoryName' />
+        <Table.Column title='Description' dataIndex='description' />
         <Table.Column
-          title="Active"
-          dataIndex="isActive"
+          title='Active'
+          dataIndex='isActive'
           render={(value: boolean) => (value ? '✅' : '❌')}
         />
         <Table.Column
-          title="Created At"
-          dataIndex="createdAt"
+          title='Created At'
+          dataIndex='createdAt'
           render={(value: string) => new Date(value).toLocaleString()}
         />
         <Table.Column
-          title="Updated At"
-          dataIndex="updatedAt"
+          title='Updated At'
+          dataIndex='updatedAt'
           render={(value: string) => new Date(value).toLocaleString()}
         />
         <Table.Column
-          title="Actions"
+          title='Actions'
           render={(record: any) => (
             <Space>
-              <Button onClick={() => {
-                setEditing(record);
-                form.setFieldsValue({
-                  categoryName: record.categoryName,
-                  description: record.description,
-                });
-                setOpen(true);
-              }}>
+              <Button
+                onClick={() => {
+                  setEditing(record)
+                  form.setFieldsValue({
+                    categoryName: record.categoryName,
+                    description: record.description,
+                  })
+                  setOpen(true)
+                }}
+              >
                 ✏️ Edit
               </Button>
               <Button danger onClick={() => handleDelete(record.id)}>
@@ -107,23 +108,26 @@ const CategoryManager: React.FC = () => {
       <Modal
         title={editing ? 'Edit Category' : 'Add Category'}
         open={open}
-        onCancel={() => { setOpen(false); setEditing(null); }}
+        onCancel={() => {
+          setOpen(false)
+          setEditing(null)
+        }}
         onOk={() => form.submit()}
         okText={editing ? 'Update' : 'Add'}
-        cancelText="Cancel"
+        cancelText='Cancel'
       >
-        <Form form={form} layout="vertical" onFinish={handleSubmit}>
+        <Form form={form} layout='vertical' onFinish={handleSubmit}>
           <Form.Item
-            label="Category Name"
-            name="categoryName"
+            label='Category Name'
+            name='categoryName'
             rules={[{ required: true, message: 'Category name is required' }]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            label="Description"
-            name="description"
+            label='Description'
+            name='description'
             rules={[{ required: true, message: 'Description is required' }]}
           >
             <Input.TextArea rows={3} />
@@ -131,7 +135,7 @@ const CategoryManager: React.FC = () => {
         </Form>
       </Modal>
     </div>
-  );
-};
+  )
+}
 
-export default CategoryManager;
+export default CategoryManager

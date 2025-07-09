@@ -1,7 +1,11 @@
 /* Nền tổng thể */
 .manager-dashboard {
   padding: 20px;
-  background: linear-gradient(to right, #f6f8fa, #eaeef2); /* tone xám xanh dịu */
+  background: linear-gradient(
+    to right,
+    #f6f8fa,
+    #eaeef2
+  ); /* tone xám xanh dịu */
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
 }

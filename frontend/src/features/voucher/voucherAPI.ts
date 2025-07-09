@@ -1,5 +1,5 @@
 // src/features/voucher/voucherAPI.ts
-import { apiSlice } from '../../apis/apiSlice';
+import { apiSlice } from '../../apis/apiSlice'
 
 export const voucherAPI = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -31,11 +31,11 @@ export const voucherAPI = apiSlice.injectEndpoints({
       invalidatesTags: ['vouchers'],
     }),
   }),
-});
+})
 
 export const {
   useGetAllVouchersQuery,
   useCreateVoucherMutation,
   useUpdateVoucherMutation,
   useDeleteVoucherMutation,
-} = voucherAPI;
+} = voucherAPI

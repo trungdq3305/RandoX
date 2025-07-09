@@ -1,11 +1,11 @@
 // src/pages/Manager/SpinWheelHistoryManager.tsx
-import React from 'react';
-import { Table, Tag, Typography } from 'antd';
-import { useGetSpinWheelHistoryQuery } from '../../features/spinwheel/spinWheelAPI';
-import moment from 'moment';
+import React from 'react'
+import { Table, Tag, Typography } from 'antd'
+import { useGetSpinWheelHistoryQuery } from '../../features/spinwheel/spinWheelAPI'
+import moment from 'moment'
 
 const SpinWheelHistoryManager: React.FC = () => {
-  const { data = [], isLoading } = useGetSpinWheelHistoryQuery();
+  const { data = [], isLoading } = useGetSpinWheelHistoryQuery()
 
   const columns = [
     {
@@ -26,8 +26,10 @@ const SpinWheelHistoryManager: React.FC = () => {
       key: 'rewardType',
       align: 'center' as const,
       render: (type: string) => {
-        const color = type === 'product' ? 'blue' : 'green';
-        return <Tag color={color}>{type === 'product' ? 'Product' : 'Voucher'}</Tag>;
+        const color = type === 'product' ? 'blue' : 'green'
+        return (
+          <Tag color={color}>{type === 'product' ? 'Product' : 'Voucher'}</Tag>
+        )
       },
     },
     {
@@ -57,7 +59,7 @@ const SpinWheelHistoryManager: React.FC = () => {
       align: 'center' as const,
       render: (date: string) => moment(date).format('DD/MM/YYYY HH:mm'),
     },
-  ];
+  ]
 
   return (
     <div>
@@ -72,7 +74,7 @@ const SpinWheelHistoryManager: React.FC = () => {
         pagination={{ pageSize: 10 }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default SpinWheelHistoryManager;
+export default SpinWheelHistoryManager

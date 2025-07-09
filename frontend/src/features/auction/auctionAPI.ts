@@ -1,20 +1,22 @@
-import { apiSlice } from '../../apis/apiSlice';
+import { apiSlice } from '../../apis/apiSlice'
 
 export const auctionAPI = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // [1] Gửi vật phẩm đấu giá
     submitAuctionItem: builder.mutation<any, FormData>({
-  query: (body) => ({
-    url: '/AuctionItem',
-    method: 'POST',
-    body,
-    formData: true,
-  }),
-}),
-
+      query: (body) => ({
+        url: '/AuctionItem',
+        method: 'POST',
+        body,
+        formData: true,
+      }),
+    }),
 
     // [2] Duyệt vật phẩm
-    approveAuctionItem: builder.mutation<any, { itemId: string; durationMinutes: number }>({
+    approveAuctionItem: builder.mutation<
+      any,
+      { itemId: string; durationMinutes: number }
+    >({
       query: ({ itemId, durationMinutes }) => ({
         url: `/AuctionItem/${itemId}/approve?durationMinutes=${durationMinutes}`,
         method: 'POST',
@@ -22,18 +24,19 @@ export const auctionAPI = apiSlice.injectEndpoints({
     }),
 
     // [3] Từ chối vật phẩm
-    rejectAuctionItem: builder.mutation<any, { itemId: string; reason: string }>({
-  query: ({ itemId, reason }) => ({
-    url: `/AuctionItem/${itemId}/reject`,
-    method: 'POST',
-    body: `"${reason}"`, // gửi đúng string thuần dạng JSON
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }),
-}),
-
-
+    rejectAuctionItem: builder.mutation<
+      any,
+      { itemId: string; reason: string }
+    >({
+      query: ({ itemId, reason }) => ({
+        url: `/AuctionItem/${itemId}/reject`,
+        method: 'POST',
+        body: `"${reason}"`, // gửi đúng string thuần dạng JSON
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+    }),
 
     // [4] Lấy danh sách vật phẩm chờ duyệt
     getPendingItems: builder.query<any[], void>({
@@ -59,18 +62,19 @@ export const auctionAPI = apiSlice.injectEndpoints({
       }),
     }),
 
-    confirmShipping: builder.mutation<void, { sessionId: string; address: string }>({
-  query: ({ sessionId, address }) => ({
-    url: `/WinnerConfirm/${sessionId}/shipping`, // ✅ bỏ /api
-    method: 'POST',
-    body: JSON.stringify(address),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }),
-}),
-
-
+    confirmShipping: builder.mutation<
+      void,
+      { sessionId: string; address: string }
+    >({
+      query: ({ sessionId, address }) => ({
+        url: `/WinnerConfirm/${sessionId}/shipping`, // ✅ bỏ /api
+        method: 'POST',
+        body: JSON.stringify(address),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }),
+    }),
 
     // [9] Admin xác nhận đã giao hàng (chuyển tiền người bán)
     confirmDeliveryComplete: builder.mutation<any, string>({

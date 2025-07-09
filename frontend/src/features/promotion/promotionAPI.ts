@@ -1,5 +1,5 @@
 // src/features/promotion/promotionAPI.ts
-import { apiSlice } from '../../apis/apiSlice';
+import { apiSlice } from '../../apis/apiSlice'
 
 export const promotionAPI = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -31,11 +31,11 @@ export const promotionAPI = apiSlice.injectEndpoints({
       invalidatesTags: ['promotions'],
     }),
   }),
-});
+})
 
 export const {
   useGetAllPromotionsQuery,
   useCreatePromotionMutation,
   useUpdatePromotionMutation,
   useDeletePromotionMutation,
-} = promotionAPI;
+} = promotionAPI

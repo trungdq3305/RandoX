@@ -10,9 +10,13 @@ export const paymentApi = apiSlice.injectEndpoints({
             }),
             transformResponse: (res) => res?.redirectUrl || res, // Điều chỉnh dựa trên phản hồi
         }),
+        createPurchasePaymentHistory: builder.mutation({
+            query: (params) => ({
+                url: `/Transaction/vnpay/callback?${new URLSearchParams(params).toString()}`,
+                method: 'POST',
+            }),
+        }),
     }),
 })
 
-export const {
-    useCreatePaymentMutation,
-} = paymentApi
+export const { useCreatePaymentMutation, useCreatePurchasePaymentHistoryMutation } = paymentApi
