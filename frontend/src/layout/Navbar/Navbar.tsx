@@ -6,10 +6,16 @@ import {
   ShoppingOutlined,
 } from '@ant-design/icons'
 import './Navbar.css' // File CSS để tùy chỉnh thêm
+import Cookies from 'js-cookie'
+import { useNavigate } from 'react-router-dom'
 
 const { Link } = Typography
 
 const Navbar: React.FC = () => {
+  const navigate = useNavigate();
+  const userData = Cookies.get('userData')
+    ? JSON.parse(Cookies.get('userData') as string)
+    : null
   return (
     <header className='navbar-container'>
       {/* ===== Thanh thông tin phụ ở trên ===== */}
@@ -27,9 +33,22 @@ const Navbar: React.FC = () => {
 
           {/* Top-bar bên phải */}
           <Space split={<Divider type='vertical' />}>
-            <Link href='/login' className='top-bar-link'>
-              Login
-            </Link>
+            {userData ? (
+              <Link className='top-bar-link'
+                onClick={() => {
+
+                  Cookies.remove('userData')
+                  Cookies.remove('userToken')
+                  navigate('/login')
+                }}
+              >
+                Logout
+              </Link>
+            ) : (
+              <Link href='/login' className='top-bar-link'>
+                Login
+              </Link>
+            )}
             <Link href='#' className='top-bar-link'>
               About
             </Link>
@@ -94,7 +113,7 @@ const Navbar: React.FC = () => {
           </Flex>
         </Flex>
       </div>
-    </header>
+    </header >
   )
 }
 
