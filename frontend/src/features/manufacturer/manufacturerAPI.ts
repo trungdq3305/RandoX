@@ -1,5 +1,5 @@
 // src/features/manufacturer/manufacturerAPI.ts
-import { apiSlice } from '../../apis/apiSlice';
+import { apiSlice } from '../../apis/apiSlice'
 
 export const manufacturerAPI = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -7,6 +7,6 @@ export const manufacturerAPI = apiSlice.injectEndpoints({
       query: () => 'Manufacturer',
     }),
   }),
-});
+})
 
-export const { useGetAllManufacturersQuery } = manufacturerAPI;
+export const { useGetAllManufacturersQuery } = manufacturerAPI

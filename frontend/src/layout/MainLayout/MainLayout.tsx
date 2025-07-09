@@ -26,14 +26,10 @@ function MainLayout() {
   }, [userData, navigate])
 
   return (
-    <Layout
-      className='main-layout'
-    >
+    <Layout className='main-layout'>
       <Navbar />
       <CustomHeader />
-      <Content
-        className='main-content'
-      >
+      <Content className='main-content'>
         <Outlet />
       </Content>
       <AppFooter />

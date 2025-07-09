@@ -25,13 +25,9 @@ function CustomerLayout() {
   }, [userData, navigate])
 
   return (
-    <Layout
-      className='main-layout'
-    >
+    <Layout className='main-layout'>
       <Navbar />
-      <Content
-        className='main-content'
-      >
+      <Content className='main-content'>
         <Outlet />
       </Content>
       <AppFooter />

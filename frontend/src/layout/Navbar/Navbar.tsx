@@ -18,7 +18,7 @@ const Navbar: React.FC = () => {
           {/* Top-bar bên trái */}
           <Space split={<Divider type='vertical' />}>
             <Link href='#' className='top-bar-link'>
-              Seller Channel 
+              Seller Channel
             </Link>
             <Link href='#' className='top-bar-link'>
               Connect

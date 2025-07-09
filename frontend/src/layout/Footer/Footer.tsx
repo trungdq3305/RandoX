@@ -13,10 +13,10 @@ const AppFooter: React.FC = () => {
         padding: '50px 80px',
       }}
     >
-      <Row justify="space-between" gutter={[32, 32]}>
+      <Row justify='space-between' gutter={[32, 32]}>
         {/* Cột 1: Logo + liên hệ */}
         <Col xs={24} md={6}>
-          <img src="/Logo.png" alt="RandoX" height={50} />
+          <img src='/Logo.png' alt='RandoX' height={50} />
           <div style={{ marginTop: 16 }}>
             <p style={{ display: 'flex', alignItems: 'center' }}>
               <span style={{ color: 'red', marginRight: 8 }}>📞</span>
@@ -31,7 +31,9 @@ const AppFooter: React.FC = () => {
 
         {/* Cột 2: Chính sách */}
         <Col xs={24} md={6}>
-          <Title level={4} style={{ color: 'white' }}>Chính sách</Title>
+          <Title level={4} style={{ color: 'white' }}>
+            Chính sách
+          </Title>
           <ul style={{ listStyle: 'none', padding: 0, color: 'white' }}>
             <li>Chính sách bảo mật</li>
             <li>Chính sách vận chuyển</li>
@@ -41,7 +43,9 @@ const AppFooter: React.FC = () => {
 
         {/* Cột 3: Quy chế */}
         <Col xs={24} md={6}>
-          <Title level={4} style={{ color: 'white' }}>Quy chế hoạt động</Title>
+          <Title level={4} style={{ color: 'white' }}>
+            Quy chế hoạt động
+          </Title>
           <ul style={{ listStyle: 'none', padding: 0, color: 'white' }}>
             <li>Hướng dẫn giao hàng</li>
             <li>Hướng dẫn thanh toán</li>
@@ -52,16 +56,20 @@ const AppFooter: React.FC = () => {
 
         {/* Cột 4: Thanh toán + vận chuyển */}
         <Col xs={24} md={6}>
-          <Title level={4} style={{ color: 'white' }}>Thanh toán</Title>
+          <Title level={4} style={{ color: 'white' }}>
+            Thanh toán
+          </Title>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <img src="/src/assets/vnpay.jpg" alt="vnpay" height={30} />
-            <img src="/src/assets/cash.jpg" alt="cash" height={30} />
+            <img src='/src/assets/vnpay.jpg' alt='vnpay' height={30} />
+            <img src='/src/assets/cash.jpg' alt='cash' height={30} />
           </div>
-          <Title level={4} style={{ color: 'white', marginTop: 20 }}>Đơn vị vận chuyển</Title>
+          <Title level={4} style={{ color: 'white', marginTop: 20 }}>
+            Đơn vị vận chuyển
+          </Title>
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <img src="/src/assets/spx.png" alt="spx" height={30} />
-            <img src="/src/assets/jt.png" alt="jt" height={30} />
-            <img src="/src/assets/viettel.jpg" alt="viettel" height={30} />
+            <img src='/src/assets/spx.png' alt='spx' height={30} />
+            <img src='/src/assets/jt.png' alt='jt' height={30} />
+            <img src='/src/assets/viettel.jpg' alt='viettel' height={30} />
           </div>
         </Col>
       </Row>

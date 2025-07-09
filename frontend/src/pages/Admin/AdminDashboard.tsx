@@ -20,7 +20,7 @@ const AdminDashboard: React.FC = () => {
       role: 'Customer',
       status: 'active',
       joinDate: '2024-01-15',
-      avatar: '👤'
+      avatar: '👤',
     },
     {
       id: 2,
@@ -29,7 +29,7 @@ const AdminDashboard: React.FC = () => {
       role: 'Manager',
       status: 'active',
       joinDate: '2024-02-20',
-      avatar: '👩'
+      avatar: '👩',
     },
     {
       id: 3,
@@ -38,7 +38,7 @@ const AdminDashboard: React.FC = () => {
       role: 'Customer',
       status: 'inactive',
       joinDate: '2024-03-10',
-      avatar: '👨'
+      avatar: '👨',
     },
     {
       id: 4,
@@ -47,17 +47,18 @@ const AdminDashboard: React.FC = () => {
       role: 'Customer',
       status: 'active',
       joinDate: '2024-04-05',
-      avatar: '👩‍💼'
-    }
+      avatar: '👩‍💼',
+    },
   ])
 
   const [showModal, setShowModal] = useState(false)
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
 
-  const filteredUsers = users.filter(user =>
-    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = users.filter(
+    (user) =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const handleEdit = (user: User) => {
@@ -67,7 +68,7 @@ const AdminDashboard: React.FC = () => {
 
   const handleDelete = (id: number) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
-      setUsers(prev => prev.filter(user => user.id !== id))
+      setUsers((prev) => prev.filter((user) => user.id !== id))
     }
   }
 
@@ -78,31 +79,48 @@ const AdminDashboard: React.FC = () => {
 
   const handleSave = (userData: User) => {
     if (editingUser) {
-      setUsers(prev => prev.map(user => user.id === editingUser.id ? userData : user))
+      setUsers((prev) =>
+        prev.map((user) => (user.id === editingUser.id ? userData : user))
+      )
     } else {
       const newUser = { ...userData, id: Date.now() }
-      setUsers(prev => [...prev, newUser])
+      setUsers((prev) => [...prev, newUser])
     }
     setShowModal(false)
   }
 
   const stats = [
-    { title: 'Tổng người dùng', value: users.length, icon: '👥', color: '#667eea' },
-    { title: 'Người dùng hoạt động', value: users.filter(u => u.status === 'active').length, icon: '✅', color: '#4caf50' },
+    {
+      title: 'Tổng người dùng',
+      value: users.length,
+      icon: '👥',
+      color: '#667eea',
+    },
+    {
+      title: 'Người dùng hoạt động',
+      value: users.filter((u) => u.status === 'active').length,
+      icon: '✅',
+      color: '#4caf50',
+    },
     { title: 'Sản phẩm', value: 245, icon: '🎁', color: '#ff9800' },
-    { title: 'Doanh thu hôm nay', value: '2.5M VND', icon: '💰', color: '#e91e63' },
+    {
+      title: 'Doanh thu hôm nay',
+      value: '2.5M VND',
+      icon: '💰',
+      color: '#e91e63',
+    },
   ]
 
   return (
-    <div className="admin-dashboard">
+    <div className='admin-dashboard'>
       {/* Stats Cards */}
-      <div className="stats-grid">
+      <div className='stats-grid'>
         {stats.map((stat, index) => (
-          <div key={index} className="stat-card">
-            <div className="stat-icon" style={{ color: stat.color }}>
+          <div key={index} className='stat-card'>
+            <div className='stat-icon' style={{ color: stat.color }}>
               {stat.icon}
             </div>
-            <div className="stat-content">
+            <div className='stat-content'>
               <h3>{stat.value}</h3>
               <p>{stat.title}</p>
             </div>
@@ -111,27 +129,27 @@ const AdminDashboard: React.FC = () => {
       </div>
 
       {/* Management Table */}
-      <div className="table-container">
-        <div className="table-header">
+      <div className='table-container'>
+        <div className='table-header'>
           <h2>Quản lý người dùng</h2>
-          <div className="table-actions">
-            <div className="search-box">
+          <div className='table-actions'>
+            <div className='search-box'>
               <input
-                type="text"
-                placeholder="Tìm kiếm người dùng..."
+                type='text'
+                placeholder='Tìm kiếm người dùng...'
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <span className="search-icon">🔍</span>
+              <span className='search-icon'>🔍</span>
             </div>
-            <button className="add-btn" onClick={handleAdd}>
+            <button className='add-btn' onClick={handleAdd}>
               ➕ Thêm người dùng
             </button>
           </div>
         </div>
 
-        <div className="table-wrapper">
-          <table className="management-table">
+        <div className='table-wrapper'>
+          <table className='management-table'>
             <thead>
               <tr>
                 <th>Người dùng</th>
@@ -146,9 +164,9 @@ const AdminDashboard: React.FC = () => {
               {filteredUsers.map((user) => (
                 <tr key={user.id}>
                   <td>
-                    <div className="user-info">
-                      <span className="user-avatar">{user.avatar}</span>
-                      <span className="user-name">{user.name}</span>
+                    <div className='user-info'>
+                      <span className='user-avatar'>{user.avatar}</span>
+                      <span className='user-name'>{user.name}</span>
                     </div>
                   </td>
                   <td>{user.email}</td>
@@ -159,29 +177,31 @@ const AdminDashboard: React.FC = () => {
                   </td>
                   <td>
                     <span className={`status-badge ${user.status}`}>
-                      {user.status === 'active' ? 'Hoạt động' : 'Không hoạt động'}
+                      {user.status === 'active'
+                        ? 'Hoạt động'
+                        : 'Không hoạt động'}
                     </span>
                   </td>
                   <td>{user.joinDate}</td>
                   <td>
-                    <div className="action-buttons">
-                      <button 
-                        className="action-btn view-btn"
-                        title="Xem chi tiết"
+                    <div className='action-buttons'>
+                      <button
+                        className='action-btn view-btn'
+                        title='Xem chi tiết'
                       >
                         👁️
                       </button>
-                      <button 
-                        className="action-btn edit-btn"
+                      <button
+                        className='action-btn edit-btn'
                         onClick={() => handleEdit(user)}
-                        title="Chỉnh sửa"
+                        title='Chỉnh sửa'
                       >
                         ✏️
                       </button>
-                      <button 
-                        className="action-btn delete-btn"
+                      <button
+                        className='action-btn delete-btn'
                         onClick={() => handleDelete(user.id)}
-                        title="Xóa"
+                        title='Xóa'
                       >
                         🗑️
                       </button>
@@ -196,65 +216,83 @@ const AdminDashboard: React.FC = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <div className="modal-header">
-              <h3>{editingUser ? 'Chỉnh sửa người dùng' : 'Thêm người dùng mới'}</h3>
-              <button className="close-btn" onClick={() => setShowModal(false)}>✕</button>
+        <div className='modal-overlay'>
+          <div className='modal'>
+            <div className='modal-header'>
+              <h3>
+                {editingUser ? 'Chỉnh sửa người dùng' : 'Thêm người dùng mới'}
+              </h3>
+              <button className='close-btn' onClick={() => setShowModal(false)}>
+                ✕
+              </button>
             </div>
-            <div className="modal-body">
-              <form onSubmit={(e) => {
-                e.preventDefault()
-                const formData = new FormData(e.target as HTMLFormElement)
-                const userData: User = {
-                  id: editingUser?.id || 0,
-                  name: formData.get('name') as string,
-                  email: formData.get('email') as string,
-                  role: formData.get('role') as string,
-                  status: formData.get('status') as 'active' | 'inactive',
-                  joinDate: editingUser?.joinDate || new Date().toISOString().split('T')[0],
-                  avatar: editingUser?.avatar || '👤'
-                }
-                handleSave(userData)
-              }}>
-                <div className="form-group">
+            <div className='modal-body'>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  const formData = new FormData(e.target as HTMLFormElement)
+                  const userData: User = {
+                    id: editingUser?.id || 0,
+                    name: formData.get('name') as string,
+                    email: formData.get('email') as string,
+                    role: formData.get('role') as string,
+                    status: formData.get('status') as 'active' | 'inactive',
+                    joinDate:
+                      editingUser?.joinDate ||
+                      new Date().toISOString().split('T')[0],
+                    avatar: editingUser?.avatar || '👤',
+                  }
+                  handleSave(userData)
+                }}
+              >
+                <div className='form-group'>
                   <label>Tên:</label>
                   <input
-                    type="text"
-                    name="name"
+                    type='text'
+                    name='name'
                     defaultValue={editingUser?.name || ''}
                     required
                   />
                 </div>
-                <div className="form-group">
+                <div className='form-group'>
                   <label>Email:</label>
                   <input
-                    type="email"
-                    name="email"
+                    type='email'
+                    name='email'
                     defaultValue={editingUser?.email || ''}
                     required
                   />
                 </div>
-                <div className="form-group">
+                <div className='form-group'>
                   <label>Vai trò:</label>
-                  <select name="role" defaultValue={editingUser?.role || 'Customer'}>
-                    <option value="Customer">Customer</option>
-                    <option value="Manager">Manager</option>
-                    <option value="Admin">Admin</option>
+                  <select
+                    name='role'
+                    defaultValue={editingUser?.role || 'Customer'}
+                  >
+                    <option value='Customer'>Customer</option>
+                    <option value='Manager'>Manager</option>
+                    <option value='Admin'>Admin</option>
                   </select>
                 </div>
-                <div className="form-group">
+                <div className='form-group'>
                   <label>Trạng thái:</label>
-                  <select name="status" defaultValue={editingUser?.status || 'active'}>
-                    <option value="active">Hoạt động</option>
-                    <option value="inactive">Không hoạt động</option>
+                  <select
+                    name='status'
+                    defaultValue={editingUser?.status || 'active'}
+                  >
+                    <option value='active'>Hoạt động</option>
+                    <option value='inactive'>Không hoạt động</option>
                   </select>
                 </div>
-                <div className="form-actions">
-                  <button type="button" onClick={() => setShowModal(false)} className="cancel-btn">
+                <div className='form-actions'>
+                  <button
+                    type='button'
+                    onClick={() => setShowModal(false)}
+                    className='cancel-btn'
+                  >
                     Hủy
                   </button>
-                  <button type="submit" className="save-btn">
+                  <button type='submit' className='save-btn'>
                     {editingUser ? 'Cập nhật' : 'Thêm mới'}
                   </button>
                 </div>
@@ -263,8 +301,6 @@ const AdminDashboard: React.FC = () => {
           </div>
         </div>
       )}
-
-      
     </div>
   )
 }

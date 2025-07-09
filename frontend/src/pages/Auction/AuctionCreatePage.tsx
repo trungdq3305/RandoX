@@ -1,71 +1,89 @@
-import { Button, Form, Input, InputNumber, notification } from 'antd';
-import React from 'react';
-import { useSubmitAuctionItemMutation } from '../../features/auction/auctionAPI';
+import { Button, Form, Input, InputNumber, notification } from 'antd'
+import React from 'react'
+import { useSubmitAuctionItemMutation } from '../../features/auction/auctionAPI'
 
 const AuctionCreatePage: React.FC = () => {
-  const [form] = Form.useForm();
-  const [submitAuctionItem] = useSubmitAuctionItemMutation();
+  const [form] = Form.useForm()
+  const [submitAuctionItem] = useSubmitAuctionItemMutation()
 
   const onFinish = async (values: any) => {
     try {
-      const formData = new FormData();
-      formData.append('name', values.name);
-      formData.append('description', values.description);
-      formData.append('condition', values.condition);
-      formData.append('startPrice', String(values.startPrice));
-      formData.append('reservePrice', String(values.reservePrice));
-      formData.append('stepPrice', String(values.stepPrice));
+      const formData = new FormData()
+      formData.append('name', values.name)
+      formData.append('description', values.description)
+      formData.append('condition', values.condition)
+      formData.append('startPrice', String(values.startPrice))
+      formData.append('reservePrice', String(values.reservePrice))
+      formData.append('stepPrice', String(values.stepPrice))
       if (values.image instanceof File) {
-        formData.append('image', values.image);
+        formData.append('image', values.image)
       }
 
-      await submitAuctionItem(formData).unwrap();
-      notification.success({ message: 'Đã gửi vật phẩm thành công' });
-      form.resetFields();
+      await submitAuctionItem(formData).unwrap()
+      notification.success({ message: 'Đã gửi vật phẩm thành công' })
+      form.resetFields()
     } catch {
-      notification.error({ message: 'Gửi thất bại' });
+      notification.error({ message: 'Gửi thất bại' })
     }
-  };
+  }
 
   return (
     <Form
       form={form}
       onFinish={onFinish}
-      layout="vertical"
+      layout='vertical'
       style={{ maxWidth: 600, margin: '0 auto' }}
     >
-      <Form.Item name="name" label="Tên vật phẩm" rules={[{ required: true }]}>
+      <Form.Item name='name' label='Tên vật phẩm' rules={[{ required: true }]}>
         <Input />
       </Form.Item>
-      <Form.Item name="description" label="Mô tả" rules={[{ required: true }]}>
+      <Form.Item name='description' label='Mô tả' rules={[{ required: true }]}>
         <Input.TextArea />
       </Form.Item>
       <Form.Item
-        name="image"
-        label="Hình ảnh"
-        valuePropName="file"
+        name='image'
+        label='Hình ảnh'
+        valuePropName='file'
         getValueFromEvent={(e) => e?.target?.files?.[0]}
         rules={[{ required: true, message: 'Vui lòng chọn ảnh' }]}
       >
-        <Input type="file" accept="image/*" />
+        <Input type='file' accept='image/*' />
       </Form.Item>
-      <Form.Item name="condition" label="Tình trạng" rules={[{ required: true }]}>
-        <Input placeholder="Ví dụ: Mới 100%, Đã qua sử dụng..." />
+      <Form.Item
+        name='condition'
+        label='Tình trạng'
+        rules={[{ required: true }]}
+      >
+        <Input placeholder='Ví dụ: Mới 100%, Đã qua sử dụng...' />
       </Form.Item>
-      <Form.Item name="startPrice" label="Giá khởi điểm" rules={[{ required: true }]}>
+      <Form.Item
+        name='startPrice'
+        label='Giá khởi điểm'
+        rules={[{ required: true }]}
+      >
         <InputNumber min={0} style={{ width: '100%' }} />
       </Form.Item>
-      <Form.Item name="reservePrice" label="Giá chốt" rules={[{ required: true }]}>
+      <Form.Item
+        name='reservePrice'
+        label='Giá chốt'
+        rules={[{ required: true }]}
+      >
         <InputNumber min={0} style={{ width: '100%' }} />
       </Form.Item>
-      <Form.Item name="stepPrice" label="Bước nhảy tối thiểu" rules={[{ required: true }]}>
+      <Form.Item
+        name='stepPrice'
+        label='Bước nhảy tối thiểu'
+        rules={[{ required: true }]}
+      >
         <InputNumber min={1} style={{ width: '100%' }} />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit">Gửi vật phẩm</Button>
+        <Button type='primary' htmlType='submit'>
+          Gửi vật phẩm
+        </Button>
       </Form.Item>
     </Form>
-  );
-};
+  )
+}
 
-export default AuctionCreatePage;
+export default AuctionCreatePage
