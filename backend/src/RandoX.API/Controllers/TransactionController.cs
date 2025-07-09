@@ -85,7 +85,7 @@ namespace RandoX.API.Controllers
             }
         }
 
-        [HttpGet("vnpay/callback")]
+        [HttpPost("vnpay/callback")]
         public async Task<IActionResult> VNPayCallback([FromQuery] VNPayCallbackRequest callback)
         {
             var identity = this.HttpContext.User.Identity as ClaimsIdentity;
