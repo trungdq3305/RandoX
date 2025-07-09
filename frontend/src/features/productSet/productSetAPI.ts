@@ -46,7 +46,7 @@ export const productSetApi = apiSlice.injectEndpoints({
       invalidatesTags: ['productSets'],
     }),
   }),
-});
+})
 
 export const {
   useGetAllProductSetsQuery,
@@ -54,5 +54,5 @@ export const {
   useUpdateProductSetMutation,
   useDeleteProductSetMutation,
   useGetProductSetDetailQuery,
-  useAddProductSetToCartMutation
-} = productSetApi;
+  useAddProductSetToCartMutation,
+} = productSetApi

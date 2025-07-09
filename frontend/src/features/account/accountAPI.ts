@@ -1,4 +1,4 @@
-import { apiSlice } from '../../apis/apiSlice';
+import { apiSlice } from '../../apis/apiSlice'
 
 export const accountAPI = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -29,11 +29,11 @@ export const accountAPI = apiSlice.injectEndpoints({
       invalidatesTags: ['accounts'],
     }),
   }),
-});
+})
 
 export const {
   useGetAllAccountsQuery,
   useGetAccountByIdQuery,
   useUpdateAccountMutation,
   useDeleteAccountMutation,
-} = accountAPI;
+} = accountAPI

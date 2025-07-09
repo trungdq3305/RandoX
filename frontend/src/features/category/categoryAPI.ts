@@ -9,7 +9,10 @@ export const categoryApi = apiSlice.injectEndpoints({
     }),
 
     // CREATE
-    createCategory: builder.mutation<void, { categoryName: string; description: string }>({
+    createCategory: builder.mutation<
+      void,
+      { categoryName: string; description: string }
+    >({
       query: (body) => ({
         url: 'Category',
         method: 'POST',
@@ -19,7 +22,10 @@ export const categoryApi = apiSlice.injectEndpoints({
     }),
 
     // UPDATE
-    updateCategory: builder.mutation<void, { id: string; categoryName: string; description: string }>({
+    updateCategory: builder.mutation<
+      void,
+      { id: string; categoryName: string; description: string }
+    >({
       query: ({ id, ...body }) => ({
         url: `Category?id=${id}`, // id nằm trong query
         method: 'PUT',

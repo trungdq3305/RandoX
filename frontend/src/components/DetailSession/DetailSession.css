@@ -285,7 +285,7 @@
   .auction-content {
     grid-template-columns: 1fr;
   }
-  
+
   .auction-sidebar {
     order: -1;
   }
@@ -295,29 +295,29 @@
   .auction-container {
     padding: 16px;
   }
-  
+
   .auction-title {
     font-size: 2em !important;
   }
-  
+
   .item-image {
     height: 200px;
   }
-  
+
   .price-info {
     gap: 8px;
   }
-  
+
   .price-item {
     padding: 8px 12px;
     font-size: 14px;
   }
-  
+
   .countdown-section {
     flex-direction: column;
     gap: 8px;
   }
-  
+
   .bids-list {
     max-height: 400px;
   }
@@ -327,15 +327,15 @@
   .auction-title {
     font-size: 1.5em !important;
   }
-  
+
   .item-image {
     height: 150px;
   }
-  
+
   .countdown-timer {
     font-size: 20px !important;
   }
-  
+
   .bid-input,
   .bid-button {
     height: 40px;

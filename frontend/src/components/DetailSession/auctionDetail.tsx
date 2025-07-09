@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import {
   useGetSessionDetailQuery,
   usePlaceBidMutation,
-} from '../../features/auction/auctionAPI';
+} from '../../features/auction/auctionAPI'
 import {
   notification,
   Button,
@@ -17,79 +17,80 @@ import {
   Card,
   Space,
   Tag,
-} from 'antd';
+} from 'antd'
 import {
   connectToAuctionHub,
   disconnectFromAuctionHub,
-} from '../../realtime/auctionHub';
-import { ClockCircleOutlined, TrophyOutlined, DollarOutlined } from '@ant-design/icons';
-import './DetailSession.css';
+} from '../../realtime/auctionHub'
+import {
+  ClockCircleOutlined,
+  TrophyOutlined,
+  DollarOutlined,
+} from '@ant-design/icons'
+import './DetailSession.css'
 
-const { Countdown } = Statistic;
-const { Text, Title } = Typography;
+const { Countdown } = Statistic
+const { Text, Title } = Typography
 
 interface Bid {
-  id: string;
-  amount: number;
-  createdAt: string;
-  userId: string;
+  id: string
+  amount: number
+  createdAt: string
+  userId: string
   user?: {
-    email: string;
-  };
+    email: string
+  }
 }
 
 const DetailSession: React.FC = () => {
-  const { id: sessionId } = useParams<{ id: string }>();
-  const {
-    data,
-    isLoading,
-    error,
-    refetch,
-  } = useGetSessionDetailQuery(sessionId!);
+  const { id: sessionId } = useParams<{ id: string }>()
+  const { data, isLoading, error, refetch } = useGetSessionDetailQuery(
+    sessionId!
+  )
 
-  const [placeBid] = usePlaceBidMutation();
-  const [api, contextHolder] = notification.useNotification();
-  const [isExpired, setIsExpired] = useState(false);
-  const [endTime, setEndTime] = useState<number | null>(null);
+  const [placeBid] = usePlaceBidMutation()
+  const [api, contextHolder] = notification.useNotification()
+  const [isExpired, setIsExpired] = useState(false)
+  const [endTime, setEndTime] = useState<number | null>(null)
 
   useEffect(() => {
     if (data?.session?.endTime) {
-      setEndTime(new Date(data.session.endTime).getTime());
+      setEndTime(new Date(data.session.endTime).getTime())
     }
-  }, [data]);
+  }, [data])
 
   // ✅ Kết nối SignalR
   useEffect(() => {
-    if (!sessionId || sessionId === 'undefined') return;
+    if (!sessionId || sessionId === 'undefined') return
 
     connectToAuctionHub(
       sessionId,
       (bidderName, amount) => {
         api.info({
           message: `${bidderName} vừa đặt giá mới: ${amount.toLocaleString()}₫`,
-        });
-        refetch();
+        })
+        refetch()
       },
       (winnerName, finalAmount) => {
-        setIsExpired(true);
+        setIsExpired(true)
         api.success({
           message: 'Phiên đấu giá đã kết thúc',
           description: `${winnerName} thắng với giá ${finalAmount.toLocaleString()}₫`,
-        });
+        })
       },
       (newEndTime) => {
-        const extended = new Date(newEndTime).getTime();
-        setEndTime(extended);
+        const extended = new Date(newEndTime).getTime()
+        setEndTime(extended)
         api.info({
           message: 'Gia hạn phiên thêm 5 phút',
-        });
+        })
       }
-    );
+    )
 
     return () => {
-      disconnectFromAuctionHub(sessionId);
-    };
-  }, [sessionId]);
+      disconnectFromAuctionHub(sessionId)
+    }
+  }, [sessionId])
 
   const openNotification = (type: 'success' | 'error', message: string) => {
     api[type]({
@@ -97,108 +98,138 @@ const DetailSession: React.FC = () => {
       description: message,
       duration: 3,
       placement: 'topRight',
-    });
-  };
+    })
+  }
 
   const onFinish = async (values: any) => {
     try {
-      await placeBid({ sessionId: sessionId!, amount: values.bidPrice }).unwrap();
-      openNotification('success', 'Đặt giá thành công!');
-      refetch();
+      await placeBid({
+        sessionId: sessionId!,
+        amount: values.bidPrice,
+      }).unwrap()
+      openNotification('success', 'Đặt giá thành công!')
+      refetch()
     } catch (err: any) {
-      openNotification('error', err?.data || 'Đặt giá thất bại!');
+      openNotification('error', err?.data || 'Đặt giá thất bại!')
     }
-  };
+  }
 
-  if (isLoading) return <div className="loading-container">Đang tải phiên đấu giá...</div>;
-  if (error || !data?.session) return <div className="error-container">Không tìm thấy phiên đấu giá.</div>;
+  if (isLoading)
+    return <div className='loading-container'>Đang tải phiên đấu giá...</div>
+  if (error || !data?.session)
+    return <div className='error-container'>Không tìm thấy phiên đấu giá.</div>
 
-  const session = data.session;
-  const item = session.auctionItem;
-  const bids: Bid[] = (data.bids || []).slice().sort(
-    (a: Bid, b: Bid) =>
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+  const session = data.session
+  const item = session.auctionItem
+  const bids: Bid[] = (data.bids || [])
+    .slice()
+    .sort(
+      (a: Bid, b: Bid) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
 
-  const highestBid = bids.length > 0 ? Math.max(...bids.map((b) => b.amount)) : null;
+  const highestBid =
+    bids.length > 0 ? Math.max(...bids.map((b) => b.amount)) : null
 
   return (
-    <div className="auction-container">
+    <div className='auction-container'>
       {contextHolder}
-      
-      <div className="auction-header">
-        <Title level={1} className="auction-title">{item?.name}</Title>
+
+      <div className='auction-header'>
+        <Title level={1} className='auction-title'>
+          {item?.name}
+        </Title>
       </div>
 
-      <div className="auction-content">
-        <div className="auction-main">
-          <Card className="item-card">
-            <div className="item-image-container">
-              <img 
-                src={item?.imageUrl || '/no-image.png'} 
-                alt="Ảnh sản phẩm" 
-                className="item-image"
+      <div className='auction-content'>
+        <div className='auction-main'>
+          <Card className='item-card'>
+            <div className='item-image-container'>
+              <img
+                src={item?.imageUrl || '/no-image.png'}
+                alt='Ảnh sản phẩm'
+                className='item-image'
               />
             </div>
-            <div className="item-details">
-              <Text className="item-description">{item?.description}</Text>
-              <div className="price-info">
-                <div className="price-item">
-                  <DollarOutlined className="price-icon" />
-                  <span>Giá khởi điểm: <strong>{item?.startPrice?.toLocaleString()} đ</strong></span>
+            <div className='item-details'>
+              <Text className='item-description'>{item?.description}</Text>
+              <div className='price-info'>
+                <div className='price-item'>
+                  <DollarOutlined className='price-icon' />
+                  <span>
+                    Giá khởi điểm:{' '}
+                    <strong>{item?.startPrice?.toLocaleString()} đ</strong>
+                  </span>
                 </div>
-                <div className="price-item">
-                  <TrophyOutlined className="price-icon" />
-                  <span>Giá chốt: <strong>{item?.reservePrice?.toLocaleString()} đ</strong></span>
+                <div className='price-item'>
+                  <TrophyOutlined className='price-icon' />
+                  <span>
+                    Giá chốt:{' '}
+                    <strong>{item?.reservePrice?.toLocaleString()} đ</strong>
+                  </span>
                 </div>
-                <div className="price-item">
-                  <span>Bước nhảy: <strong>{item?.stepPrice?.toLocaleString()} đ</strong></span>
+                <div className='price-item'>
+                  <span>
+                    Bước nhảy:{' '}
+                    <strong>{item?.stepPrice?.toLocaleString()} đ</strong>
+                  </span>
                 </div>
               </div>
             </div>
           </Card>
 
-          <Card className="countdown-card">
-            <div className="countdown-section">
-              <ClockCircleOutlined className="countdown-icon" />
-              <Text className="countdown-label">Thời gian còn lại:</Text>
+          <Card className='countdown-card'>
+            <div className='countdown-section'>
+              <ClockCircleOutlined className='countdown-icon' />
+              <Text className='countdown-label'>Thời gian còn lại:</Text>
               {endTime && !isExpired ? (
                 <Countdown
                   value={endTime}
-                  format="HH:mm:ss"
+                  format='HH:mm:ss'
                   onFinish={() => setIsExpired(true)}
-                  className="countdown-timer"
+                  className='countdown-timer'
                 />
               ) : (
-                <Tag color="red" className="expired-tag">Phiên đấu giá đã kết thúc</Tag>
+                <Tag color='red' className='expired-tag'>
+                  Phiên đấu giá đã kết thúc
+                </Tag>
               )}
             </div>
           </Card>
 
-          <Card className="bid-form-card">
-            <Title level={3} className="bid-form-title">Đặt giá ngay</Title>
-            <Form name="bidForm" onFinish={onFinish} layout="vertical" className="bid-form">
+          <Card className='bid-form-card'>
+            <Title level={3} className='bid-form-title'>
+              Đặt giá ngay
+            </Title>
+            <Form
+              name='bidForm'
+              onFinish={onFinish}
+              layout='vertical'
+              className='bid-form'
+            >
               <Form.Item
-                label="Giá đặt (VND)"
-                name="bidPrice"
+                label='Giá đặt (VND)'
+                name='bidPrice'
                 rules={[{ required: true, message: 'Nhập giá đặt!' }]}
               >
                 <InputNumber
                   min={item?.startPrice}
-                  className="bid-input"
+                  className='bid-input'
                   disabled={isExpired}
-                  formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  formatter={(value) =>
+                    `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                  }
                   parser={(value) => value!.replace(/(,*)/g, '')}
-                  placeholder="Nhập số tiền"
+                  placeholder='Nhập số tiền'
                 />
               </Form.Item>
               <Form.Item>
-                <Button 
-                  type="primary" 
-                  htmlType="submit" 
+                <Button
+                  type='primary'
+                  htmlType='submit'
                   disabled={isExpired}
-                  className="bid-button"
-                  size="large"
+                  className='bid-button'
+                  size='large'
                 >
                   Đặt giá ngay
                 </Button>
@@ -207,52 +238,58 @@ const DetailSession: React.FC = () => {
           </Card>
         </div>
 
-        <div className="auction-sidebar">
-          <Card className="bids-card">
-            <Title level={3} className="bids-title">Lịch sử đặt giá</Title>
+        <div className='auction-sidebar'>
+          <Card className='bids-card'>
+            <Title level={3} className='bids-title'>
+              Lịch sử đặt giá
+            </Title>
             <List
-              itemLayout="horizontal"
+              itemLayout='horizontal'
               dataSource={bids}
               locale={{ emptyText: 'Chưa có lượt đặt giá nào.' }}
-              className="bids-list"
+              className='bids-list'
               renderItem={(bid) => {
-                const isHighest = bid.amount === highestBid;
+                const isHighest = bid.amount === highestBid
                 return (
-                  <List.Item className={`bid-item ${isHighest ? 'highest-bid' : ''}`}>
+                  <List.Item
+                    className={`bid-item ${isHighest ? 'highest-bid' : ''}`}
+                  >
                     <List.Item.Meta
                       avatar={
-                        <Avatar className="bid-avatar">
+                        <Avatar className='bid-avatar'>
                           {bid.user?.email?.charAt(0).toUpperCase() || '?'}
                         </Avatar>
                       }
                       title={
-                        <div className="bid-user">
+                        <div className='bid-user'>
                           {bid.user?.email || 'Người dùng ẩn danh'}
                           {isHighest && (
-                            <Tag color="gold" className="highest-tag">Giá cao nhất</Tag>
+                            <Tag color='gold' className='highest-tag'>
+                              Giá cao nhất
+                            </Tag>
                           )}
                         </div>
                       }
                       description={
-                        <div className="bid-info">
-                          <div className="bid-amount">
+                        <div className='bid-info'>
+                          <div className='bid-amount'>
                             {bid.amount.toLocaleString()} đ
                           </div>
-                          <div className="bid-time">
+                          <div className='bid-time'>
                             {new Date(bid.createdAt).toLocaleString('vi-VN')}
                           </div>
                         </div>
                       }
                     />
                   </List.Item>
-                );
+                )
               }}
             />
           </Card>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default DetailSession;
+export default DetailSession

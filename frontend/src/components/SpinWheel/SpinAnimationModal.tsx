@@ -1,185 +1,219 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 
 interface SpinAnimationModalProps {
-  visible: boolean;
-  onFinish: () => void;
-  reward: { rewardName: string; rewardValue: number; rewardType: string } | null;
+  visible: boolean
+  onFinish: () => void
+  reward: { rewardName: string; rewardValue: number; rewardType: string } | null
 }
 
-const SpinAnimationModal: React.FC<SpinAnimationModalProps> = ({ visible, onFinish, reward }) => {
-  const [showReward, setShowReward] = useState(false);
-  const [animationPhase, setAnimationPhase] = useState(0); // 0: fast spin, 1: slow down, 2: almost stop, 3: final slow, 4: burst, 5: reveal
-  const [spinSpeed, setSpinSpeed] = useState('fast');
-  const [suspenseLevel, setSuspenseLevel] = useState(0);
+const SpinAnimationModal: React.FC<SpinAnimationModalProps> = ({
+  visible,
+  onFinish,
+  reward,
+}) => {
+  const [showReward, setShowReward] = useState(false)
+  const [animationPhase, setAnimationPhase] = useState(0) // 0: fast spin, 1: slow down, 2: almost stop, 3: final slow, 4: burst, 5: reveal
+  const [spinSpeed, setSpinSpeed] = useState('fast')
+  const [suspenseLevel, setSuspenseLevel] = useState(0)
 
   useEffect(() => {
     if (visible) {
-      setShowReward(false);
-      setAnimationPhase(0);
-      setSpinSpeed('fast');
-      setSuspenseLevel(0);
-      
+      setShowReward(false)
+      setAnimationPhase(0)
+      setSpinSpeed('fast')
+      setSuspenseLevel(0)
+
       if (reward) {
         // Phase 0: Fast spinning (2 seconds)
         const fastSpinTimer = setTimeout(() => {
-          setAnimationPhase(1);
-          setSpinSpeed('medium');
-          setSuspenseLevel(1);
-        }, 2000);
-        
+          setAnimationPhase(1)
+          setSpinSpeed('medium')
+          setSuspenseLevel(1)
+        }, 2000)
+
         // Phase 1: Medium speed (2 seconds)
         const mediumSpinTimer = setTimeout(() => {
-          setAnimationPhase(2);
-          setSpinSpeed('slow');
-          setSuspenseLevel(2);
-        }, 4000);
-        
+          setAnimationPhase(2)
+          setSpinSpeed('slow')
+          setSuspenseLevel(2)
+        }, 4000)
+
         // Phase 2: Slow down more (2 seconds)
         const slowSpinTimer = setTimeout(() => {
-          setAnimationPhase(3);
-          setSpinSpeed('very-slow');
-          setSuspenseLevel(3);
-        }, 6000);
-        
+          setAnimationPhase(3)
+          setSpinSpeed('very-slow')
+          setSuspenseLevel(3)
+        }, 6000)
+
         // Phase 3: Very slow, building suspense (2 seconds)
         const verySlowTimer = setTimeout(() => {
-          setAnimationPhase(4);
-          setSpinSpeed('stop');
-          setSuspenseLevel(4);
-        }, 8000);
-        
+          setAnimationPhase(4)
+          setSpinSpeed('stop')
+          setSuspenseLevel(4)
+        }, 8000)
+
         // Phase 4: Stop and burst (0.5 seconds)
         const burstTimer = setTimeout(() => {
-          setAnimationPhase(5);
-        }, 8500);
-        
+          setAnimationPhase(5)
+        }, 8500)
+
         // Phase 5: Show reward (1 second after burst)
         const rewardTimer = setTimeout(() => {
-          setShowReward(true);
-        }, 9500);
-        
+          setShowReward(true)
+        }, 9500)
+
         return () => {
-          clearTimeout(fastSpinTimer);
-          clearTimeout(mediumSpinTimer);
-          clearTimeout(slowSpinTimer);
-          clearTimeout(verySlowTimer);
-          clearTimeout(burstTimer);
-          clearTimeout(rewardTimer);
-        };
+          clearTimeout(fastSpinTimer)
+          clearTimeout(mediumSpinTimer)
+          clearTimeout(slowSpinTimer)
+          clearTimeout(verySlowTimer)
+          clearTimeout(burstTimer)
+          clearTimeout(rewardTimer)
+        }
       }
     }
-  }, [visible, reward]);
+  }, [visible, reward])
 
   const getSuspenseText = () => {
     switch (suspenseLevel) {
-      case 0: return "🎰 Drawing... 🎰";
-      case 1: return "🎯 So exciting! 🎯";
-      case 2: return "⏳ Almost there... ⏳";
-      case 3: return "💫 So excited! 💫";
-      case 4: return "🤞 Wait a minute... 🤞";
-      default: return "🎊 Great! 🎊";
+      case 0:
+        return '🎰 Drawing... 🎰'
+      case 1:
+        return '🎯 So exciting! 🎯'
+      case 2:
+        return '⏳ Almost there... ⏳'
+      case 3:
+        return '💫 So excited! 💫'
+      case 4:
+        return '🤞 Wait a minute... 🤞'
+      default:
+        return '🎊 Great! 🎊'
     }
-  };
+  }
 
-  if (!visible) return null;
+  if (!visible) return null
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-content">
+    <div className='modal-overlay'>
+      <div className='modal-content'>
         {!showReward ? (
-          <div className="animation-container">
+          <div className='animation-container'>
             {/* Pulsing background based on suspense level */}
-            <div className={`suspense-background suspense-${suspenseLevel}`}></div>
-            
+            <div
+              className={`suspense-background suspense-${suspenseLevel}`}
+            ></div>
+
             {/* Background particles */}
-            <div className="particles">
+            <div className='particles'>
               {[...Array(20)].map((_, i) => (
-                <div key={i} className={`particle particle-${i} speed-${spinSpeed}`}></div>
+                <div
+                  key={i}
+                  className={`particle particle-${i} speed-${spinSpeed}`}
+                ></div>
               ))}
             </div>
-            
+
             {/* Main spinning element */}
-            <div className={`spin-container speed-${spinSpeed} ${animationPhase >= 4 ? 'burst-phase' : ''}`}>
-              <div className="outer-ring"></div>
-              <div className="middle-ring"></div>
-              <div className="inner-circle">
-                <div className="mystery-box">
+            <div
+              className={`spin-container speed-${spinSpeed} ${animationPhase >= 4 ? 'burst-phase' : ''}`}
+            >
+              <div className='outer-ring'></div>
+              <div className='middle-ring'></div>
+              <div className='inner-circle'>
+                <div className='mystery-box'>
                   {suspenseLevel < 3 ? '📦' : suspenseLevel < 4 ? '🎁' : '✨'}
                 </div>
               </div>
-              
+
               {/* Energy rings with varying intensity */}
-              <div className={`energy-ring ring-1 intensity-${suspenseLevel}`}></div>
-              <div className={`energy-ring ring-2 intensity-${suspenseLevel}`}></div>
-              <div className={`energy-ring ring-3 intensity-${suspenseLevel}`}></div>
-              
+              <div
+                className={`energy-ring ring-1 intensity-${suspenseLevel}`}
+              ></div>
+              <div
+                className={`energy-ring ring-2 intensity-${suspenseLevel}`}
+              ></div>
+              <div
+                className={`energy-ring ring-3 intensity-${suspenseLevel}`}
+              ></div>
+
               {/* Suspense indicator */}
               <div className={`suspense-indicator level-${suspenseLevel}`}>
                 {[...Array(5)].map((_, i) => (
-                  <div key={i} className={`indicator-dot ${i <= suspenseLevel ? 'active' : ''}`}></div>
+                  <div
+                    key={i}
+                    className={`indicator-dot ${i <= suspenseLevel ? 'active' : ''}`}
+                  ></div>
                 ))}
               </div>
             </div>
-            
+
             {/* Burst effect */}
             {animationPhase >= 4 && (
-              <div className="burst-effect">
+              <div className='burst-effect'>
                 {[...Array(16)].map((_, i) => (
                   <div key={i} className={`burst-ray ray-${i}`}></div>
                 ))}
               </div>
             )}
-            
+
             {/* Floating sparkles with suspense-based intensity */}
-            <div className="sparkles">
+            <div className='sparkles'>
               {[...Array(15)].map((_, i) => (
-                <div key={i} className={`sparkle sparkle-${i} intensity-${suspenseLevel}`}>
+                <div
+                  key={i}
+                  className={`sparkle sparkle-${i} intensity-${suspenseLevel}`}
+                >
                   {suspenseLevel < 2 ? '⭐' : suspenseLevel < 4 ? '✨' : '💫'}
                 </div>
               ))}
             </div>
-            
+
             {/* Heartbeat effect for high suspense */}
             {suspenseLevel >= 3 && (
-              <div className="heartbeat-effect">
-                <div className="heartbeat-pulse"></div>
+              <div className='heartbeat-effect'>
+                <div className='heartbeat-pulse'></div>
               </div>
             )}
-            
+
             <p className={`drawing-text suspense-${suspenseLevel}`}>
               {getSuspenseText()}
             </p>
-            
+
             {/* Suspense meter */}
-            <div className="suspense-meter">
-              <div className="meter-label">Doki Doki</div>
-              <div className="meter-bar">
+            <div className='suspense-meter'>
+              <div className='meter-label'>Doki Doki</div>
+              <div className='meter-bar'>
                 <div className={`meter-fill level-${suspenseLevel}`}></div>
               </div>
             </div>
           </div>
         ) : (
-          <div className="reward-result">
-            <div className="reward-animation">
-              <div className="reward-glow"></div>
-              <div className="reward-content">
-                <h2 className="reward-title">🎉 You won! 🎉</h2>
-                <div className="reward-item">
-                  <div className="reward-icon">🏆</div>
-                  <div className="reward-details">
-                    <p className="reward-name">{reward?.rewardName}</p>
-                    <p className="reward-value">{reward?.rewardValue.toLocaleString()} VNĐ</p>
+          <div className='reward-result'>
+            <div className='reward-animation'>
+              <div className='reward-glow'></div>
+              <div className='reward-content'>
+                <h2 className='reward-title'>🎉 You won! 🎉</h2>
+                <div className='reward-item'>
+                  <div className='reward-icon'>🏆</div>
+                  <div className='reward-details'>
+                    <p className='reward-name'>{reward?.rewardName}</p>
+                    <p className='reward-value'>
+                      {reward?.rewardValue.toLocaleString()} VNĐ
+                    </p>
                   </div>
                 </div>
-                <button className="confirm-button" onClick={onFinish}>
+                <button className='confirm-button' onClick={onFinish}>
                   Rewarded! 🎊
                 </button>
               </div>
-              
+
               {/* Celebration particles */}
-              <div className="celebration-particles">
+              <div className='celebration-particles'>
                 {[...Array(30)].map((_, i) => (
-                  <div key={i} className={`celebration-particle particle-${i % 6}`}>
+                  <div
+                    key={i}
+                    className={`celebration-particle particle-${i % 6}`}
+                  >
                     {['🎊', '🎉', '✨', '🌟', '💫', '🏆'][i % 6]}
                   </div>
                 ))}
@@ -188,7 +222,7 @@ const SpinAnimationModal: React.FC<SpinAnimationModalProps> = ({ visible, onFini
           </div>
         )}
       </div>
-      
+
       <style>{`
         .modal-overlay {
           position: fixed;
@@ -723,45 +757,58 @@ const SpinAnimationModal: React.FC<SpinAnimationModalProps> = ({ visible, onFini
         }
         
         /* Positioning */
-        ${[...Array(20)].map((_, i) => `
+        ${[...Array(20)]
+          .map(
+            (_, i) => `
           .particle-${i} {
-            left: ${15 + (i * 3.5) % 70}%;
-            top: ${15 + (i * 4.2) % 70}%;
+            left: ${15 + ((i * 3.5) % 70)}%;
+            top: ${15 + ((i * 4.2) % 70)}%;
             animation-delay: ${i * 0.1}s;
           }
-        `).join('')}
+        `
+          )
+          .join('')}
         
-        ${[...Array(16)].map((_, i) => `
+        ${[...Array(16)]
+          .map(
+            (_, i) => `
           .ray-${i} {
             --rotation: ${i * 22.5}deg;
             transform: translateX(-50%) rotate(${i * 22.5}deg);
             animation-delay: ${i * 0.05}s;
           }
-        `).join('')}
+        `
+          )
+          .join('')}
         
-        ${[...Array(15)].map((_, i) => `
+        ${[...Array(15)]
+          .map(
+            (_, i) => `
           .sparkle-${i} {
-            left: ${5 + (i * 6) % 90}%;
-            top: ${5 + (i * 7) % 90}%;
+            left: ${5 + ((i * 6) % 90)}%;
+            top: ${5 + ((i * 7) % 90)}%;
             animation-delay: ${i * 0.15}s;
           }
-        `).join('')}
+        `
+          )
+          .join('')}
         
-        ${[...Array(30)].map((_, i) => `
+        ${[...Array(30)]
+          .map(
+            (_, i) => `
           .celebration-particle:nth-child(${i + 1}) {
-            left: ${10 + (i * 2.7) % 80}%;
-            top: ${10 + (i * 3.1) % 80}%;
+            left: ${10 + ((i * 2.7) % 80)}%;
+            top: ${10 + ((i * 3.1) % 80)}%;
             animation-delay: ${i * 0.1}s;
           }
-        `).join('')}
+        `
+          )
+          .join('')}
       `}</style>
     </div>
-  );
-};
+  )
+}
 
 // Demo component to test the modal
 
-
-  
-
-export default SpinAnimationModal;
+export default SpinAnimationModal

@@ -1,120 +1,133 @@
 .item-detail-container {
-    display: flex;
-    max-width: 500px;
-    padding: 20px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    background-color: #fff5e6;
-    border-radius: 20px;
-    /* Light peach background like in the screenshot */
+  display: flex;
+  max-width: 500px;
+  padding: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: #fff5e6;
+  border-radius: 20px;
+  /* Light peach background like in the screenshot */
 }
 
 .item-images {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding-right: 20px;
-    width: 80px;
-    margin-right: 10px;
-    /* Fixed width to match thumbnail column */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 20px;
+  width: 80px;
+  margin-right: 10px;
+  /* Fixed width to match thumbnail column */
 }
 
 .item-main {
-    flex: 0.3
+  flex: 0.3;
 }
 
 .clear-cart-button {
-    background: #ff4d4f !important;
-    /* Màu đỏ nhạt */
-    border-color: #ff4d4f !important;
-    color: #fff !important;
-    /* Văn bản trắng */
-    border-radius: 10px;
-    padding: 5px 15px;
+  background: #ff4d4f !important;
+  /* Màu đỏ nhạt */
+  border-color: #ff4d4f !important;
+  color: #fff !important;
+  /* Văn bản trắng */
+  border-radius: 10px;
+  padding: 5px 15px;
+}
+
+.order-cart-button {
+  background: linear-gradient(to right, #f06292, #1e88e5) !important;
+  /* Màu đỏ nhạt */
+  color: #fff;
+  font-style: italic;
+  /* Văn bản trắng */
+  border-radius: 10px;
+  padding: 5px 15px;
+  width: 200px;
+  height: 40px;
+  border-color: #000;
 }
 
 .item-main-image {
-    width: 100%;
-    height: auto;
+  width: 100%;
+  height: auto;
 }
 
 .item-info {
-    flex: 1;
-    padding-left: 20px;
+  flex: 1;
+  padding-left: 20px;
 }
 
 .price-item {
-    font-size: 15px;
-    font-weight: 600;
-    margin: 10px 0;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 10px 0;
 }
 
 .item-container {
-    flex: 1;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    background-color: #fff5e6;
-    border-radius: 20px;
+  flex: 1;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: #fff5e6;
+  border-radius: 20px;
 }
 
 .cart-detail-container {
-    flex: 1;
-    max-height: 200px;
-    margin-left: 20px;
-    padding: 20px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    background-color: #eee !important;
-    border-radius: 20px;
+  flex: 1;
+  max-height: auto;
+  margin-left: 20px;
+  padding: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: #eee !important;
+  border-radius: 20px;
 }
 
 .quantity-selector {
-    margin: 20px 0;
+  margin: 20px 0;
 }
 
 .quantity-selector span {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .actions {
-    display: flex;
-    gap: 10px;
-    margin: 20px 0;
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+  justify-self: center;
 }
 
 /* Fix the buy-now-button class */
 .buy-now-button {
-    background: #f5222d !important;
-    /* Corrected syntax, red background */
-    border-color: #f5222d !important;
-    /* Matching border color */
-    color: #fff !important;
-    /* White text for contrast */
-    border-radius: 10px;
+  background: #f5222d !important;
+  /* Corrected syntax, red background */
+  border-color: #f5222d !important;
+  /* Matching border color */
+  color: #fff !important;
+  /* White text for contrast */
+  border-radius: 10px;
 }
 
 .add-to-cart-button {
-    background: #000 !important;
-    /* Blue background for add to cart */
-    border-color: #000 !important;
-    /* Matching border color */
-    color: #fff !important;
-    /* White text for contrast */
-    border-radius: 10px;
+  background: #000 !important;
+  /* Blue background for add to cart */
+  border-color: #000 !important;
+  /* Matching border color */
+  color: #fff !important;
+  /* White text for contrast */
+  border-radius: 10px;
 }
-
 
 .details-section,
 .shipping-section {
-    margin-top: 20px;
-    border-top: 1px solid #eee;
-    padding-top: 10px;
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
 }
 
 h3 {
-    font-size: 16px;
-    margin-bottom: 10px;
+  font-size: 16px;
+  margin-bottom: 10px;
 }
