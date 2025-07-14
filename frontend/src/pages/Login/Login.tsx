@@ -77,30 +77,6 @@ export default function Login() {
                   Đăng nhập
                 </Title>
                 <LoginForm />
-                {/* <div
-                  style={{
-                    textAlign: 'center',
-                    display: 'flex',
-                    gap: '8px',
-                    justifyContent: 'space-between',
-                    marginTop: '16px',
-                  }}
-                >
-                  <Button
-                    type='link'
-                    onClick={() => navigate('/')}
-                    style={{ padding: 0, margin: 0 }}
-                  >
-                    Về lại trang chủ
-                  </Button>
-                  <Button
-                    type='link'
-                    onClick={() => navigate('/forgot-password?token=')}
-                    style={{ padding: 0, margin: 0 }}
-                  >
-                    Quên mật khẩu?
-                  </Button>
-                </div> */}
               </div>
             </div>
           </div>

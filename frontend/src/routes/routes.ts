@@ -108,7 +108,7 @@ const routes: LayoutRoute[] = [
 
   {
     layout: AdminLayout,
-
+    role: ['Admin'],
     data: [
       {
         path: '/admin/dashboard',
@@ -134,7 +134,7 @@ const routes: LayoutRoute[] = [
   },
   {
     layout: ManagerLayout,
-    // role: ['c6af9eea-c011-4b98-9963-009a859d060b'],
+    role: ['Manager,Admin'],
     data: [
       {
         path: '/manager/products',
