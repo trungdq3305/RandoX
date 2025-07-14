@@ -51,6 +51,7 @@ const ProductsCardSlider: React.FC<ProductCardSliderProps> = ({ products }) => {
                 boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
                 position: 'relative',
                 cursor: 'pointer',
+                background: "transparent"
               }}
               onClick={() => handleCardClick(product.id)} // Add click handler
             >

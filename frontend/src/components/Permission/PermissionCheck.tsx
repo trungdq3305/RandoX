@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import NoPermission from './NoPermission'
 import { selectAuthUser } from '../../features/auth/authSlice'
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 interface PermissionCheckProps {
   children: ReactNode
@@ -13,7 +13,7 @@ const PermissionCheck = ({ children, protectedRole }: PermissionCheckProps) => {
   if (!protectedRole) return children
   if (
     user.userData &&
-    protectedRole.some((role) => user.userData?.Role === role)
+    protectedRole.some((role) => user.userData?.role === role)
   ) {
     return children
   }
