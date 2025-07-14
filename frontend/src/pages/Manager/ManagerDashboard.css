@@ -1,11 +1,10 @@
 /* Nền tổng thể */
 .manager-dashboard {
   padding: 20px;
-  background: linear-gradient(
-    to right,
-    #f6f8fa,
-    #eaeef2
-  ); /* tone xám xanh dịu */
+  background: linear-gradient(to right,
+      #f6f8fa,
+      #eaeef2);
+  /* tone xám xanh dịu */
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
 }
@@ -25,7 +24,8 @@
   font-size: 28px;
   width: 48px;
   height: 48px;
-  background: rgba(100, 149, 237, 0.1); /* blue-light */
+  background: rgba(100, 149, 237, 0.1);
+  /* blue-light */
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -138,9 +138,11 @@
 .stock-badge.high {
   color: #388e3c;
 }
+
 .stock-badge.medium {
   color: #f9a825;
 }
+
 .stock-badge.low {
   color: #d32f2f;
 }
@@ -149,10 +151,12 @@
   background: #e0f7fa;
   color: #00695c;
 }
+
 .status-badge.out_of_stock {
   background: #fff8e1;
   color: #f57f17;
 }
+
 .status-badge.discontinued {
   background: #ffebee;
   color: #c62828;
@@ -165,10 +169,12 @@
   border-radius: 5px;
   transition: all 0.2s ease;
 }
+
 .action-btn:hover {
   background: #ebf2f9;
   transform: scale(1.05);
 }
+
 /* Bảng màu trắng */
 .ant-table-wrapper {
   background: white !important;
@@ -178,7 +184,7 @@
 }
 
 /* Header bảng */
-.ant-table-thead > tr > th {
+.ant-table-thead>tr>th {
   background-color: #f9f9f9;
   color: #000;
   font-weight: 600;
@@ -186,14 +192,14 @@
 }
 
 /* Dòng dữ liệu */
-.ant-table-tbody > tr > td {
+.ant-table-tbody>tr>td {
   background-color: #ffffff;
   color: #333;
   text-align: center;
 }
 
 /* Hover */
-.ant-table-tbody > tr:hover > td {
+.ant-table-tbody>tr:hover>td {
   background-color: #f5f5f5;
 }
 
@@ -210,4 +216,8 @@
   background-color: #ffe6f0 !important;
   color: #b30059 !important;
   border-color: #b30059 !important;
+}
+
+.container-table {
+  background-color: white !important;
 }

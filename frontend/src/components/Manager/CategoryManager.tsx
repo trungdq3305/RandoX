@@ -7,7 +7,7 @@ import {
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
 } from '../../features/category/categoryAPI'
-
+import './productManager.css'
 const CategoryManager: React.FC = () => {
   const { data, isLoading, refetch } = useGetAllCategoriesQuery()
   const [createCategory] = useCreateCategoryMutation()
@@ -63,6 +63,8 @@ const CategoryManager: React.FC = () => {
         dataSource={data?.data?.items || []}
         rowKey='id'
         pagination={{ pageSize: 10 }}
+        className='container-products'
+
       >
         <Table.Column title='Category Name' dataIndex='categoryName' />
         <Table.Column title='Description' dataIndex='description' />
