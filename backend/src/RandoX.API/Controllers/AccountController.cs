@@ -50,7 +50,7 @@ namespace RandoX.API.Controllers
                     {
                 new(ClaimTypes.Name, systemUserAccount.Email),
                 //new(ClaimTypes.Email, systemUserAccount.Email),
-                new Claim(ClaimTypes.Role, systemUserAccount.RoleName),  // dùng role_name thay vì id
+                new(ClaimTypes.Role, systemUserAccount.RoleId.ToString()),
                     },
                     expires: TimeHelper.GetVietnamTime().AddMinutes(120),
                     signingCredentials: credentials
