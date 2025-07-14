@@ -28,7 +28,7 @@ import {
 import { useGetAllManufacturersQuery } from '../../features/manufacturer/manufacturerAPI'
 import { useGetAllCategoriesQuery } from '../../features/category/categoryAPI'
 import { useGetAllProductsDropdownQuery } from '../../features/product/productAPI'
-
+import './productManager.css'
 const { TabPane } = Tabs
 
 const ProductManager: React.FC = () => {
@@ -154,6 +154,7 @@ const ProductManager: React.FC = () => {
       <Tabs
         defaultActiveKey='product'
         onChange={(key) => setActiveTab(key as 'product' | 'productSet')}
+
       >
         <TabPane tab='Product' key='product'>
           <Button
@@ -172,6 +173,7 @@ const ProductManager: React.FC = () => {
             dataSource={productData?.data?.items || []}
             rowKey='id'
             style={{ marginTop: 16 }}
+            className='container-products'
           >
             <Table.Column title='Product Name' dataIndex='productName' />
             <Table.Column title='Description' dataIndex='description' />

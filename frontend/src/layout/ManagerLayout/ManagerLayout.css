@@ -86,11 +86,9 @@
 }
 
 .nav-item:hover {
-  background: linear-gradient(
-    45deg,
-    rgba(240, 147, 251, 0.1),
-    rgba(245, 87, 108, 0.1)
-  );
+  background: linear-gradient(45deg,
+      rgba(240, 147, 251, 0.1),
+      rgba(245, 87, 108, 0.1));
   color: #f093fb;
   transform: translateX(5px);
 }
