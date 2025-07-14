@@ -3,14 +3,14 @@ export interface UserToken {
 }
 
 export interface UserData {
-  Email: string
-  Id: string
-  Address: string
-  Role: string
-  Name: string
-  PhoneNumber: string
+  email: string
+  id: string
+  address: string
+  role: string
+  name: string
+  PphoneNumber: string
   exp: number
-  Facility: string
+  facility: string
 }
 
 export interface AuthState {

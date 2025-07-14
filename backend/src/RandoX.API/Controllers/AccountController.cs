@@ -50,10 +50,10 @@ namespace RandoX.API.Controllers
                     {
                 new(ClaimTypes.Name, systemUserAccount.Email),
                 //new(ClaimTypes.Email, systemUserAccount.Email),
-                new(ClaimTypes.Role, systemUserAccount.RoleId.ToString()),
+                new(ClaimTypes.Role, systemUserAccount.Role.Role_name.ToString()),
                     },
                     expires: TimeHelper.GetVietnamTime().AddMinutes(120),
-                    signingCredentials: credentials
+                    signingCredentials: credentials 
                 );
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);

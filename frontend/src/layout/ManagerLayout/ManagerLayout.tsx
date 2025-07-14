@@ -1,12 +1,13 @@
 // ManagerLayout.tsx
 import React, { useState } from 'react'
-import { Link, useLocation, Outlet } from 'react-router-dom'
+import { Link, useLocation, Outlet, useNavigate } from 'react-router-dom'
 import './ManagerLayout.css'
+import Cookies from 'js-cookie'
 
 const ManagerLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
-
+  const navigate = useNavigate()
   const menuItems = [
     { icon: '📈', label: 'Dashboard', path: '/manager/dashboard' },
     { icon: '🎁', label: 'Product & Set', path: '/manager/products' },
@@ -30,7 +31,11 @@ const ManagerLayout: React.FC = () => {
   ]
 
   const isActive = (path: string) => location.pathname === path
-
+  const handleLogout = () => {
+    Cookies.remove('userData')
+    Cookies.remove('userToken')
+    navigate('/login')
+  }
   return (
     <div className='manager-layout'>
       <div className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
@@ -81,7 +86,7 @@ const ManagerLayout: React.FC = () => {
           <div className='header-right'>
             <button className='notification-btn'>🔔</button>
             <button className='profile-btn'>👤</button>
-            <button className='logout-btn'>Logout</button>
+            <button className='logout-btn' onClick={handleLogout}>Logout</button>
           </div>
         </header>
 

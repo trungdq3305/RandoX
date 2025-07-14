@@ -26,7 +26,6 @@ const Homepage: React.FC = () => {
   return (
     <div
       style={{
-        background: '#f0f2f5',
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
