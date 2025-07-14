@@ -25,7 +25,7 @@ import {
   useDeleteVoucherMutation,
 } from '../../features/voucher/voucherAPI'
 import dayjs from 'dayjs'
-
+import './productManager.css'
 const PromotionVoucherManager: React.FC = () => {
   const [form] = Form.useForm()
   const [open, setOpen] = useState(false)
@@ -115,6 +115,7 @@ const PromotionVoucherManager: React.FC = () => {
               setEditing(null)
               setActiveTab('promotion')
             }}
+            className='add-category-btn'
           >
             ➕ Add Promotion
           </Button>
@@ -122,6 +123,8 @@ const PromotionVoucherManager: React.FC = () => {
             dataSource={promotionData?.data?.items || []}
             rowKey='id'
             style={{ marginTop: 16 }}
+            className='container-products'
+
           >
             <Table.Column title='Event' dataIndex='event' />
             <Table.Column title='Start Date' dataIndex='startDate' />
@@ -168,6 +171,7 @@ const PromotionVoucherManager: React.FC = () => {
               setEditing(null)
               setActiveTab('voucher')
             }}
+            className='add-category-btn'
           >
             ➕ Add Voucher
           </Button>
@@ -175,6 +179,7 @@ const PromotionVoucherManager: React.FC = () => {
             dataSource={voucherData?.data?.items || []}
             rowKey='id'
             style={{ marginTop: 16 }}
+            className='container-products'
           >
             <Table.Column title='Voucher Name' dataIndex='voucherName' />
             <Table.Column

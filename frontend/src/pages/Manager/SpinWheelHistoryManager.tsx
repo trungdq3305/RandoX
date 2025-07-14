@@ -3,7 +3,7 @@ import React from 'react'
 import { Table, Tag, Typography } from 'antd'
 import { useGetSpinWheelHistoryQuery } from '../../features/spinwheel/spinWheelAPI'
 import moment from 'moment'
-
+import './ManagerDashboard.css'
 const SpinWheelHistoryManager: React.FC = () => {
   const { data = [], isLoading } = useGetSpinWheelHistoryQuery()
 
@@ -72,6 +72,7 @@ const SpinWheelHistoryManager: React.FC = () => {
           `${record.userEmail}-${record.rewardName}-${record.createdAt}`
         }
         pagination={{ pageSize: 10 }}
+        className='container-table'
       />
     </div>
   )

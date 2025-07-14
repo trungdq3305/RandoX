@@ -49,6 +49,7 @@ const AuctionSlider: React.FC<AuctionCardSliderProps> = ({ auctions }) => {
               borderRadius: '20px',
               boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
               position: 'relative',
+              background: "transparent"
             }}
             onClick={() => handleCardClick(auction.id)} // Add click handler
           >

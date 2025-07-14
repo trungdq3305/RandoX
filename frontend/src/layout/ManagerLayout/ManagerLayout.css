@@ -1,12 +1,12 @@
 .manager-layout {
   display: flex;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
 }
 
 .sidebar {
   width: 280px;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.95) !important;
   backdrop-filter: blur(20px);
   border-radius: 0 25px 25px 0;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -57,7 +57,7 @@
   border: none;
   font-size: 18px;
   cursor: pointer;
-  color: #f093fb;
+  color: #f093fb !important;
   padding: 8px;
   border-radius: 50%;
   transition: all 0.3s ease;
@@ -86,17 +86,15 @@
 }
 
 .nav-item:hover {
-  background: linear-gradient(
-    45deg,
-    rgba(240, 147, 251, 0.1),
-    rgba(245, 87, 108, 0.1)
-  );
+  background: linear-gradient(45deg,
+      rgba(240, 147, 251, 0.1),
+      rgba(245, 87, 108, 0.1)) !important;
   color: #f093fb;
   transform: translateX(5px);
 }
 
 .nav-item.active {
-  background: linear-gradient(45deg, #f093fb, #f5576c);
+  background: linear-gradient(45deg, #f093fb, #f5576c) !important;
   color: white;
   box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
 }
@@ -125,7 +123,7 @@
 .avatar {
   width: 40px;
   height: 40px;
-  background: linear-gradient(45deg, #f093fb, #f5576c);
+  background: linear-gradient(45deg, #f093fb, #f5576c) !important;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -164,7 +162,6 @@
 
 .header-left h1 {
   margin: 0;
-  background: linear-gradient(45deg, #f093fb, #f5576c);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -190,12 +187,12 @@
 
 .notification-btn,
 .profile-btn {
-  background: rgba(240, 147, 251, 0.1);
+  background: rgba(240, 147, 251, 0.1) !important;
   color: #f093fb;
 }
 
 .logout-btn {
-  background: linear-gradient(45deg, #f093fb, #f5576c);
+  background: linear-gradient(45deg, #f093fb, #f5576c) !important;
   color: white;
   font-weight: 500;
 }
