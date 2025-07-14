@@ -15,6 +15,7 @@ namespace RandoX.Data.Models.AccountModel
         public int? Status { get; set; }
         public Guid? RoleId { get; set; }
         public string RoleName { get; set; }
+        public string FullName { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
     }
