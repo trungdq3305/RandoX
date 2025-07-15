@@ -93,10 +93,10 @@ namespace RandoX.Service.Services
                 var wallet = await _walletRepository.GetUserWalletAsync(accountGuid);
 
                 
-                    wallet.Balance = totalBalance;
-                    wallet.UpdatedAt = TimeHelper.GetVietnamTime();
+                    //wallet.Balance = totalBalance;
+                    //wallet.UpdatedAt = TimeHelper.GetVietnamTime();
 
-                    wallet = await _walletRepository.UpdateWalletAsync(wallet);
+                    //wallet = await _walletRepository.UpdateWalletAsync(wallet);
                 
 
                 var result = new WalletDto
