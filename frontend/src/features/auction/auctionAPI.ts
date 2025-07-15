@@ -44,10 +44,17 @@ export const auctionAPI = apiSlice.injectEndpoints({
     }),
 
     // [5] Lấy danh sách phiên đang hoạt động
-    getActiveSessions: builder.query<any[], void>({
-      query: () => '/AuctionSession/active',
+    // getActiveSessions: builder.query<any[], void>({
+    //   query: () => '/AuctionSession/active',
+    // }),
+    getActiveSessions: builder.query({
+      query: () => ({
+        url: '/AuctionSession/active',
+        method: 'GET',
+      }),
+      transformResponse: (res) => res,
+      providesTags: ['auctions'],
     }),
-
     // [6] Lấy chi tiết phiên (gồm bid)
     getSessionDetail: builder.query<any, string>({
       query: (sessionId) => `/AuctionSession/${sessionId}`,

@@ -144,59 +144,58 @@ const DetailSession: React.FC = () => {
       <div className='auction-content'>
         <div className='auction-main'>
           <Card className='item-card'>
-            <div className='item-image-container'>
-              <img
-                src={item?.imageUrl || '/no-image.png'}
-                alt='Ảnh sản phẩm'
-                className='item-image'
-              />
-            </div>
-            <div className='item-details'>
-              <Text className='item-description'>{item?.description}</Text>
-              <div className='price-info'>
-                <div className='price-item'>
-                  <DollarOutlined className='price-icon' />
-                  <span>
-                    Giá khởi điểm:{' '}
-                    <strong>{item?.startPrice?.toLocaleString()} đ</strong>
-                  </span>
-                </div>
-                <div className='price-item'>
-                  <TrophyOutlined className='price-icon' />
-                  <span>
-                    Giá chốt:{' '}
-                    <strong>{item?.reservePrice?.toLocaleString()} đ</strong>
-                  </span>
-                </div>
-                <div className='price-item'>
-                  <span>
-                    Bước nhảy:{' '}
-                    <strong>{item?.stepPrice?.toLocaleString()} đ</strong>
-                  </span>
+            <div style={{ display: "flex" }}>
+              <div className='item-image-container'>
+                <img
+                  src={item?.imageUrl || '/no-image.png'}
+                  alt='Ảnh sản phẩm'
+                  className='item-image'
+                />
+                <p><Text className='item-description'>{item?.description}</Text></p>
+              </div>
+              <div className='item-details'>
+
+                <div className='price-info'>
+                  <div className='price-item'>
+                    <DollarOutlined className='price-icon' />
+                    <span>
+                      Giá khởi điểm:{' '}
+                      <>{item?.startPrice?.toLocaleString()}đ</>
+                    </span>
+                  </div>
+                  <div className='price-item'>
+                    <TrophyOutlined className='price-icon' />
+                    <span>
+                      Giá chốt:{' '}
+                      <>{item?.reservePrice?.toLocaleString()}đ</>
+                    </span>
+                  </div>
+                  <div className='price-item'>
+                    <span>
+                      Bước nhảy:{' '}
+                      <>{item?.stepPrice?.toLocaleString()}đ</>
+                    </span>
+                  </div>
+                  <div className='countdown-section'>
+                    <ClockCircleOutlined className='countdown-icon' />
+                    <Text className='countdown-label'>Thời gian còn lại:</Text>
+                    {endTime && !isExpired ? (
+                      <Countdown
+                        value={endTime}
+                        format='HH:mm:ss'
+                        onFinish={() => setIsExpired(true)}
+                        className='countdown-timer'
+                      />
+                    ) : (
+                      <Tag color='red' className='expired-tag'>
+                        Phiên đấu giá đã kết thúc
+                      </Tag>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </Card>
-
-          <Card className='countdown-card'>
-            <div className='countdown-section'>
-              <ClockCircleOutlined className='countdown-icon' />
-              <Text className='countdown-label'>Thời gian còn lại:</Text>
-              {endTime && !isExpired ? (
-                <Countdown
-                  value={endTime}
-                  format='HH:mm:ss'
-                  onFinish={() => setIsExpired(true)}
-                  className='countdown-timer'
-                />
-              ) : (
-                <Tag color='red' className='expired-tag'>
-                  Phiên đấu giá đã kết thúc
-                </Tag>
-              )}
-            </div>
-          </Card>
-
           <Card className='bid-form-card'>
             <Title level={3} className='bid-form-title'>
               Đặt giá ngay
