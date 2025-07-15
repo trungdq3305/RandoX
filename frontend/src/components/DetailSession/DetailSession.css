@@ -218,11 +218,11 @@
   transition: all 0.3s ease;
 }
 
-/* .bid-item:hover {
+.bid-item:hover {
   background: #f8f9ff !important;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-} */
+}
 
 .bid-item.highest-bid {
   background: linear-gradient(135deg, #fff7e6 0%, #ffeaa7 100%) !important;
@@ -357,9 +357,9 @@
   border-radius: 10px;
 }
 
-/* .bids-list::-webkit-scrollbar-thumb:hover {
+.bids-list::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
-} */
+}
 
 /* Animations */
 @keyframes fadeIn {

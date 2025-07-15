@@ -130,7 +130,7 @@ const DetailSession: React.FC = () => {
 
   const highestBid =
     bids.length > 0 ? Math.max(...bids.map((b) => b.amount)) : null
-
+  const stepPrice = data?.session?.auctionItem?.stepPrice || null
   return (
     <div className='auction-container'>
       {contextHolder}
@@ -209,7 +209,14 @@ const DetailSession: React.FC = () => {
               <Form.Item
                 label='Giá đặt (VND)'
                 name='bidPrice'
-                rules={[{ required: true, message: 'Nhập giá đặt!' }]}
+                rules={[
+                  { required: true, message: 'Nhập giá đặt!' },
+                  {
+                    type: 'number',
+                    min: (highestBid ?? 0) + (stepPrice ?? 0),
+                    message: `Giá đặt phải lớn hơn hoặc bằng ${((highestBid ?? 0) + (stepPrice ?? 0)).toLocaleString()}đ`
+                  }
+                ]}
               >
                 <InputNumber
                   min={item?.startPrice}
