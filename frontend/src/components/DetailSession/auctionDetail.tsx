@@ -53,6 +53,13 @@ const DetailSession: React.FC = () => {
   const [isExpired, setIsExpired] = useState(false)
   const [endTime, setEndTime] = useState<number | null>(null)
 
+  // State for pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize] = useState(5) // You can change this to control how many bids per page
+
+  // Form state
+  const [form] = Form.useForm()
+
   useEffect(() => {
     if (data?.session?.endTime) {
       setEndTime(new Date(data.session.endTime).getTime())
@@ -65,26 +72,20 @@ const DetailSession: React.FC = () => {
 
     connectToAuctionHub(
       sessionId,
-      (bidderName, amount) => {
-        api.info({
-          message: `${bidderName} vừa đặt giá mới: ${amount.toLocaleString()}₫`,
-        })
-        refetch()
-      },
-      (winnerName, finalAmount) => {
-        setIsExpired(true)
-        api.success({
-          message: 'Phiên đấu giá đã kết thúc',
-          description: `${winnerName} thắng với giá ${finalAmount.toLocaleString()}₫`,
-        })
-      },
       (newEndTime) => {
         const extended = new Date(newEndTime).getTime()
         setEndTime(extended)
         api.info({
           message: 'Gia hạn phiên thêm 5 phút',
         })
-      }
+      },
+      (error: any) => {
+        api.error({
+          message: 'Lỗi kết nối phiên đấu giá',
+          description: error?.message || 'Đã xảy ra lỗi khi kết nối.',
+        })
+      },
+      () => { } // Add an empty callback or appropriate handler as the fourth argument
     )
 
     return () => {
@@ -108,6 +109,10 @@ const DetailSession: React.FC = () => {
         amount: values.bidPrice,
       }).unwrap()
       openNotification('success', 'Đặt giá thành công!')
+
+      // Reset form fields after successful bid
+      form.resetFields()
+
       refetch()
     } catch (err: any) {
       openNotification('error', err?.data || 'Đặt giá thất bại!')
@@ -131,6 +136,10 @@ const DetailSession: React.FC = () => {
   const highestBid =
     bids.length > 0 ? Math.max(...bids.map((b) => b.amount)) : null
   const stepPrice = data?.session?.auctionItem?.stepPrice || null
+
+  // Handle pagination
+  const paginatedBids = bids.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+
   return (
     <div className='auction-container'>
       {contextHolder}
@@ -154,7 +163,6 @@ const DetailSession: React.FC = () => {
                 <p><Text className='item-description'>{item?.description}</Text></p>
               </div>
               <div className='item-details'>
-
                 <div className='price-info'>
                   <div className='price-item'>
                     <DollarOutlined className='price-icon' />
@@ -205,6 +213,7 @@ const DetailSession: React.FC = () => {
               onFinish={onFinish}
               layout='vertical'
               className='bid-form'
+              form={form}  // Thêm form vào đây để sử dụng resetFields
             >
               <Form.Item
                 label='Giá đặt (VND)'
@@ -251,7 +260,7 @@ const DetailSession: React.FC = () => {
             </Title>
             <List
               itemLayout='horizontal'
-              dataSource={bids}
+              dataSource={paginatedBids}
               locale={{ emptyText: 'Chưa có lượt đặt giá nào.' }}
               className='bids-list'
               renderItem={(bid) => {
@@ -289,6 +298,12 @@ const DetailSession: React.FC = () => {
                     />
                   </List.Item>
                 )
+              }}
+              pagination={{
+                current: currentPage,
+                pageSize,
+                total: bids.length,
+                onChange: (page) => setCurrentPage(page),
               }}
             />
           </Card>
