@@ -25,6 +25,7 @@ import AdminShippingCompletePage from '../pages/Auction/AdminShippingCompletePag
 import ActiveSessionsPage from '../pages/Auction/ActiveSessionsPage'
 import ProductSetDetail from '../pages/ProductSetDetail/productSetDetail'
 import PaymentPage from '../pages/PaymentPage/paymentPage'
+import Register from '../pages/Register/register'
 
 const routes: LayoutRoute[] = [
   {
@@ -34,10 +35,10 @@ const routes: LayoutRoute[] = [
         path: '/login',
         component: Login,
       },
-      // {
-      //   path: '/register',
-      //   component: Register,
-      // },
+      {
+        path: '/register',
+        component: Register,
+      },
     ],
   },
   {
