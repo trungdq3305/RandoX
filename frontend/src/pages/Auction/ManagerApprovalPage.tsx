@@ -13,6 +13,7 @@ import {
   Space,
   notification,
   Typography,
+  Popconfirm,
 } from 'antd'
 
 const { Paragraph } = Typography
@@ -95,10 +96,18 @@ const ManagerApprovalPage: React.FC = () => {
           )}
         />
         <Table.Column
-          title='Actions'
+          title="Actions"
           render={(_, record: any) => (
             <Space>
-              <Button onClick={() => handleApprove(record.id)}>Approve</Button>
+              <Popconfirm
+                title="Are you sure to approve this task?"
+                onConfirm={() => handleApprove(record.id)}
+                okText="Confirm"
+                cancelText="Cancel"
+              >
+                <Button>Approve</Button>
+              </Popconfirm>
+
               <Button
                 danger
                 onClick={() =>
@@ -110,6 +119,7 @@ const ManagerApprovalPage: React.FC = () => {
             </Space>
           )}
         />
+
       </Table>
 
       <Modal

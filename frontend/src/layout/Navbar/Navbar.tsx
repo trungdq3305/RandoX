@@ -49,20 +49,20 @@ const Navbar: React.FC = () => {
     navigate('/login')
   }
 
-  if (isLoading) {
-    return (
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
-        }}
-      >
-        <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
-      </div>
-    )
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div
+  //       style={{
+  //         display: 'flex',
+  //         justifyContent: 'center',
+  //         alignItems: 'center',
+  //         height: '100vh',
+  //       }}
+  //     >
+  //       <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+  //     </div>
+  //   )
+  // }
 
   const NavLinks = (
     <>
@@ -217,9 +217,21 @@ const Navbar: React.FC = () => {
           {userData && (
             <Flex align='center' gap={8}>
               <UserOutlined className='nav-icon' />
-              <Text strong>
-                {balance?.toLocaleString()}₫
-              </Text>
+              {isLoading ? (
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100vh',
+                  }}
+                >
+                  <Spin indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+                </div>) : (
+                <Text strong>
+                  {balance?.toLocaleString()}₫
+                </Text>
+              )}
             </Flex>
           )}
         </Space>

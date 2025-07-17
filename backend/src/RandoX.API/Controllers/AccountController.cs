@@ -81,7 +81,7 @@ namespace RandoX.API.Controllers
             return BadRequest(result);
         }
 
-        [HttpGet("confirm-email")]
+        [HttpPost("confirm-email")]
         public async Task<IActionResult> ConfirmEmail([FromQuery] string token, [FromQuery] string email)
         {
             if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email))

@@ -53,6 +53,13 @@ const DetailSession: React.FC = () => {
   const [isExpired, setIsExpired] = useState(false)
   const [endTime, setEndTime] = useState<number | null>(null)
 
+  // State for pagination
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize] = useState(5) // You can change this to control how many bids per page
+
+  // Form state
+  const [form] = Form.useForm()
+
   useEffect(() => {
     if (data?.session?.endTime) {
       setEndTime(new Date(data.session.endTime).getTime())
@@ -65,26 +72,20 @@ const DetailSession: React.FC = () => {
 
     connectToAuctionHub(
       sessionId,
-      (bidderName, amount) => {
-        api.info({
-          message: `${bidderName} vừa đặt giá mới: ${amount.toLocaleString()}₫`,
-        })
-        refetch()
-      },
-      (winnerName, finalAmount) => {
-        setIsExpired(true)
-        api.success({
-          message: 'Phiên đấu giá đã kết thúc',
-          description: `${winnerName} thắng với giá ${finalAmount.toLocaleString()}₫`,
-        })
-      },
       (newEndTime) => {
         const extended = new Date(newEndTime).getTime()
         setEndTime(extended)
         api.info({
           message: 'Gia hạn phiên thêm 5 phút',
         })
-      }
+      },
+      (error: any) => {
+        api.error({
+          message: 'Lỗi kết nối phiên đấu giá',
+          description: error?.message || 'Đã xảy ra lỗi khi kết nối.',
+        })
+      },
+      () => { } // Add an empty callback or appropriate handler as the fourth argument
     )
 
     return () => {
@@ -108,6 +109,10 @@ const DetailSession: React.FC = () => {
         amount: values.bidPrice,
       }).unwrap()
       openNotification('success', 'Đặt giá thành công!')
+
+      // Reset form fields after successful bid
+      form.resetFields()
+
       refetch()
     } catch (err: any) {
       openNotification('error', err?.data || 'Đặt giá thất bại!')
@@ -130,6 +135,10 @@ const DetailSession: React.FC = () => {
 
   const highestBid =
     bids.length > 0 ? Math.max(...bids.map((b) => b.amount)) : null
+  const stepPrice = data?.session?.auctionItem?.stepPrice || null
+
+  // Handle pagination
+  const paginatedBids = bids.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 
   return (
     <div className='auction-container'>
@@ -144,59 +153,57 @@ const DetailSession: React.FC = () => {
       <div className='auction-content'>
         <div className='auction-main'>
           <Card className='item-card'>
-            <div className='item-image-container'>
-              <img
-                src={item?.imageUrl || '/no-image.png'}
-                alt='Ảnh sản phẩm'
-                className='item-image'
-              />
-            </div>
-            <div className='item-details'>
-              <Text className='item-description'>{item?.description}</Text>
-              <div className='price-info'>
-                <div className='price-item'>
-                  <DollarOutlined className='price-icon' />
-                  <span>
-                    Giá khởi điểm:{' '}
-                    <strong>{item?.startPrice?.toLocaleString()} đ</strong>
-                  </span>
-                </div>
-                <div className='price-item'>
-                  <TrophyOutlined className='price-icon' />
-                  <span>
-                    Giá chốt:{' '}
-                    <strong>{item?.reservePrice?.toLocaleString()} đ</strong>
-                  </span>
-                </div>
-                <div className='price-item'>
-                  <span>
-                    Bước nhảy:{' '}
-                    <strong>{item?.stepPrice?.toLocaleString()} đ</strong>
-                  </span>
+            <div style={{ display: "flex" }}>
+              <div className='item-image-container'>
+                <img
+                  src={item?.imageUrl || '/no-image.png'}
+                  alt='Ảnh sản phẩm'
+                  className='item-image'
+                />
+                <p><Text className='item-description'>{item?.description}</Text></p>
+              </div>
+              <div className='item-details'>
+                <div className='price-info'>
+                  <div className='price-item'>
+                    <DollarOutlined className='price-icon' />
+                    <span>
+                      Giá khởi điểm:{' '}
+                      <>{item?.startPrice?.toLocaleString()}đ</>
+                    </span>
+                  </div>
+                  <div className='price-item'>
+                    <TrophyOutlined className='price-icon' />
+                    <span>
+                      Giá chốt:{' '}
+                      <>{item?.reservePrice?.toLocaleString()}đ</>
+                    </span>
+                  </div>
+                  <div className='price-item'>
+                    <span>
+                      Bước nhảy:{' '}
+                      <>{item?.stepPrice?.toLocaleString()}đ</>
+                    </span>
+                  </div>
+                  <div className='countdown-section'>
+                    <ClockCircleOutlined className='countdown-icon' />
+                    <Text className='countdown-label'>Thời gian còn lại:</Text>
+                    {endTime && !isExpired ? (
+                      <Countdown
+                        value={endTime}
+                        format='HH:mm:ss'
+                        onFinish={() => setIsExpired(true)}
+                        className='countdown-timer'
+                      />
+                    ) : (
+                      <Tag color='red' className='expired-tag'>
+                        Phiên đấu giá đã kết thúc
+                      </Tag>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </Card>
-
-          <Card className='countdown-card'>
-            <div className='countdown-section'>
-              <ClockCircleOutlined className='countdown-icon' />
-              <Text className='countdown-label'>Thời gian còn lại:</Text>
-              {endTime && !isExpired ? (
-                <Countdown
-                  value={endTime}
-                  format='HH:mm:ss'
-                  onFinish={() => setIsExpired(true)}
-                  className='countdown-timer'
-                />
-              ) : (
-                <Tag color='red' className='expired-tag'>
-                  Phiên đấu giá đã kết thúc
-                </Tag>
-              )}
-            </div>
-          </Card>
-
           <Card className='bid-form-card'>
             <Title level={3} className='bid-form-title'>
               Đặt giá ngay
@@ -206,11 +213,19 @@ const DetailSession: React.FC = () => {
               onFinish={onFinish}
               layout='vertical'
               className='bid-form'
+              form={form}  // Thêm form vào đây để sử dụng resetFields
             >
               <Form.Item
                 label='Giá đặt (VND)'
                 name='bidPrice'
-                rules={[{ required: true, message: 'Nhập giá đặt!' }]}
+                rules={[
+                  { required: true, message: 'Nhập giá đặt!' },
+                  {
+                    type: 'number',
+                    min: (highestBid ?? 0) + (stepPrice ?? 0),
+                    message: `Giá đặt phải lớn hơn hoặc bằng ${((highestBid ?? 0) + (stepPrice ?? 0)).toLocaleString()}đ`
+                  }
+                ]}
               >
                 <InputNumber
                   min={item?.startPrice}
@@ -245,7 +260,7 @@ const DetailSession: React.FC = () => {
             </Title>
             <List
               itemLayout='horizontal'
-              dataSource={bids}
+              dataSource={paginatedBids}
               locale={{ emptyText: 'Chưa có lượt đặt giá nào.' }}
               className='bids-list'
               renderItem={(bid) => {
@@ -283,6 +298,12 @@ const DetailSession: React.FC = () => {
                     />
                   </List.Item>
                 )
+              }}
+              pagination={{
+                current: currentPage,
+                pageSize,
+                total: bids.length,
+                onChange: (page) => setCurrentPage(page),
               }}
             />
           </Card>

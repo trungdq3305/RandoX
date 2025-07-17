@@ -2,10 +2,11 @@ import React from 'react'
 import Content from '../Content/content'
 import { LoadingOutlined } from '@ant-design/icons'
 import ProductsCardSlider from '../productSlider/productSlider'
-import auctions from '../../data/auction.json'
 import AuctionSlider from '../auctionSlider/auctionSlider'
 import { useGetProductListQuery } from '../../features/product/productAPI'
 import type { Products } from '../../types/product'
+import { useGetActiveSessionsQuery } from '../../features/auction/auctionAPI'
+import type { Auctions } from '../../types/auction'
 
 interface ProductListResponse {
   data: {
@@ -15,14 +16,19 @@ interface ProductListResponse {
   }
   isLoading: boolean
 }
-
+interface AuctionListResponse {
+  data: Auctions[]
+  isLoading: boolean
+}
 const Homepage: React.FC = () => {
   const { data, isLoading } = useGetProductListQuery<ProductListResponse>({
     pageNumber: 1,
     pageSize: 10,
   })
+  const { data: auctionData, isLoading: isAuctionLoading } = useGetActiveSessionsQuery<AuctionListResponse>({})
   const productList = data?.data?.items || null
-
+  const auctions = auctionData || null
+  console.log(auctions)
   return (
     <div
       style={{
@@ -66,7 +72,7 @@ const Homepage: React.FC = () => {
             btnContent='Xem thêm'
             linkURL='/sessions'
           />
-          {auctions.length < 0 ? (
+          {isAuctionLoading ? (
             <LoadingOutlined
               style={{
                 fontSize: '50px',
