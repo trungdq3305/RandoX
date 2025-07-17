@@ -58,7 +58,7 @@ namespace RandoX.Data.Repositories
             return await _context.AuctionSessions
                 .Where(s => (bool)!s.IsEnded)
                 .Include(s => s.AuctionItem)
-                .Include(s => s.AuctionBids)
+                .Include(s => s.AuctionBids).ThenInclude(s => s.User)
                 .ToListAsync();
         }
 

@@ -88,7 +88,7 @@ namespace RandoX.Service.Services
                 await _tokenRepository.CreateTokenAsync(emailToken);
 
                 // Gửi email xác nhận
-                var confirmationLink = $"{_configuration["AppSettings:BaseUrl"]}/api/account/confirm-email?token={token}&email={registerDto.Email}";
+                var confirmationLink = $"{_configuration["AppSettings:BaseUrl"]}/confirm-email?token={token}&email={registerDto.Email}";
                 await _emailService.SendEmailConfirmationAsync(registerDto.Email, confirmationLink);
 
                 return ApiResponse<Account>.Success(createdAccount, "Đăng ký thành công. Vui lòng kiểm tra email để xác nhận tài khoản.");
