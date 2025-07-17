@@ -60,13 +60,14 @@ export const authAPI = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['account'],
     }),
-    confirmUpdateEmail: builder.mutation({
-      query: ({ otp }) => ({
-        url: `/authentication/confirm-update-email?otp=${otp}`,
+
+    confirmEmail: builder.mutation({
+      query: ({ params }) => ({
+        url: `/Account/confirm-email?${new URLSearchParams(params).toString()}`,
         method: 'POST',
       }),
-      invalidatesTags: ['account'],
     }),
+
     forgetPassowrd: builder.mutation({
       query: ({ email }) => ({
         url: `/authentication/forget-password?email=${email}`,
@@ -90,7 +91,7 @@ export const {
   useRegisterMutation,
   useUpdatePasswordMutation,
   useUpdateEmailMutation,
-  useConfirmUpdateEmailMutation,
+  useConfirmEmailMutation,
   useForgetPassowrdMutation,
   useResetPasswordMutation,
 } = authAPI
