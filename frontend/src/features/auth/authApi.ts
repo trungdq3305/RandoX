@@ -62,7 +62,7 @@ export const authAPI = apiSlice.injectEndpoints({
     }),
 
     confirmEmail: builder.mutation({
-      query: ({ params }) => ({
+      query: (params) => ({
         url: `/Account/confirm-email?${new URLSearchParams(params).toString()}`,
         method: 'POST',
       }),

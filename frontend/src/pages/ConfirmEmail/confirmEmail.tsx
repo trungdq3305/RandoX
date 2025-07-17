@@ -21,7 +21,7 @@ const ConfirmEmail: React.FC = () => {
         }
 
         const confirmRes = confirmEmail(payload).unwrap()
-
+        console.log(confirmRes)
     }, [searchParams])
 
     // useEffect(() => {

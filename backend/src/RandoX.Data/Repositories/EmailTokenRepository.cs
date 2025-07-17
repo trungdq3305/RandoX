@@ -52,8 +52,7 @@ namespace RandoX.Data.Repositories
                 .AnyAsync(t => t.Token == token &&
                          t.Account.Email == email &&
                          t.TokenType == tokenType &&
-                         t.IsUsed != true &&
-                         t.ExpiryDate > TimeHelper.GetVietnamTime());
+                         t.IsUsed != true);
         }
     }
 }
