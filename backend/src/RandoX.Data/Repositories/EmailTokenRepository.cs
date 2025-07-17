@@ -33,11 +33,13 @@ namespace RandoX.Data.Repositories
         {
             return await _context.EmailTokens
                 .Include(t => t.Account)
-                .FirstOrDefaultAsync(t => t.Token == token &&
-                                   t.TokenType == tokenType &&
-                                   t.IsUsed != true &&
-                                   t.ExpiryDate > TimeHelper.GetVietnamTime());
+                .Where(t => t.TokenType == tokenType &&
+                            t.IsUsed != true &&
+                            t.ExpiryDate > TimeHelper.GetVietnamTime())
+                .OrderByDescending(t => t.CreatedAt) // Lấy token mới nhất
+                .FirstOrDefaultAsync(t => t.Token == token);
         }
+
 
         public async Task<EmailToken> UpdateTokenAsync(EmailToken token)
         {
@@ -48,12 +50,17 @@ namespace RandoX.Data.Repositories
 
         public async Task<bool> ValidateTokenAsync(string token, string email, string tokenType)
         {
-            return await _context.EmailTokens
-                .AnyAsync(t => t.Token == token &&
-                         t.Account.Email == email &&
-                         t.TokenType == tokenType &&
-                         t.IsUsed != true &&
-                         t.ExpiryDate > TimeHelper.GetVietnamTime());
+            var tokenEntity = await _context.EmailTokens
+                .Include(t => t.Account)
+                .Where(t => t.Account.Email == email &&
+                            t.TokenType == tokenType &&
+                            t.IsUsed != true &&
+                            t.ExpiryDate > TimeHelper.GetVietnamTime())
+                .OrderByDescending(t => t.CreatedAt)
+                .FirstOrDefaultAsync();
+
+            return tokenEntity != null && tokenEntity.Token == token;
         }
+
     }
 }
