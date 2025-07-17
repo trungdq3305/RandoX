@@ -83,6 +83,7 @@ namespace RandoX.Service.Services
                     AccountId = createdAccount.Id,
                     Token = token,
                     TokenType = "EmailConfirmation",
+                    CreatedAt = TimeHelper.GetVietnamTime(),
                     ExpiryDate = TimeHelper.GetVietnamTime().AddHours(24)
                 };
 
@@ -166,6 +167,7 @@ namespace RandoX.Service.Services
                 {
                     AccountId = account.Id,
                     Token = token,
+                    CreatedAt = TimeHelper.GetVietnamTime(),
                     TokenType = "PasswordReset",
                     ExpiryDate = TimeHelper.GetVietnamTime().AddHours(1)
                 };
@@ -202,7 +204,9 @@ namespace RandoX.Service.Services
                     AccountId = account.Id,
                     Token = token,
                     TokenType = "PasswordChange",
+                    CreatedAt = TimeHelper.GetVietnamTime(),
                     ExpiryDate = TimeHelper.GetVietnamTime().AddHours(1)
+
                 };
 
                 // Lưu mật khẩu mới tạm thời (có thể lưu vào cache hoặc bảng riêng)
