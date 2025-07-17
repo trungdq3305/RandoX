@@ -67,6 +67,7 @@ CREATE TABLE account (
     updated_at DATETIME DEFAULT GETDATE(),
     deleted_at DATETIME NULL,
     is_deleted BIT DEFAULT 0,
+    [Fullname] NVARCHAR(255),
     FOREIGN KEY (role_id) REFERENCES role(id)
 );
 

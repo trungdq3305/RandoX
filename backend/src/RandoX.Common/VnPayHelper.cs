@@ -199,15 +199,9 @@ namespace RandoX.Common
                     var transOrder = await _orderRepository.GetOrderByIdAsync(transaction.Id.ToString());
                     if (transOrder.IsDeposit != false)
                     {
-                        var wallet = new WalletHistory
-                        {
-                            Id = Guid.NewGuid(),
-                            TimeTransaction = DateOnly.FromDateTime(TimeHelper.GetVietnamTime()),
-                            Amount = (decimal)transaction.Amount,
-                            AccountId = Guid.Parse(userid),
-                            TransactionTypeId = Guid.Parse("005A36D6-06DE-469F-BD69-D88912DBA56F"),
-                        };
-                        _walletRepository.CreateWalletHistoryAsync(wallet);
+                        var wa = await dbContext.Wallets.FirstOrDefaultAsync(x => x.Id == Guid.Parse(userid));
+                        wa.Balance += (decimal)transaction.Amount;
+                        _walletRepository.UpdateWalletAsync(wa);
                     }
                 }
                 else

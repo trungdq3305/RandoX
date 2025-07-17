@@ -70,7 +70,8 @@ namespace RandoX.Service.Services
                     Password = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
                     PhoneNumber = registerDto.PhoneNumber,
                     RoleId = Guid.Parse(registerDto.RoleId),
-                    Status = 0 // Pending confirmation
+                    Status = 0, // Pending confirmation
+                    Fullname = registerDto.Fullname,
                 };
 
                 var createdAccount = await _accountRepository.CreateAsync(account);
@@ -298,7 +299,8 @@ namespace RandoX.Service.Services
                 RoleId = a.RoleId,
                 RoleName = a.Role?.RoleName,
                 CreatedAt = a.CreatedAt,
-                UpdatedAt = a.UpdatedAt
+                UpdatedAt = a.UpdatedAt,
+                Fullname = a.Fullname
             }).ToList();
         }
 
@@ -313,6 +315,7 @@ namespace RandoX.Service.Services
             acc.Status = dto.Status;
             acc.RoleId = dto.RoleId;
             acc.UpdatedAt = TimeHelper.GetVietnamTime();
+            acc.Fullname = dto.Fullname;
 
             await _accountRepository.UpdateAsync(acc);
             return ApiResponse<bool>.Success(true, "Cập nhật thành công");
