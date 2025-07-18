@@ -59,7 +59,29 @@ namespace RandoX.Service.Services
                 // Kiểm tra email đã tồn tại
                 if (await _accountRepository.EmailExistsAsync(registerDto.Email))
                 {
-                    return ApiResponse<Account>.Failure("Email đã được sử dụng");
+                    var existingAccount = await _accountRepository.GetByEmailAsync(registerDto.Email);
+
+                    if (existingAccount.Status == 0) // Chưa xác nhận
+                    {
+                        var token1 = GenerateSecureToken();
+                        var emailToken1 = new EmailToken
+                        {
+                            AccountId = existingAccount.Id,
+                            Token = token1,
+                            TokenType = "EmailConfirmation",
+                            CreatedAt = TimeHelper.GetVietnamTime(),
+                            ExpiryDate = TimeHelper.GetVietnamTime().AddHours(24)
+                        };
+
+                        await _tokenRepository.CreateTokenAsync(emailToken1);
+
+                        var confirmationLink1 = $"{_configuration["AppSettings:BaseUrl"]}/confirm-email?token={token1}&email={registerDto.Email}";
+                        await _emailService.SendEmailConfirmationAsync(registerDto.Email, confirmationLink1);
+
+                        return ApiResponse<Account>.Failure("Email đã tồn tại nhưng chưa được xác nhận. Đã gửi lại email xác nhận.");
+                    }
+
+                    return ApiResponse<Account>.Failure("Email đã được sử dụng.");
                 }
 
                 // Tạo tài khoản mới
