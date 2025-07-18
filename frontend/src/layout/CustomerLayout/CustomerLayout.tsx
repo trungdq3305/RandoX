@@ -6,7 +6,7 @@ const { Content } = Layout
 import { useEffect } from 'react'
 import Navbar from '../Navbar/Navbar'
 import AppFooter from '../Footer/Footer'
-import '../MainLayout/mainLayout.css'
+import "./customerLayout.css"
 function CustomerLayout() {
   const navigate = useNavigate()
 

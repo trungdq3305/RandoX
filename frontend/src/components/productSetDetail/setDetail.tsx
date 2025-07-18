@@ -211,142 +211,152 @@ const SetDetail: React.FC = () => {
   return (
     <div
       style={{
-        width: '100%',
-        maxWidth: '80%',
-        padding: '24px',
-        margin: '0 auto',
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
       }}
+      className='main-detail'
     >
       <div
-        className='product-detail-container'
         style={{
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+          width: '100%',
+          maxWidth: '80%',
+          padding: '24px',
+          margin: '0 auto',
         }}
       >
-        <div className='product-images'>
-          {[1, 2, 3, 4].map((img) => (
-            <img
-              key={img}
-              src={
-                set?.imageUrl ||
-                'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'
-              }
-              alt={`${set.productSetName} thumbnail ${img}`}
-              className='thumbnail'
-            />
-          ))}
-        </div>
-        <div className='product-main'>
-          <img
-            src={
-              set.imageUrl ||
-              'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'
-            }
-            alt={set.productSetName}
-            className='main-image'
-          />
-        </div>
-        <div className='product-info'>
-          <div className='new-tag'>
-            {set.discountValue ? `-${set.discountValue * 100}%` : 'NEW'}
-          </div>
-          <h1>{set.productSetName}</h1>
-          <p className='price'>
-            {set.discountValue ? (
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <p style={{ textDecoration: 'line-through', color: 'gray' }}>
-                  {set.price.toLocaleString('vi-VN')}đ
-                </p>
-                <p>
-                  {(set.price - set.price * set.discountValue).toLocaleString(
-                    'vi-VN'
-                  )}
-                  đ
-                </p>
-              </div>
-            ) : (
-              set.price.toLocaleString('vi-VN')
-            )}{' '}
-          </p>
-          <div className='actions'>
-            <Button
-              type='primary'
-              onClick={handleAddSetToCart}
-              style={{ background: '#000', borderColor: '#000' }}
-              className='add-to-cart-button'
-            >
-              ADD TO CART
-            </Button>
-            {/* Thêm các nút mới */}
-            <Button
-              type='default'
-              onClick={() => {
-                navigate(`/products/${set.productId}`)
-              }}
-              style={{ marginRight: '10px' }}
-            >
-              <img
-                src={
-                  set?.imageUrl ||
-                  'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'
-                }
-                alt='Single Box'
-                style={{
-                  width: '20px',
-                  marginRight: '8px',
-                  objectFit: 'cover',
-                }}
-              />
-              Single Box
-            </Button>
-            <Button
-              type='default'
-              onClick={() => {
-                // Thêm logic xử lý cho Whole Set (ví dụ: navigate hoặc gọi API)
-                navigate(`/productSet/${set.id}`)
-              }}
-            >
-              <img
-                src={
-                  set?.imageUrl ||
-                  'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'
-                }
-                alt='Whole Set'
-                style={{
-                  width: '20px',
-                  marginRight: '8px',
-                  objectFit: 'cover',
-                  borderRadius: '10px',
-                }}
-              />
-              Whole Set
-            </Button>
-          </div>
-          <div className='details-section'>
-            <Collapse
-              defaultActiveKey={['1']}
-              items={items}
-              expandIconPosition='end'
-              bordered={true}
-            />
-          </div>
-        </div>
-      </div>
-      <Content title='CÁC SẢN PHẨM' btnContent='Xem thêm' linkURL='/sessions' />
-      {isProductListLoading ? (
         <div
+          className='product-detail-container'
           style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '30vh',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
           }}
         >
-          <Spin indicator={<LoadingOutlined style={{ fontSize: 50 }} spin />} />
+          <div className='product-images'>
+            {[1, 2, 3, 4].map((img) => (
+              <img
+                key={img}
+                src={
+                  set?.imageUrl ||
+                  'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'
+                }
+                alt={`${set.productSetName} thumbnail ${img}`}
+                className='thumbnail'
+              />
+            ))}
+          </div>
+          <div className='product-main'>
+            <img
+              src={
+                set.imageUrl ||
+                'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'
+              }
+              alt={set.productSetName}
+              className='main-image'
+            />
+          </div>
+          <div className='product-info'>
+            <div className='new-tag'>
+              {set.discountValue ? `-${set.discountValue * 100}%` : 'NEW'}
+            </div>
+            <h1>{set.productSetName}</h1>
+            <p className='price'>
+              {set.discountValue ? (
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <p style={{ textDecoration: 'line-through', color: 'gray' }}>
+                    {set.price.toLocaleString('vi-VN')}đ
+                  </p>
+                  <p>
+                    {(set.price - set.price * set.discountValue).toLocaleString(
+                      'vi-VN'
+                    )}
+                    đ
+                  </p>
+                </div>
+              ) : (
+                set.price.toLocaleString('vi-VN')
+              )}{' '}
+            </p>
+            <div className='actions'>
+              <Button
+                type='primary'
+                onClick={handleAddSetToCart}
+                style={{ background: '#000', borderColor: '#000' }}
+                className='add-to-cart-button'
+              >
+                ADD TO CART
+              </Button>
+              {/* Thêm các nút mới */}
+              <Button
+                type='default'
+                onClick={() => {
+                  navigate(`/products/${set.productId}`)
+                }}
+                style={{ marginRight: '10px' }}
+              >
+                <img
+                  src={
+                    set?.imageUrl ||
+                    'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'
+                  }
+                  alt='Single Box'
+                  style={{
+                    width: '20px',
+                    marginRight: '8px',
+                    objectFit: 'cover',
+                  }}
+                />
+                Single Box
+              </Button>
+              <Button
+                type='default'
+                onClick={() => {
+                  // Thêm logic xử lý cho Whole Set (ví dụ: navigate hoặc gọi API)
+                  navigate(`/productSet/${set.id}`)
+                }}
+              >
+                <img
+                  src={
+                    set?.imageUrl ||
+                    'https://prod-eurasian-res.popmart.com/default/20250226_144937_405917____1_____1200x1200.jpg'
+                  }
+                  alt='Whole Set'
+                  style={{
+                    width: '20px',
+                    marginRight: '8px',
+                    objectFit: 'cover',
+                    borderRadius: '10px',
+                  }}
+                />
+                Whole Set
+              </Button>
+            </div>
+            <div className='details-section'>
+              <Collapse
+                defaultActiveKey={['1']}
+                items={items}
+                expandIconPosition='end'
+                bordered={true}
+              />
+            </div>
+          </div>
         </div>
-      ) : (
-        <ProductsCardSlider products={productList} />
-      )}
+        <Content title='CÁC SẢN PHẨM' btnContent='Xem thêm' linkURL='/sessions' />
+        {isProductListLoading ? (
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '30vh',
+            }}
+          >
+            <Spin indicator={<LoadingOutlined style={{ fontSize: 50 }} spin />} />
+          </div>
+        ) : (
+          <ProductsCardSlider products={productList} />
+        )}
+      </div>
     </div>
   )
 }

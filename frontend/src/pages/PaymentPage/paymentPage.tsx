@@ -68,8 +68,8 @@ const PaymentPage: React.FC = () => {
         if (status === 'success') {
             return (
                 <div >
-                    <Title level={3}>🎉 Thanh toán thành công!</Title>
-                    <Text>Chúng tôi đã nhận được thanh toán của bạn. Xin cảm ơn!</Text>
+                    <Title level={3}>🎉 Order purchased successfully!</Title>
+                    <Text>We have received your order. Thank you !</Text>
                 </div>
             )
         }
@@ -77,10 +77,10 @@ const PaymentPage: React.FC = () => {
         return (
             <div >
                 <Title level={3} type='danger'>
-                    ❌ Thanh toán thất bại!
+                    ❌ Payment failed
                 </Title>
                 <Text type='secondary'>
-                    Giao dịch không thành công hoặc bị từ chối.
+                    Payment is failed or declined !
                 </Text>
             </div>
         )
@@ -94,7 +94,7 @@ const PaymentPage: React.FC = () => {
                 style={{ marginTop: 24 }}
                 className='return-button'
             >
-                Về trang chủ
+                Back To Home
             </Button>
         </Card>
     )
