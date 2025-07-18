@@ -1,0 +1,14 @@
+/* src/main-layout.css */
+
+.main-layout {
+    min-height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #fce4ec, #e3f2fd);
+    /* pink to blue gradient */
+}
+
+.main-content {
+    /* padding: 50px;
+    padding-top: 30px; */
+    background-color: transparent;
+}

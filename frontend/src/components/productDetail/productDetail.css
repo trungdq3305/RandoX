@@ -11,6 +11,11 @@
   /* Đảm bảo chiều cao đủ để sticky hoạt động */
 }
 
+.main-detail {
+  background: linear-gradient(to bottom, #fce4ec, #e3f2fd);
+
+}
+
 .product-images {
   display: flex;
   flex-direction: column;

@@ -36,6 +36,7 @@ const Homepage: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+
       }}
     >
       <div
