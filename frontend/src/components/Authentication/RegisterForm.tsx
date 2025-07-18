@@ -16,6 +16,7 @@ export const RegisterForm = () => {
         dob: dayjs(values.dob).format('YYYY-MM-DD'), // 👈 CHUYỂN ĐỊNH DẠNG TẠI ĐÂY
         phoneNumber: values.phoneNumber,
         roleId: 'a1fdb0c2-0daf-4bb0-b075-a3cc0b2febeb',
+        fullname: ""
       }).unwrap()
       console.log(response)
       notification.success({
