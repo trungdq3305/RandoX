@@ -25,10 +25,12 @@ interface SpinWheelDetail {
   type: string
   items: SpinItem[]
 }
+
 const getCookie = (name: string): string | null => {
   const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'))
   return match ? decodeURIComponent(match[2]) : null
 }
+
 export default function RandomWheel() {
   const token = getCookie('userToken')
   const { data: wheels, isLoading } = useGetAllWheelsQuery()
@@ -152,6 +154,17 @@ export default function RandomWheel() {
                     >
                       Draw now
                     </button>
+                    {wheel.price !== 0 && (
+                      <p
+                        style={{
+                          color: 'green',
+                          fontWeight: 'bold',
+                          marginTop: '5px',
+                        }}
+                      >
+                        Price: {wheel.price.toLocaleString()} VNĐ
+                      </p>
+                    )}
                     {wheel.price === 0 && !alreadySpunToday && (
                       <p
                         style={{

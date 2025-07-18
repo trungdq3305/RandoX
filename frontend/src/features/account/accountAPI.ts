@@ -28,6 +28,14 @@ export const accountAPI = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ['accounts'],
     }),
+    registerAccount: builder.mutation({
+      query: ({ data }) => ({
+        url: '/Account/register',
+        method: 'POST',
+        body: data,
+      }),
+      invalidatesTags: ['accounts'],
+    }),
   }),
 })
 
@@ -36,4 +44,5 @@ export const {
   useGetAccountByIdQuery,
   useUpdateAccountMutation,
   useDeleteAccountMutation,
+  useRegisterAccountMutation
 } = accountAPI

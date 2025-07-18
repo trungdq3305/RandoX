@@ -83,12 +83,30 @@ const AuctionCreatePage: React.FC = () => {
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item
-            name='reservePrice'
-            label='Giá chốt'
-            rules={[{ required: true }]}
+            name="reservePrice"
+            label="Giá chốt"
+            dependencies={['startPrice']}
+            rules={[
+              { required: true, message: 'Vui lòng nhập giá chốt' },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  const startPrice = getFieldValue('startPrice');
+                  if (value === undefined || startPrice === undefined) {
+                    return Promise.resolve();
+                  }
+                  if (value < startPrice) {
+                    return Promise.reject(
+                      new Error('Giá chốt phải lớn hơn hoặc bằng giá khởi điểm')
+                    );
+                  }
+                  return Promise.resolve();
+                },
+              }),
+            ]}
           >
             <InputNumber min={0} style={{ width: '100%' }} />
           </Form.Item>
+
           <Form.Item
             name='stepPrice'
             label='Bước nhảy tối thiểu'

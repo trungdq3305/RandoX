@@ -81,13 +81,13 @@ public partial class randox_dbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=garams.database.windows.net;Initial Catalog=randoxdb1;Persist Security Info=True;User ID=sa1;Password=TTt192004;Encrypt=True");
+        => optionsBuilder.UseSqlServer("Data Source=garams.database.windows.net;Initial Catalog=randoxdb1;Persist Security Info=True;User ID=sa1;Password=TTt192004");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__account__3213E83FD7ABF67F");
+            entity.HasKey(e => e.Id).HasName("PK__account__3213E83FCEED8DC1");
 
             entity.ToTable("account");
 
@@ -106,6 +106,7 @@ public partial class randox_dbContext : DbContext
                 .IsRequired()
                 .HasMaxLength(255)
                 .HasColumnName("email");
+            entity.Property(e => e.Fullname).HasMaxLength(255);
             entity.Property(e => e.IsDeleted)
                 .HasDefaultValue(false)
                 .HasColumnName("is_deleted");
@@ -127,12 +128,12 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Role).WithMany(p => p.Accounts)
                 .HasForeignKey(d => d.RoleId)
-                .HasConstraintName("FK__account__role_id__69FBBC1F");
+                .HasConstraintName("FK__account__role_id__0A688BB1");
         });
 
         modelBuilder.Entity<Address>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__address__3213E83F487D5346");
+            entity.HasKey(e => e.Id).HasName("PK__address__3213E83FB4E9990C");
 
             entity.ToTable("address");
 
@@ -170,12 +171,12 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.Addresses)
                 .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__address__account__6AEFE058");
+                .HasConstraintName("FK__address__account__0B5CAFEA");
         });
 
         modelBuilder.Entity<AuctionBid>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__AuctionB__3214EC07026F065B");
+            entity.HasKey(e => e.Id).HasName("PK__AuctionB__3214EC07972A2B10");
 
             entity.ToTable("AuctionBid");
 
@@ -188,17 +189,17 @@ public partial class randox_dbContext : DbContext
             entity.HasOne(d => d.AuctionSession).WithMany(p => p.AuctionBids)
                 .HasForeignKey(d => d.AuctionSessionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__AuctionBi__Aucti__4F12BBB9");
+                .HasConstraintName("FK__AuctionBi__Aucti__0C50D423");
 
             entity.HasOne(d => d.User).WithMany(p => p.AuctionBids)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__AuctionBi__UserI__5006DFF2");
+                .HasConstraintName("FK__AuctionBi__UserI__0D44F85C");
         });
 
         modelBuilder.Entity<AuctionItem>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__AuctionI__3214EC070390A23A");
+            entity.HasKey(e => e.Id).HasName("PK__AuctionI__3214EC079DF9BC0E");
 
             entity.ToTable("AuctionItem");
 
@@ -218,12 +219,12 @@ public partial class randox_dbContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.AuctionItems)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__AuctionIt__UserI__44952D46");
+                .HasConstraintName("FK__AuctionIt__UserI__0E391C95");
         });
 
         modelBuilder.Entity<AuctionSession>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__AuctionS__3214EC0726C8CC11");
+            entity.HasKey(e => e.Id).HasName("PK__AuctionS__3214EC07763CAD28");
 
             entity.ToTable("AuctionSession");
 
@@ -239,12 +240,12 @@ public partial class randox_dbContext : DbContext
             entity.HasOne(d => d.AuctionItem).WithMany(p => p.AuctionSessions)
                 .HasForeignKey(d => d.AuctionItemId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__AuctionSe__Aucti__4A4E069C");
+                .HasConstraintName("FK__AuctionSe__Aucti__0F2D40CE");
         });
 
         modelBuilder.Entity<AuctionShippingInfo>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__AuctionS__3214EC0760B64C2E");
+            entity.HasKey(e => e.Id).HasName("PK__AuctionS__3214EC07B049A781");
 
             entity.ToTable("AuctionShippingInfo");
 
@@ -269,7 +270,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Cart>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__cart__3213E83F34AA68E1");
+            entity.HasKey(e => e.Id).HasName("PK__cart__3213E83F27DE5013");
 
             entity.ToTable("cart");
 
@@ -297,16 +298,16 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.CartAccounts)
                 .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__cart__account_id__6BE40491");
+                .HasConstraintName("FK__cart__account_id__1209AD79");
 
             entity.HasOne(d => d.IdNavigation).WithOne(p => p.CartIdNavigation)
                 .HasForeignKey<Cart>(d => d.Id)
-                .HasConstraintName("FK__cart__id__6CD828CA");
+                .HasConstraintName("FK__cart__id__12FDD1B2");
         });
 
         modelBuilder.Entity<CartProduct>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__cart_pro__3213E83FB06CC127");
+            entity.HasKey(e => e.Id).HasName("PK__cart_pro__3213E83F7DAB02E4");
 
             entity.ToTable("cart_product");
 
@@ -336,11 +337,11 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Cart).WithMany(p => p.CartProducts)
                 .HasForeignKey(d => d.CartId)
-                .HasConstraintName("FK__cart_prod__cart___6DCC4D03");
+                .HasConstraintName("FK__cart_prod__cart___13F1F5EB");
 
             entity.HasOne(d => d.Product).WithMany(p => p.CartProducts)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__cart_prod__produ__6EC0713C");
+                .HasConstraintName("FK__cart_prod__produ__14E61A24");
 
             entity.HasOne(d => d.ProductSet).WithMany(p => p.CartProducts)
                 .HasForeignKey(d => d.ProductSetId)
@@ -349,7 +350,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__category__3213E83F53B0AF82");
+            entity.HasKey(e => e.Id).HasName("PK__category__3213E83FD84EF039");
 
             entity.ToTable("category");
 
@@ -382,7 +383,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<EmailToken>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__email_to__3213E83F405DB229");
+            entity.HasKey(e => e.Id).HasName("PK__email_to__3213E83F01B92AA6");
 
             entity.ToTable("email_token");
 
@@ -412,12 +413,12 @@ public partial class randox_dbContext : DbContext
             entity.HasOne(d => d.Account).WithMany(p => p.EmailTokens)
                 .HasForeignKey(d => d.AccountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__email_tok__accou__70A8B9AE");
+                .HasConstraintName("FK__email_tok__accou__16CE6296");
         });
 
         modelBuilder.Entity<Image>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__image__3213E83FD1353683");
+            entity.HasKey(e => e.Id).HasName("PK__image__3213E83FBD14DAB6");
 
             entity.ToTable("image");
 
@@ -446,16 +447,16 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Order).WithMany(p => p.Images)
                 .HasForeignKey(d => d.OrderId)
-                .HasConstraintName("FK__image__order_id__719CDDE7");
+                .HasConstraintName("FK__image__order_id__17C286CF");
 
             entity.HasOne(d => d.Product).WithMany(p => p.Images)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__image__product_i__72910220");
+                .HasConstraintName("FK__image__product_i__18B6AB08");
         });
 
         modelBuilder.Entity<Manufacturer>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__manufact__3213E83F8DCBB454");
+            entity.HasKey(e => e.Id).HasName("PK__manufact__3213E83F0A1F8C27");
 
             entity.ToTable("manufacturer");
 
@@ -484,7 +485,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__order__3213E83FF5E8F15E");
+            entity.HasKey(e => e.Id).HasName("PK__order__3213E83FC5CC65AF");
 
             entity.ToTable("order");
 
@@ -518,16 +519,16 @@ public partial class randox_dbContext : DbContext
             entity.HasOne(d => d.Cart).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.CartId)
                 .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("FK__order__cart_id__73852659");
+                .HasConstraintName("FK__order__cart_id__19AACF41");
 
             entity.HasOne(d => d.Voucher).WithMany(p => p.Orders)
                 .HasForeignKey(d => d.VoucherId)
-                .HasConstraintName("FK__order__voucher_i__74794A92");
+                .HasConstraintName("FK__order__voucher_i__1A9EF37A");
         });
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__product__3213E83F90F1259C");
+            entity.HasKey(e => e.Id).HasName("PK__product__3213E83FB23D2776");
 
             entity.ToTable("product");
 
@@ -566,20 +567,20 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Category).WithMany(p => p.Products)
                 .HasForeignKey(d => d.CategoryId)
-                .HasConstraintName("FK__product__categor__756D6ECB");
+                .HasConstraintName("FK__product__categor__1B9317B3");
 
             entity.HasOne(d => d.Manufacturer).WithMany(p => p.Products)
                 .HasForeignKey(d => d.ManufacturerId)
-                .HasConstraintName("FK__product__manufac__76619304");
+                .HasConstraintName("FK__product__manufac__1C873BEC");
 
             entity.HasOne(d => d.Promotion).WithMany(p => p.Products)
                 .HasForeignKey(d => d.PromotionId)
-                .HasConstraintName("FK__product__promoti__7755B73D");
+                .HasConstraintName("FK__product__promoti__1D7B6025");
         });
 
         modelBuilder.Entity<ProductSet>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__product___3213E83FEAAB6ADC");
+            entity.HasKey(e => e.Id).HasName("PK__product___3213E83F017A5B34");
 
             entity.ToTable("product_set");
 
@@ -620,12 +621,12 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Promotion).WithMany(p => p.ProductSets)
                 .HasForeignKey(d => d.PromotionId)
-                .HasConstraintName("FK__product_s__promo__7849DB76");
+                .HasConstraintName("FK__product_s__promo__1E6F845E");
         });
 
         modelBuilder.Entity<Promotion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__promotio__3213E83FCC2CF34C");
+            entity.HasKey(e => e.Id).HasName("PK__promotio__3213E83F537EF6C7");
 
             entity.ToTable("promotion");
 
@@ -659,7 +660,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__role__3213E83FB861C331");
+            entity.HasKey(e => e.Id).HasName("PK__role__3213E83F5CF9B5C1");
 
             entity.ToTable("role");
 
@@ -688,7 +689,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Shipment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83F23AE1650");
+            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83FE81BE8C7");
 
             entity.ToTable("shipment");
 
@@ -715,7 +716,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<ShipmentHistory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83F293AB0C3");
+            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83FA85E2F52");
 
             entity.ToTable("shipment_history");
 
@@ -742,20 +743,20 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.ShipmentHistories)
                 .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__shipment___accou__7A3223E8");
+                .HasConstraintName("FK__shipment___accou__2057CCD0");
 
             entity.HasOne(d => d.Shipment).WithMany(p => p.ShipmentHistories)
                 .HasForeignKey(d => d.ShipmentId)
-                .HasConstraintName("FK__shipment___shipm__7C1A6C5A");
+                .HasConstraintName("FK__shipment___shipm__22401542");
 
             entity.HasOne(d => d.ShipmentStatus).WithMany(p => p.ShipmentHistories)
                 .HasForeignKey(d => d.ShipmentStatusId)
-                .HasConstraintName("FK__shipment___shipm__7B264821");
+                .HasConstraintName("FK__shipment___shipm__214BF109");
         });
 
         modelBuilder.Entity<ShipmentStatus>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83FFFDB93D3");
+            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83F5F5CE377");
 
             entity.ToTable("shipment_status");
 
@@ -784,7 +785,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<SpinHistory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__spin_his__3213E83F69B20746");
+            entity.HasKey(e => e.Id).HasName("PK__spin_his__3213E83F9470A04C");
 
             entity.ToTable("spin_history");
 
@@ -808,22 +809,22 @@ public partial class randox_dbContext : DbContext
             entity.HasOne(d => d.Account).WithMany(p => p.SpinHistories)
                 .HasForeignKey(d => d.AccountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__spin_hist__accou__2DB1C7EE");
+                .HasConstraintName("FK__spin_hist__accou__2334397B");
 
             entity.HasOne(d => d.SpinItem).WithMany(p => p.SpinHistories)
                 .HasForeignKey(d => d.SpinItemId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__spin_hist__spin___2EA5EC27");
+                .HasConstraintName("FK__spin_hist__spin___24285DB4");
 
             entity.HasOne(d => d.SpinWheel).WithMany(p => p.SpinHistories)
                 .HasForeignKey(d => d.SpinWheelId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__spin_hist__spin___2F9A1060");
+                .HasConstraintName("FK__spin_hist__spin___251C81ED");
         });
 
         modelBuilder.Entity<SpinItem>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__spin_ite__3213E83F99F4A78C");
+            entity.HasKey(e => e.Id).HasName("PK__spin_ite__3213E83FEC6B1A0E");
 
             entity.ToTable("spin_item");
 
@@ -853,12 +854,12 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Product).WithMany(p => p.SpinItems)
                 .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("FK__spin_item__produ__2704CA5F");
+                .HasConstraintName("FK__spin_item__produ__2610A626");
 
             entity.HasOne(d => d.SpinWheel).WithMany(p => p.SpinItems)
                 .HasForeignKey(d => d.SpinWheelId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__spin_item__spin___2610A626");
+                .HasConstraintName("FK__spin_item__spin___2704CA5F");
 
             entity.HasOne(d => d.Voucher).WithMany(p => p.SpinItems)
                 .HasForeignKey(d => d.VoucherId)
@@ -867,7 +868,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<SpinWheel>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__spin_whe__3213E83F94010F8A");
+            entity.HasKey(e => e.Id).HasName("PK__spin_whe__3213E83FC7421660");
 
             entity.ToTable("spin_wheel");
 
@@ -900,7 +901,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83F32A35CF3");
+            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83F4B76FD1E");
 
             entity.ToTable("transaction");
 
@@ -933,20 +934,20 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.IdNavigation).WithOne(p => p.Transaction)
                 .HasForeignKey<Transaction>(d => d.Id)
-                .HasConstraintName("FK__transaction__id__7EF6D905");
+                .HasConstraintName("FK__transaction__id__2AD55B43");
 
             entity.HasOne(d => d.TransactionStatus).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.TransactionStatusId)
-                .HasConstraintName("FK__transacti__trans__7D0E9093");
+                .HasConstraintName("FK__transacti__trans__28ED12D1");
 
             entity.HasOne(d => d.WalletHistory).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.WalletHistoryId)
-                .HasConstraintName("FK__transacti__walle__7E02B4CC");
+                .HasConstraintName("FK__transacti__walle__29E1370A");
         });
 
         modelBuilder.Entity<TransactionStatus>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83F567A7B13");
+            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83F4B003C91");
 
             entity.ToTable("transaction_status");
 
@@ -975,7 +976,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<TransactionType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83FF4F8F29C");
+            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83F2A020B18");
 
             entity.ToTable("transaction_type");
 
@@ -1004,7 +1005,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Voucher>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__voucher__3213E83FB20084A7");
+            entity.HasKey(e => e.Id).HasName("PK__voucher__3213E83F9660505C");
 
             entity.ToTable("voucher");
 
@@ -1052,7 +1053,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Wallet>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__wallet__3213E83F7BB151DC");
+            entity.HasKey(e => e.Id).HasName("PK__wallet__3213E83F4D5BE155");
 
             entity.ToTable("wallet");
 
@@ -1079,12 +1080,12 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.IdNavigation).WithOne(p => p.Wallet)
                 .HasForeignKey<Wallet>(d => d.Id)
-                .HasConstraintName("FK__wallet__id__7FEAFD3E");
+                .HasConstraintName("FK__wallet__id__2BC97F7C");
         });
 
         modelBuilder.Entity<WalletHistory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__wallet_h__3213E83F50E062DE");
+            entity.HasKey(e => e.Id).HasName("PK__wallet_h__3213E83F8973AEE5");
 
             entity.ToTable("wallet_history");
 
@@ -1114,16 +1115,16 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.WalletHistories)
                 .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__wallet_hi__accou__00DF2177");
+                .HasConstraintName("FK__wallet_hi__accou__2CBDA3B5");
 
             entity.HasOne(d => d.TransactionType).WithMany(p => p.WalletHistories)
                 .HasForeignKey(d => d.TransactionTypeId)
-                .HasConstraintName("FK__wallet_hi__trans__01D345B0");
+                .HasConstraintName("FK__wallet_hi__trans__2DB1C7EE");
         });
 
         modelBuilder.Entity<WithDrawForm>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__with_dra__3213E83FC64E16B7");
+            entity.HasKey(e => e.Id).HasName("PK__with_dra__3213E83F491A90DA");
 
             entity.ToTable("with_draw_form");
 
@@ -1156,16 +1157,16 @@ public partial class randox_dbContext : DbContext
 
             entity.HasOne(d => d.Account).WithMany(p => p.WithDrawForms)
                 .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__with_draw__accou__02C769E9");
+                .HasConstraintName("FK__with_draw__accou__2EA5EC27");
 
             entity.HasOne(d => d.WithdrawStatus).WithMany(p => p.WithDrawForms)
                 .HasForeignKey(d => d.WithdrawStatusId)
-                .HasConstraintName("FK__with_draw__withd__03BB8E22");
+                .HasConstraintName("FK__with_draw__withd__2F9A1060");
         });
 
         modelBuilder.Entity<WithdrawStatus>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__withdraw__3213E83FFE780F4C");
+            entity.HasKey(e => e.Id).HasName("PK__withdraw__3213E83F5E8CE594");
 
             entity.ToTable("withdraw_status");
 

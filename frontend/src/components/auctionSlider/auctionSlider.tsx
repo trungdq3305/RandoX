@@ -1,6 +1,6 @@
 import React from 'react'
 import './auctionSlider.css'
-import { Card, Carousel } from 'antd'
+import { Card, Carousel, Tag } from 'antd'
 import type { Auctions } from '../../types/auction'
 import moment from 'moment'
 import { useNavigate } from 'react-router-dom'
@@ -14,9 +14,10 @@ const AuctionSlider: React.FC<AuctionCardSliderProps> = ({ auctions }) => {
     return name.length > maxLength ? name.substring(0, maxLength) + '...' : name
   }
   const navigate = useNavigate() // Initialize navigate hook
-  const handleCardClick = (id: string | number) => {
+  const handleCardClick = (id: string) => {
     navigate(`/sessions/${id}`) // Navigate to product details page
   }
+
   return (
     <Carousel
       autoplay
@@ -63,8 +64,8 @@ const AuctionSlider: React.FC<AuctionCardSliderProps> = ({ auctions }) => {
                   }}
                 >
                   <img
-                    src={auction.image}
-                    alt={auction.name}
+                    src={auction?.auctionItem?.imageUrl}
+                    alt={auction?.auctionItem.name}
                     style={{ maxWidth: '100%', height: 'auto' }}
                   />
                 </div>
@@ -78,24 +79,36 @@ const AuctionSlider: React.FC<AuctionCardSliderProps> = ({ auctions }) => {
                       fontWeight: 'bold',
                     }}
                   >
-                    {truncateName(auction.name, 20)}
+                    {truncateName(auction.auctionItem.name, 20)}
                   </p>
                   <p>
+                    <Tag color="#3F51B5">
+                      <span
+                        style={{
+                          fontStyle: "italic",
+                          fontSize: '14px',
+                        }}
+                      >
+                        Start price:{' '}
+                        {auction?.auctionItem?.startPrice.toLocaleString('vi-VN')}đ
+                      </span>
+                    </Tag>
+                  </p>
+                  <Tag color="#AB47BC">
                     <span
                       style={{
-                        color: '#9E9E9E',
-                        fontWeight: 'bold',
-                        fontSize: '16px',
+                        fontStyle: "italic",
+                        fontSize: '14px',
                       }}
                     >
-                      Initial price:{' '}
-                      {auction.initialPrice.toLocaleString('vi-VN')} đ
+                      Reserve price:{' '}
+                      {auction?.auctionItem?.reservePrice.toLocaleString('vi-VN')}đ
                     </span>
-                  </p>
-                  {auction.auctionStartTime && (
+                  </Tag>
+                  {auction.endTime && (
                     <p style={{ color: '#d4a017', margin: '4px 0' }}>
-                      Start time:{' '}
-                      {moment(auction.auctionStartTime).format(
+                      End time:{' '}
+                      {moment(auction?.endTime).format(
                         'DD/MM/YYYY HH:mm'
                       )}
                     </p>

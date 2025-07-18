@@ -25,6 +25,8 @@ import AdminShippingCompletePage from '../pages/Auction/AdminShippingCompletePag
 import ActiveSessionsPage from '../pages/Auction/ActiveSessionsPage'
 import ProductSetDetail from '../pages/ProductSetDetail/productSetDetail'
 import PaymentPage from '../pages/PaymentPage/paymentPage'
+import Register from '../pages/Register/register'
+import ConfirmEmail from '../pages/ConfirmEmail/confirmEmail'
 
 const routes: LayoutRoute[] = [
   {
@@ -34,10 +36,10 @@ const routes: LayoutRoute[] = [
         path: '/login',
         component: Login,
       },
-      // {
-      //   path: '/register',
-      //   component: Register,
-      // },
+      {
+        path: '/register',
+        component: Register,
+      },
     ],
   },
   {
@@ -88,6 +90,11 @@ const routes: LayoutRoute[] = [
         component: PaymentPage,
         exact: true,
       },
+      {
+        path: '/confirm-email',
+        component: ConfirmEmail,
+        exact: true
+      }
     ],
   },
   {
@@ -108,7 +115,7 @@ const routes: LayoutRoute[] = [
 
   {
     layout: AdminLayout,
-
+    role: ['Admin'],
     data: [
       {
         path: '/admin/dashboard',
@@ -134,7 +141,7 @@ const routes: LayoutRoute[] = [
   },
   {
     layout: ManagerLayout,
-    role: ['c6af9eea-c011-4b98-9963-009a859d060b'],
+    role: ['Manager,Admin'],
     data: [
       {
         path: '/manager/products',

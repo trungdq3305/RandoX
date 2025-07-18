@@ -1,12 +1,12 @@
 // AdminLayout.tsx
 import React, { useState } from 'react'
-import { Link, useLocation, Outlet } from 'react-router-dom'
+import { Link, useLocation, Outlet, useNavigate } from 'react-router-dom'
 import './AdminLayout.css'
-
+import Cookies from 'js-cookie'
 const AdminLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false)
   const location = useLocation()
-
+  const navigate = useNavigate()
   const menuItems = [
     { icon: '💰', label: 'Revenue Dashboard', path: '/admin/revenue' },
     { icon: '👥', label: 'User Management', path: '/admin/accounts' },
@@ -14,7 +14,11 @@ const AdminLayout: React.FC = () => {
   ]
 
   const isActive = (path: string) => location.pathname === path
-
+  const handleLogout = () => {
+    Cookies.remove('userData')
+    Cookies.remove('userToken')
+    navigate('/login')
+  }
   return (
     <div className='admin-layout'>
       <div className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
@@ -65,7 +69,7 @@ const AdminLayout: React.FC = () => {
           <div className='header-right'>
             <button className='notification-btn'>🔔</button>
             <button className='profile-btn'>👤</button>
-            <button className='logout-btn'>Logout</button>
+            <button className='logout-btn' onClick={handleLogout}>Logout</button>
           </div>
         </header>
 

@@ -1,151 +1,189 @@
-import { useRegisterMutation } from '../../features/auth/authApi'
-import { Formik, Field } from 'formik'
-import * as Yup from 'yup'
-import { Input, Button, Form as AntdForm, notification } from 'antd'
+import { Form, Input, Button, DatePicker, notification } from 'antd'
 import { useNavigate } from 'react-router-dom'
+import { useRegisterMutation } from '../../features/auth/authApi'
+import dayjs from 'dayjs'
 
-export function RegisterForm() {
+export const RegisterForm = () => {
+  const [form] = Form.useForm()
   const [register, { isLoading }] = useRegisterMutation()
   const navigate = useNavigate()
 
-  interface FieldType {
-    name: string
-    email: string
-    password: string
-    retypePassword: string
-  }
-
-  const initialValues: FieldType = {
-    name: '',
-    email: '',
-    password: '',
-    retypePassword: '',
-  }
-
-  const validationSchema = Yup.object({
-    name: Yup.string().required('Vui lòng nhập tên người dùng!'),
-    email: Yup.string()
-      .email('Email không hợp lệ')
-      .required('Vui lòng nhập email!'),
-    password: Yup.string()
-      .min(6, 'Mật khẩu ít nhất 6 ký tự')
-      .required('Vui lòng nhập mật khẩu!'),
-    retypePassword: Yup.string()
-      .oneOf([Yup.ref('password')], 'Mật khẩu không khớp')
-      .required('Vui lòng nhập lại mật khẩu!'),
-  })
-
-  const onFinish = async (
-    values: FieldType,
-    { resetForm }: { resetForm: () => void }
-  ) => {
+  const handleSubmit = async (values: any) => {
     try {
-      const res = await register({
-        name: values.name,
+      const response = await register({
         email: values.email,
         password: values.password,
+        dob: dayjs(values.dob).format('YYYY-MM-DD'), // 👈 CHUYỂN ĐỊNH DẠNG TẠI ĐÂY
+        phoneNumber: values.phoneNumber,
+        roleId: 'a1fdb0c2-0daf-4bb0-b075-a3cc0b2febeb',
       }).unwrap()
-
+      console.log(response)
       notification.success({
         message: 'Đăng ký thành công',
-        description: 'Vui lòng kiểm tra hộp thư để xác thực tài khoản.',
+        description: 'Vui lòng kiểm tra email để xác thực tài khoản.',
       })
 
-      resetForm()
       navigate('/login')
     } catch (error: any) {
-      const desc =
-        error?.data?.message || 'Đã xảy ra lỗi, vui lòng thử lại sau.'
-      notification.error({ message: 'Đăng ký thất bại', description: desc })
+      notification.error({
+        message: 'Đăng ký thất bại',
+        description: error?.data?.message || 'Đã xảy ra lỗi không xác định.',
+      })
     }
   }
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={onFinish}
+    <Form
+      form={form}
+      layout='vertical'
+      onFinish={handleSubmit}
+      name='register-form'
+      autoComplete='on'
+      style={{
+        minWidth: '400px',
+        margin: '0 auto',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+      }}
+      initialValues={{
+        dob: null,
+      }}
     >
-      {({ handleSubmit, errors, touched }) => (
-        <AntdForm
-          layout='vertical'
-          onFinish={handleSubmit}
+      {/* Email */}
+      <Form.Item
+        name='email'
+        rules={[
+          { required: true, message: 'Vui lòng nhập email!' },
+          { type: 'email', message: 'Email không hợp lệ!' },
+        ]}
+      >
+        <Input
+          placeholder='Email'
           style={{
-            width: 'auto',
-            padding: 24,
-            background: '#fff',
-            borderRadius: 8,
-            boxShadow: '0px 4px 10px rgba(0,0,0,0.1)',
+            height: '65px',
+          }}
+        />
+      </Form.Item>
+
+      {/* Password */}
+      <Form.Item
+        name='password'
+        rules={[
+          { required: true, message: 'Vui lòng nhập mật khẩu!' },
+          { min: 6, message: 'Mật khẩu ít nhất 6 ký tự!' },
+        ]}
+      >
+        <Input.Password
+          placeholder='Mật khẩu'
+          style={{
+            height: '65px',
+          }}
+        />
+      </Form.Item>
+
+      {/* Retype password */}
+      <Form.Item
+        name='retypePassword'
+        dependencies={['password']}
+        rules={[
+          { required: true, message: 'Vui lòng nhập lại mật khẩu!' },
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (!value || getFieldValue('password') === value) {
+                return Promise.resolve()
+              }
+              return Promise.reject(
+                'Mật khẩu nhập lại không khớp!'
+              )
+            },
+          }),
+        ]}
+      >
+        <Input.Password
+          placeholder='Nhập lại mật khẩu'
+          style={{
+            height: '65px',
+          }}
+        />
+      </Form.Item>
+
+      {/* DOB */}
+      <Form.Item
+        name='dob'
+        rules={[{ required: true, message: 'Vui lòng chọn ngày sinh!' }]}
+      >
+        <DatePicker
+          placeholder='Ngày sinh'
+          format='YYYY-MM-DD'
+          style={{
+            height: '65px',
+            width: '100%',
+          }}
+        />
+      </Form.Item>
+
+      {/* Phone Number */}
+      <Form.Item
+        name='phoneNumber'
+        rules={[
+          { required: true, message: 'Vui lòng nhập số điện thoại!' },
+          {
+            pattern: /^\d{10,11}$/,
+            message: 'Số điện thoại không hợp lệ!',
+          },
+        ]}
+      >
+        <Input
+          placeholder='Số điện thoại'
+          style={{
+            height: '65px',
+          }}
+        />
+      </Form.Item>
+      <Form.Item>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            flexDirection: 'column',
+            gap: '16px',
           }}
         >
-          <AntdForm.Item
-            name='name'
-            label='Tên người dùng'
-            validateStatus={touched.name && errors.name ? 'error' : ''}
-            help={touched.name && errors.name}
-            required
+          <Button
+            type='primary'
+            htmlType='submit'
+            loading={isLoading}
+            style={{
+              height: '65px',
+              backgroundColor: '#7FAAFB',
+            }}
           >
-            <Field as={Input} name='name' placeholder='Nhập tên người dùng' />
-          </AntdForm.Item>
-
-          <AntdForm.Item
-            name='email'
-            label='Email'
-            validateStatus={touched.email && errors.email ? 'error' : ''}
-            help={touched.email && errors.email}
-            required
-          >
-            <Field as={Input} name='email' placeholder='Nhập email' />
-          </AntdForm.Item>
-
-          <AntdForm.Item
-            name='password'
-            label='Mật khẩu'
-            validateStatus={touched.password && errors.password ? 'error' : ''}
-            help={touched.password && errors.password}
-            required
-          >
-            <Field
-              as={Input.Password}
-              name='password'
-              placeholder='Nhập mật khẩu'
-            />
-          </AntdForm.Item>
-
-          <AntdForm.Item
-            name='retypePassword'
-            label='Nhập lại mật khẩu'
-            validateStatus={
-              touched.retypePassword && errors.retypePassword ? 'error' : ''
-            }
-            help={touched.retypePassword && errors.retypePassword}
-            required
-          >
-            <Field
-              as={Input.Password}
-              name='retypePassword'
-              placeholder='Nhập lại mật khẩu'
-            />
-          </AntdForm.Item>
-
-          <AntdForm.Item>
             <div
               style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
+                color: '#000',
+                fontSize: '16px',
               }}
             >
-              <Button type='link' onClick={() => navigate('/login')}>
-                Đã có tài khoản? Đăng nhập ngay
-              </Button>
-              <Button type='primary' htmlType='submit' loading={isLoading}>
-                Đăng ký
-              </Button>
+              Đăng ký
             </div>
-          </AntdForm.Item>
-        </AntdForm>
-      )}
-    </Formik>
+          </Button>
+          <Button
+            type='link'
+            onClick={() => navigate('/login')}
+            style={{ padding: 0, margin: 0 }}
+          >
+            <span
+              style={{
+                color: '#000',
+              }}
+            >
+              Đã có tài khoản?
+            </span>
+            <span style={{ fontWeight: 'bold', color: '#000' }}> Đăng nhập</span>
+          </Button>
+        </div>
+      </Form.Item>
+    </Form>
   )
 }

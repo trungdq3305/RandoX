@@ -29,33 +29,36 @@ const authSlice = createSlice({
 
       const decodedToken: any = jwtDecode(token)
 
-      state.userData = {
-        Email: decodedToken.Email,
-        Id: decodedToken.Id,
-        Role: decodedToken.Role,
-        Name: decodedToken.Name,
-        PhoneNumber: decodedToken.PhoneNumber,
-        Address: decodedToken.Address,
+      const userData: UserData = {
+        email: decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],
+        role: decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'],
         exp: decodedToken.exp,
-        Facility: decodedToken.FacilityId,
+        id: ''
       }
 
-      state.userToken = { token: token }
+      state.userData = userData
+
+      state.userToken = { token }
       state.isAuthenticated = true
 
-      const expirationDate = new Date(state.userData.exp * 1000)
-      Cookies.set('userData', JSON.stringify(state.userData), {
+      const expirationDate = new Date(userData.exp * 1000)
+      Cookies.set('userData', JSON.stringify(userData), {
         expires: expirationDate,
       })
       Cookies.set('userToken', token, { expires: expirationDate })
-      if (state.userData.Role === 'Customer') {
+
+      if (userData.role === 'Customer') {
         window.location.href = '/'
-      } else if (state.userData.Role === 'Staff') {
+      } else if (userData.role === 'Staff') {
         window.location.href = '/staff/customer-account'
-      } else {
-        window.location.href = `/${state.userData.Role.toLowerCase()}`
+      } else if (userData.role === 'Manager') {
+        window.location.href = '/manager/products'
+      }
+      else {
+        window.location.href = `/admin/dashboard`
       }
     },
+
     logout: (state) => {
       state.userData = null
       state.userToken = null

@@ -12,6 +12,7 @@ namespace RandoX.Data.Models.AccountModel
         public DateOnly Dob { get; set; }
         public int? Status { get; set; }
         public Guid? RoleId { get; set; }
+        public string? Fullname { get; set; }
     }
 
 }

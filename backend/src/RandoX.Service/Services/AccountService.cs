@@ -59,7 +59,29 @@ namespace RandoX.Service.Services
                 // Kiểm tra email đã tồn tại
                 if (await _accountRepository.EmailExistsAsync(registerDto.Email))
                 {
-                    return ApiResponse<Account>.Failure("Email đã được sử dụng");
+                    var existingAccount = await _accountRepository.GetByEmailAsync(registerDto.Email);
+
+                    if (existingAccount.Status == 0) // Chưa xác nhận
+                    {
+                        var token1 = GenerateSecureToken();
+                        var emailToken1 = new EmailToken
+                        {
+                            AccountId = existingAccount.Id,
+                            Token = token1,
+                            TokenType = "EmailConfirmation",
+                            CreatedAt = TimeHelper.GetVietnamTime(),
+                            ExpiryDate = TimeHelper.GetVietnamTime().AddHours(24)
+                        };
+
+                        await _tokenRepository.CreateTokenAsync(emailToken1);
+
+                        var confirmationLink1 = $"{_configuration["AppSettings:BaseUrl"]}/confirm-email?token={token1}&email={registerDto.Email}";
+                        await _emailService.SendEmailConfirmationAsync(registerDto.Email, confirmationLink1);
+
+                        return ApiResponse<Account>.Failure("Email đã tồn tại nhưng chưa được xác nhận. Đã gửi lại email xác nhận.");
+                    }
+
+                    return ApiResponse<Account>.Failure("Email đã được sử dụng.");
                 }
 
                 // Tạo tài khoản mới
@@ -70,7 +92,8 @@ namespace RandoX.Service.Services
                     Password = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
                     PhoneNumber = registerDto.PhoneNumber,
                     RoleId = Guid.Parse(registerDto.RoleId),
-                    Status = 0 // Pending confirmation
+                    Status = 0, // Pending confirmation
+                    Fullname = registerDto.Fullname,
                 };
 
                 var createdAccount = await _accountRepository.CreateAsync(account);
@@ -82,13 +105,14 @@ namespace RandoX.Service.Services
                     AccountId = createdAccount.Id,
                     Token = token,
                     TokenType = "EmailConfirmation",
+                    CreatedAt = TimeHelper.GetVietnamTime(),
                     ExpiryDate = TimeHelper.GetVietnamTime().AddHours(24)
                 };
 
                 await _tokenRepository.CreateTokenAsync(emailToken);
 
                 // Gửi email xác nhận
-                var confirmationLink = $"{_configuration["AppSettings:BaseUrl"]}/api/account/confirm-email?token={token}&email={registerDto.Email}";
+                var confirmationLink = $"{_configuration["AppSettings:BaseUrl"]}/confirm-email?token={token}&email={registerDto.Email}";
                 await _emailService.SendEmailConfirmationAsync(registerDto.Email, confirmationLink);
 
                 return ApiResponse<Account>.Success(createdAccount, "Đăng ký thành công. Vui lòng kiểm tra email để xác nhận tài khoản.");
@@ -165,6 +189,7 @@ namespace RandoX.Service.Services
                 {
                     AccountId = account.Id,
                     Token = token,
+                    CreatedAt = TimeHelper.GetVietnamTime(),
                     TokenType = "PasswordReset",
                     ExpiryDate = TimeHelper.GetVietnamTime().AddHours(1)
                 };
@@ -201,7 +226,9 @@ namespace RandoX.Service.Services
                     AccountId = account.Id,
                     Token = token,
                     TokenType = "PasswordChange",
+                    CreatedAt = TimeHelper.GetVietnamTime(),
                     ExpiryDate = TimeHelper.GetVietnamTime().AddHours(1)
+
                 };
 
                 // Lưu mật khẩu mới tạm thời (có thể lưu vào cache hoặc bảng riêng)
@@ -298,7 +325,8 @@ namespace RandoX.Service.Services
                 RoleId = a.RoleId,
                 RoleName = a.Role?.RoleName,
                 CreatedAt = a.CreatedAt,
-                UpdatedAt = a.UpdatedAt
+                UpdatedAt = a.UpdatedAt,
+                Fullname = a.Fullname
             }).ToList();
         }
 
@@ -313,6 +341,7 @@ namespace RandoX.Service.Services
             acc.Status = dto.Status;
             acc.RoleId = dto.RoleId;
             acc.UpdatedAt = TimeHelper.GetVietnamTime();
+            acc.Fullname = dto.Fullname;
 
             await _accountRepository.UpdateAsync(acc);
             return ApiResponse<bool>.Success(true, "Cập nhật thành công");

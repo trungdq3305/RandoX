@@ -29,6 +29,8 @@ public partial class Account
 
     public bool? IsDeleted { get; set; }
 
+    public string Fullname { get; set; }
+
     public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
 
     public virtual ICollection<AuctionBid> AuctionBids { get; set; } = new List<AuctionBid>();
