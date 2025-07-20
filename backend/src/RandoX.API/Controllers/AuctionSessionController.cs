@@ -18,7 +18,12 @@ namespace RandoX.API.Controllers
             _walletRepo = walletRepo;
             _accountService = accountService;
         }
-
+        [HttpGet]
+        public async Task<IActionResult> GetSessions()
+        {
+            var sessions = await _repo.GetSessionsAsync();
+            return Ok(sessions);
+        }
         // [1] Xem tất cả phiên đang diễn ra
         [HttpGet("active")]
         public async Task<IActionResult> GetActiveSessions()

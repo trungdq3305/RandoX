@@ -18,7 +18,7 @@ namespace RandoX.Data.Interfaces
         Task<List<AuctionItem>> GetPendingItemsAsync();
         Task<List<AuctionBid>> GetBidsBySessionIdAsync(Guid sessionId);
         Task<List<AuctionSession>> GetWonAuctionsByUserIdAsync(Guid userId);
-
+        Task<List<AuctionSession>> GetSessionsAsync();
     }
 
 }
