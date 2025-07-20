@@ -42,7 +42,7 @@ namespace RandoX.Service.Services
                     {
                         Id = Guid.NewGuid(),
                         CartId = Guid.Parse(cartId),
-                        TotalAmount = cart.TotalAmount + voucher.VoucherDiscountAmount,
+                        TotalAmount = cart.TotalAmount - voucher.VoucherDiscountAmount,
                         ShippingCost = shippingCost,
                         VoucherId = Guid.Parse(voucherId),
                     };
