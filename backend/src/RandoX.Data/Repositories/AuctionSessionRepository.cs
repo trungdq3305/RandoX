@@ -96,7 +96,13 @@ namespace RandoX.Data.Repositories
                 .Include(s => s.AuctionBids)
                 .ToListAsync();
         }
-
+        public async Task<List<AuctionSession>> GetSessionsAsync()
+        {
+            return await _context.AuctionSessions
+                .Include(s => s.AuctionItem)
+                .Include(s => s.AuctionBids).ThenInclude(s => s.User)
+                .ToListAsync();
+        }
     }
 
 }
