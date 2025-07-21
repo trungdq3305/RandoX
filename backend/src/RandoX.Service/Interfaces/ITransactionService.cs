@@ -12,5 +12,6 @@ namespace RandoX.Service.Interfaces
     public interface ITransactionService
     {
         Task<Transaction> CreateTransactionAsync(Transaction transaction);
+        Task<List<Transaction>> GetUserTransactionAsync(Guid userid);
     }
 }

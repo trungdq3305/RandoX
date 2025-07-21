@@ -18,16 +18,18 @@ namespace RandoX.API.Controllers
         private readonly randox_dbContext _dbContext;
         private readonly ILogger<TransactionController> _logger;
         private readonly IAccountService _accountService;
+        private readonly ITransactionService _transactionService;
         public TransactionController(
             IVNPayService vnPayService,
             randox_dbContext dbContext,
             ILogger<TransactionController> logger,
-            IAccountService accountService)
+            IAccountService accountService, ITransactionService transactionService)
         {
             _vnPayService = vnPayService;
             _dbContext = dbContext;
             _logger = logger;
             _accountService = accountService;
+            _transactionService = transactionService;
         }
 
         [HttpPost("vnpay/create")]
@@ -123,7 +125,26 @@ namespace RandoX.API.Controllers
                 return Ok("RspCode=99&Message=Unknown error");
             }
         }
-
+        [HttpGet]
+        public async Task<IActionResult> GetTransactionHistory()
+        {
+                var identity = this.HttpContext.User.Identity as ClaimsIdentity;
+                if (identity == null || !identity.IsAuthenticated)
+                    return Unauthorized("Bạn chưa đăng nhập");
+                var claims = identity.Claims;
+                var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+                var user = await _accountService.GetAccountByEmailAsync(email);
+                if (user == null)
+                {
+                    return NotFound(new { Message = "Không tìm thấy người dùng" });
+                }
+            var a = await _transactionService.GetUserTransactionAsync(user.Id);
+            if(a != null)
+            {
+                return Ok(a);
+            }
+            return Ok(new List<Transaction>());
+        }
         //[HttpGet("vnpay/return")]
         //public async Task<IActionResult> VNPayReturn([FromQuery] VNPayCallbackRequest returnData)
         //{
@@ -132,76 +153,76 @@ namespace RandoX.API.Controllers
         //        // Validate signature
         //        bool isValid = await _vnPayService.ValidateCallbackAsync(returnData);
 
-        //        if (!isValid)
-        //        {
-        //            return BadRequest(new { Success = false, Message = "Chữ ký không hợp lệ" });
-        //        }
+                //        if (!isValid)
+                //        {
+                //            return BadRequest(new { Success = false, Message = "Chữ ký không hợp lệ" });
+                //        }
 
-        //        // Lấy thông tin transaction
-        //        var transaction = await _dbContext.Transactions
-        //            .Include(t => t.TransactionStatus)
-        //            .FirstOrDefaultAsync(t => t.Id == Guid.Parse(returnData.vnp_TxnRef));
+                //        // Lấy thông tin transaction
+                //        var transaction = await _dbContext.Transactions
+                //            .Include(t => t.TransactionStatus)
+                //            .FirstOrDefaultAsync(t => t.Id == Guid.Parse(returnData.vnp_TxnRef));
 
-        //        if (transaction == null)
-        //        {
-        //            return NotFound(new { Success = false, Message = "Không tìm thấy giao dịch" });
-        //        }
+                //        if (transaction == null)
+                //        {
+                //            return NotFound(new { Success = false, Message = "Không tìm thấy giao dịch" });
+                //        }
 
-        //        var response = new
-        //        {
-        //            Success = returnData.vnp_ResponseCode == "00",
-        //            OrderId = returnData.vnp_TxnRef,
-        //            TransactionId = returnData.vnp_TransactionNo ?? returnData.vnp_TxnRef, // Fallback nếu không có vnp_TransactionNo
-        //            Amount = decimal.Parse(returnData.vnp_Amount) / 100,
-        //            ResponseCode = returnData.vnp_ResponseCode,
-        //            Status = transaction.TransactionStatus?.Id,
-        //            Message = GetResponseMessage(returnData.vnp_ResponseCode),
-        //            PaymentDate = returnData.vnp_PayDate, // Có thể null nếu thanh toán thất bại
-        //            BankCode = returnData.vnp_BankCode, // Có thể null
-        //            BankTransactionNo = returnData.vnp_BankTranNo // Có thể null
-        //        };
+                //        var response = new
+                //        {
+                //            Success = returnData.vnp_ResponseCode == "00",
+                //            OrderId = returnData.vnp_TxnRef,
+                //            TransactionId = returnData.vnp_TransactionNo ?? returnData.vnp_TxnRef, // Fallback nếu không có vnp_TransactionNo
+                //            Amount = decimal.Parse(returnData.vnp_Amount) / 100,
+                //            ResponseCode = returnData.vnp_ResponseCode,
+                //            Status = transaction.TransactionStatus?.Id,
+                //            Message = GetResponseMessage(returnData.vnp_ResponseCode),
+                //            PaymentDate = returnData.vnp_PayDate, // Có thể null nếu thanh toán thất bại
+                //            BankCode = returnData.vnp_BankCode, // Có thể null
+                //            BankTransactionNo = returnData.vnp_BankTranNo // Có thể null
+                //        };
 
-        //        return Ok(response);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Lỗi khi xử lý VNPay return: {TxnRef}", returnData.vnp_TxnRef);
-        //        return StatusCode(500, new { Success = false, Message = "Có lỗi xảy ra" });
-        //    }
-        //}
+                //        return Ok(response);
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        _logger.LogError(ex, "Lỗi khi xử lý VNPay return: {TxnRef}", returnData.vnp_TxnRef);
+                //        return StatusCode(500, new { Success = false, Message = "Có lỗi xảy ra" });
+                //    }
+                //}
 
-        //[HttpGet("transaction/{orderId}/status")]
-        //public async Task<IActionResult> GetTransactionStatus(string orderId)
-        //{
-        //    try
-        //    {
-        //        var transaction = await _dbContext.Transactions
-        //            .Include(t => t.TransactionStatus)
-        //            .FirstOrDefaultAsync(t => t.Id == Guid.Parse(orderId) );
+                //[HttpGet("transaction/{orderId}/status")]
+                //public async Task<IActionResult> GetTransactionStatus(string orderId)
+                //{
+                //    try
+                //    {
+                //        var transaction = await _dbContext.Transactions
+                //            .Include(t => t.TransactionStatus)
+                //            .FirstOrDefaultAsync(t => t.Id == Guid.Parse(orderId) );
 
-        //        if (transaction == null)
-        //        {
-        //            return NotFound(new { Message = "Không tìm thấy giao dịch" });
-        //        }
+                //        if (transaction == null)
+                //        {
+                //            return NotFound(new { Message = "Không tìm thấy giao dịch" });
+                //        }
 
-        //        return Ok(new
-        //        {
-        //            OrderId = orderId,
-        //            TransactionId = transaction.Id,
-        //            Status = transaction.TransactionStatus?.Id,
-        //            Amount = transaction.Amount,
-        //            PaymentDate = transaction.PayDate,
-        //            Description = transaction.Description,
-        //            CreatedAt = transaction.CreatedAt,
-        //            UpdatedAt = transaction.UpdatedAt
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Lỗi khi lấy trạng thái giao dịch: {OrderId}", orderId);
-        //        return StatusCode(500, new { Message = "Có lỗi xảy ra" });
-        //    }
-        //}
+                //        return Ok(new
+                //        {
+                //            OrderId = orderId,
+                //            TransactionId = transaction.Id,
+                //            Status = transaction.TransactionStatus?.Id,
+                //            Amount = transaction.Amount,
+                //            PaymentDate = transaction.PayDate,
+                //            Description = transaction.Description,
+                //            CreatedAt = transaction.CreatedAt,
+                //            UpdatedAt = transaction.UpdatedAt
+                //        });
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        _logger.LogError(ex, "Lỗi khi lấy trạng thái giao dịch: {OrderId}", orderId);
+                //        return StatusCode(500, new { Message = "Có lỗi xảy ra" });
+                //    }
+                //}
 
         private string GetClientIpAddress()
         {

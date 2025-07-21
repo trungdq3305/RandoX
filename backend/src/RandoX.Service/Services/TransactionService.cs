@@ -27,5 +27,14 @@ namespace RandoX.Service.Services
             await _transctionRepository.CreateTransactionAsync(transaction);
             return transaction;
         }
+        public async Task<List<Transaction>> GetUserTransactionAsync(Guid userid)
+        {
+            var transactions = await _transctionRepository.GetUserTransactionAsync(userid);
+            if (transactions == null || !transactions.Any())
+            {
+                throw new Exception("No transactions found for this user.");
+            }
+            return transactions;
+        }
     }
 }

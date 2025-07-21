@@ -10,5 +10,6 @@ namespace RandoX.Data.Interfaces
     public interface ITransactionRepository
     {
         Task<Transaction> CreateTransactionAsync(Transaction transaction);
+        Task<List<Transaction>> GetUserTransactionAsync(Guid userid);
     }
 }
