@@ -20,7 +20,7 @@ namespace RandoX.Data.Repositories
 
         public async Task<RevenueSummary> GetRevenueSummaryAsync()
         {
-            var totalRevenue = await _context.Orders.Where(o => o.IsDeleted != true).SumAsync(o => o.TotalAmount);
+            var totalRevenue = await _context.Transactions.Where(o => o.IsDeleted != true && o.TransactionStatusId.ToString() == "B7165764-E3D5-41D8-A265-E6AC2414FD28").SumAsync(o => o.Amount);
             var totalOrders = await _context.Orders.CountAsync();
             var totalUsers = await _context.Accounts.CountAsync();
             var totalProductsSold = await _context.CartProducts.SumAsync(cp => cp.Amount);
