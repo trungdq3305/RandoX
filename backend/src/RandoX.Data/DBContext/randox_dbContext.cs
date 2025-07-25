@@ -81,13 +81,13 @@ public partial class randox_dbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=garams.database.windows.net;Initial Catalog=randoxdb1;Persist Security Info=True;User ID=sa1;Password=TTt192004");
+        => optionsBuilder.UseSqlServer("Data Source=garams.database.windows.net;Initial Catalog=randoxdb2;Persist Security Info=True;User ID=sa1;Password=TTt192004");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__account__3213E83FCEED8DC1");
+            entity.HasKey(e => e.Id).HasName("PK__account__3213E83F896AEA29");
 
             entity.ToTable("account");
 
@@ -133,7 +133,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Address>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__address__3213E83FB4E9990C");
+            entity.HasKey(e => e.Id).HasName("PK__address__3213E83FA753E1BA");
 
             entity.ToTable("address");
 
@@ -176,7 +176,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<AuctionBid>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__AuctionB__3214EC07972A2B10");
+            entity.HasKey(e => e.Id).HasName("PK__AuctionB__3214EC07E29384CD");
 
             entity.ToTable("AuctionBid");
 
@@ -199,7 +199,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<AuctionItem>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__AuctionI__3214EC079DF9BC0E");
+            entity.HasKey(e => e.Id).HasName("PK__AuctionI__3214EC07F5B6535C");
 
             entity.ToTable("AuctionItem");
 
@@ -224,7 +224,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<AuctionSession>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__AuctionS__3214EC07763CAD28");
+            entity.HasKey(e => e.Id).HasName("PK__AuctionS__3214EC07BE0FEDA2");
 
             entity.ToTable("AuctionSession");
 
@@ -245,7 +245,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<AuctionShippingInfo>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__AuctionS__3214EC07B049A781");
+            entity.HasKey(e => e.Id).HasName("PK__AuctionS__3214EC072067CBB3");
 
             entity.ToTable("AuctionShippingInfo");
 
@@ -270,7 +270,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Cart>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__cart__3213E83F27DE5013");
+            entity.HasKey(e => e.Id).HasName("PK__cart__3213E83F444D52BC");
 
             entity.ToTable("cart");
 
@@ -307,7 +307,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<CartProduct>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__cart_pro__3213E83F7DAB02E4");
+            entity.HasKey(e => e.Id).HasName("PK__cart_pro__3213E83F74D45851");
 
             entity.ToTable("cart_product");
 
@@ -350,7 +350,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Category>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__category__3213E83FD84EF039");
+            entity.HasKey(e => e.Id).HasName("PK__category__3213E83F5797FF44");
 
             entity.ToTable("category");
 
@@ -383,7 +383,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<EmailToken>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__email_to__3213E83F01B92AA6");
+            entity.HasKey(e => e.Id).HasName("PK__email_to__3213E83FDA3A9134");
 
             entity.ToTable("email_token");
 
@@ -418,7 +418,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Image>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__image__3213E83FBD14DAB6");
+            entity.HasKey(e => e.Id).HasName("PK__image__3213E83FBB0D6922");
 
             entity.ToTable("image");
 
@@ -456,7 +456,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Manufacturer>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__manufact__3213E83F0A1F8C27");
+            entity.HasKey(e => e.Id).HasName("PK__manufact__3213E83F5F8E65E8");
 
             entity.ToTable("manufacturer");
 
@@ -485,7 +485,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Order>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__order__3213E83FC5CC65AF");
+            entity.HasKey(e => e.Id).HasName("PK__order__3213E83F8E8A42FB");
 
             entity.ToTable("order");
 
@@ -528,7 +528,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Product>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__product__3213E83FB23D2776");
+            entity.HasKey(e => e.Id).HasName("PK__product__3213E83FAEB4223F");
 
             entity.ToTable("product");
 
@@ -580,7 +580,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<ProductSet>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__product___3213E83F017A5B34");
+            entity.HasKey(e => e.Id).HasName("PK__product___3213E83F11E43F16");
 
             entity.ToTable("product_set");
 
@@ -626,7 +626,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Promotion>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__promotio__3213E83F537EF6C7");
+            entity.HasKey(e => e.Id).HasName("PK__promotio__3213E83F3EDA47C4");
 
             entity.ToTable("promotion");
 
@@ -660,7 +660,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__role__3213E83F5CF9B5C1");
+            entity.HasKey(e => e.Id).HasName("PK__role__3213E83FCB63A12A");
 
             entity.ToTable("role");
 
@@ -689,7 +689,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Shipment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83FE81BE8C7");
+            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83F1B113B05");
 
             entity.ToTable("shipment");
 
@@ -716,7 +716,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<ShipmentHistory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83FA85E2F52");
+            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83F5959B44A");
 
             entity.ToTable("shipment_history");
 
@@ -756,7 +756,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<ShipmentStatus>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83F5F5CE377");
+            entity.HasKey(e => e.Id).HasName("PK__shipment__3213E83F29CCC8E4");
 
             entity.ToTable("shipment_status");
 
@@ -785,7 +785,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<SpinHistory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__spin_his__3213E83F9470A04C");
+            entity.HasKey(e => e.Id).HasName("PK__spin_his__3213E83F99593AFE");
 
             entity.ToTable("spin_history");
 
@@ -824,7 +824,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<SpinItem>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__spin_ite__3213E83FEC6B1A0E");
+            entity.HasKey(e => e.Id).HasName("PK__spin_ite__3213E83F4AAF85AF");
 
             entity.ToTable("spin_item");
 
@@ -868,7 +868,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<SpinWheel>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__spin_whe__3213E83FC7421660");
+            entity.HasKey(e => e.Id).HasName("PK__spin_whe__3213E83F8771189A");
 
             entity.ToTable("spin_wheel");
 
@@ -901,7 +901,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83F4B76FD1E");
+            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83F95E114D2");
 
             entity.ToTable("transaction");
 
@@ -947,7 +947,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<TransactionStatus>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83F4B003C91");
+            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83F98A1BE42");
 
             entity.ToTable("transaction_status");
 
@@ -976,7 +976,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<TransactionType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83F2A020B18");
+            entity.HasKey(e => e.Id).HasName("PK__transact__3213E83FF0C25815");
 
             entity.ToTable("transaction_type");
 
@@ -1005,7 +1005,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Voucher>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__voucher__3213E83F9660505C");
+            entity.HasKey(e => e.Id).HasName("PK__voucher__3213E83F99114A8B");
 
             entity.ToTable("voucher");
 
@@ -1053,7 +1053,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<Wallet>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__wallet__3213E83F4D5BE155");
+            entity.HasKey(e => e.Id).HasName("PK__wallet__3213E83F23FB40B1");
 
             entity.ToTable("wallet");
 
@@ -1085,7 +1085,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<WalletHistory>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__wallet_h__3213E83F8973AEE5");
+            entity.HasKey(e => e.Id).HasName("PK__wallet_h__3213E83F71964211");
 
             entity.ToTable("wallet_history");
 
@@ -1124,7 +1124,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<WithDrawForm>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__with_dra__3213E83F491A90DA");
+            entity.HasKey(e => e.Id).HasName("PK__with_dra__3213E83F383FD1F9");
 
             entity.ToTable("with_draw_form");
 
@@ -1166,7 +1166,7 @@ public partial class randox_dbContext : DbContext
 
         modelBuilder.Entity<WithdrawStatus>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__withdraw__3213E83F5E8CE594");
+            entity.HasKey(e => e.Id).HasName("PK__withdraw__3213E83FD8F521F8");
 
             entity.ToTable("withdraw_status");
 
