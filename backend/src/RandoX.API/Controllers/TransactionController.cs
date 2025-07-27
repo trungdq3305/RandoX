@@ -13,27 +13,29 @@ namespace RandoX.API.Controllers
 {
     [Authorize]
     public class TransactionController : BaseAPIController
-    { 
-        private readonly IVNPayService _vnPayService;
+    {
+        private readonly IPayOSService _payOSService;
         private readonly randox_dbContext _dbContext;
         private readonly ILogger<TransactionController> _logger;
         private readonly IAccountService _accountService;
         private readonly ITransactionService _transactionService;
+
         public TransactionController(
-            IVNPayService vnPayService,
+            IPayOSService payOSService,
             randox_dbContext dbContext,
             ILogger<TransactionController> logger,
-            IAccountService accountService, ITransactionService transactionService)
+            IAccountService accountService,
+            ITransactionService transactionService)
         {
-            _vnPayService = vnPayService;
+            _payOSService = payOSService;
             _dbContext = dbContext;
             _logger = logger;
             _accountService = accountService;
             _transactionService = transactionService;
         }
 
-        [HttpPost("vnpay/create")]
-        public async Task<IActionResult> CreateVNPayPayment([FromQuery] CreatePaymentRequest request)
+        [HttpPost("payos/create")]
+        public async Task<IActionResult> CreatePayOSPayment([FromQuery] CreatePaymentRequest request)
         {
             try
             {
@@ -55,28 +57,29 @@ namespace RandoX.API.Controllers
                     return BadRequest(new { Message = "Số tiền thanh toán không hợp lệ" });
                 }
 
-                // Tạo request cho VNPay
-                var vnpayRequest = new VNPayCreatePaymentRequest
+                // Tạo request cho PayOS
+                var payOSRequest = new PayOSCreatePaymentRequest
                 {
                     OrderId = order.Id.ToString(),
-                    Amount = totalAmount,
-                    OrderInfo = $"Thanh toán đơn hàng {order.Id}",
-                    IpAddress = GetClientIpAddress(),
-                    Locale = "vn"
+                    Amount = 3000,
+                    Description = $"Thanh toan don hang {order.Id}",
+                    ReturnUrl = "https://randoxfe.vercel.app/payment-success",
+                    CancelUrl = "https://randoxfe.vercel.app/payment-cancel"
                 };
 
                 // Gọi service tạo link thanh toán
-                var result = await _vnPayService.CreatePaymentAsync(vnpayRequest);
+                var result = await _payOSService.CreatePaymentAsync(payOSRequest);
 
                 if (result.Success)
                 {
                     return Ok(new
                     {
                         Success = true,
-                        PaymentUrl = result.PaymentUrl,
+                        CheckoutUrl = result.CheckoutUrl,
+                        PaymentLinkId = result.PaymentLinkId,
                         OrderId = order.Id,
                         Amount = totalAmount,
-                        Message = "Tạo link thanh toán thành công"
+                        Message = "Tạo link thanh toán PayOS thành công"
                     });
                 }
 
@@ -84,186 +87,74 @@ namespace RandoX.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Lỗi khi tạo thanh toán VNPay cho Order: {OrderId}", request.OrderId);
+                _logger.LogError(ex, "Lỗi khi tạo thanh toán PayOS cho Order: {OrderId}", request.OrderId);
                 return StatusCode(500, new { Message = "Có lỗi xảy ra khi tạo thanh toán" });
             }
         }
+        [HttpPost("payment-success")]
+        public async Task<IActionResult> PaymentSuccess([FromQuery] PayOSReturnQuery query)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null || !identity.IsAuthenticated)
+                return Unauthorized(new { code = "401", desc = "Bạn chưa đăng nhập" });
 
-        [HttpPost("vnpay/callback")]
-        public async Task<IActionResult> VNPayCallback([FromQuery] VNPayCallbackRequest callback)
+            var email = identity.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
+            var user = await _accountService.GetAccountByEmailAsync(email);
+            if (user == null)
+                return Unauthorized(new { code = "401", desc = "Không tìm thấy người dùng" });
+
+            var result = await _payOSService.HandleReturnUrlAsync(query, user.Id);
+
+            if (!result.Success && !result.AlreadyProcessed)
+                return BadRequest(new
+                {
+                    code = "20",
+                    desc = result.Message,
+                    orderCode = result.OrderCode
+                });
+
+            // 200 OK cho cả success & already processed (idempotent)
+            return Ok(new
+            {
+                code = "00",
+                desc = result.AlreadyProcessed ? "Giao dịch đã được xử lý trước đó" : "success",
+                success = result.Success,
+                alreadyProcessed = result.AlreadyProcessed,
+                orderCode = result.OrderCode,
+                transactionId = result.TransactionId
+            });
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetTransactionHistory()
         {
             var identity = this.HttpContext.User.Identity as ClaimsIdentity;
-
             if (identity == null || !identity.IsAuthenticated)
                 return Unauthorized("Bạn chưa đăng nhập");
 
             var claims = identity.Claims;
             var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
             var user = await _accountService.GetAccountByEmailAsync(email);
-            try
+
+            if (user == null)
             {
-                bool isValid = await _vnPayService.ValidateCallbackAsync(callback);
-
-                if (!isValid)
-                {
-                    _logger.LogWarning("VNPay callback có chữ ký không hợp lệ: {TxnRef}", callback.vnp_TxnRef);
-                    return Ok("RspCode=97&Message=Invalid signature");
-                }
-
-                await _vnPayService.ProcessPaymentCallbackAsync(callback, user.Id.ToString());
-
-                // VNPay yêu cầu response format cụ thể
-                string returnMessage = (callback.vnp_ResponseCode == "00" || callback.vnp_ResponseCode == "24")
-                    ? "RspCode=00&Message=Confirm Success"
-                    : "RspCode=00&Message=Order not found";
-
-                return Ok(returnMessage);
+                return NotFound(new { Message = "Không tìm thấy người dùng" });
             }
-            catch (Exception ex)
+
+            var transactions = await _transactionService.GetUserTransactionAsync(user.Id);
+
+            if (transactions != null)
             {
-                _logger.LogError(ex, "Lỗi khi xử lý VNPay callback: {TxnRef}", callback.vnp_TxnRef);
-                return Ok("RspCode=99&Message=Unknown error");
+                return Ok(transactions);
             }
-        }
-        [HttpGet]
-        public async Task<IActionResult> GetTransactionHistory()
-        {
-                var identity = this.HttpContext.User.Identity as ClaimsIdentity;
-                if (identity == null || !identity.IsAuthenticated)
-                    return Unauthorized("Bạn chưa đăng nhập");
-                var claims = identity.Claims;
-                var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-                var user = await _accountService.GetAccountByEmailAsync(email);
-                if (user == null)
-                {
-                    return NotFound(new { Message = "Không tìm thấy người dùng" });
-                }
-            var a = await _transactionService.GetUserTransactionAsync(user.Id);
-            if(a != null)
-            {
-                return Ok(a);
-            }
+
             return Ok(new List<Transaction>());
         }
-        //[HttpGet("vnpay/return")]
-        //public async Task<IActionResult> VNPayReturn([FromQuery] VNPayCallbackRequest returnData)
-        //{
-        //    try
-        //    {
-        //        // Validate signature
-        //        bool isValid = await _vnPayService.ValidateCallbackAsync(returnData);
 
-                //        if (!isValid)
-                //        {
-                //            return BadRequest(new { Success = false, Message = "Chữ ký không hợp lệ" });
-                //        }
-
-                //        // Lấy thông tin transaction
-                //        var transaction = await _dbContext.Transactions
-                //            .Include(t => t.TransactionStatus)
-                //            .FirstOrDefaultAsync(t => t.Id == Guid.Parse(returnData.vnp_TxnRef));
-
-                //        if (transaction == null)
-                //        {
-                //            return NotFound(new { Success = false, Message = "Không tìm thấy giao dịch" });
-                //        }
-
-                //        var response = new
-                //        {
-                //            Success = returnData.vnp_ResponseCode == "00",
-                //            OrderId = returnData.vnp_TxnRef,
-                //            TransactionId = returnData.vnp_TransactionNo ?? returnData.vnp_TxnRef, // Fallback nếu không có vnp_TransactionNo
-                //            Amount = decimal.Parse(returnData.vnp_Amount) / 100,
-                //            ResponseCode = returnData.vnp_ResponseCode,
-                //            Status = transaction.TransactionStatus?.Id,
-                //            Message = GetResponseMessage(returnData.vnp_ResponseCode),
-                //            PaymentDate = returnData.vnp_PayDate, // Có thể null nếu thanh toán thất bại
-                //            BankCode = returnData.vnp_BankCode, // Có thể null
-                //            BankTransactionNo = returnData.vnp_BankTranNo // Có thể null
-                //        };
-
-                //        return Ok(response);
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        _logger.LogError(ex, "Lỗi khi xử lý VNPay return: {TxnRef}", returnData.vnp_TxnRef);
-                //        return StatusCode(500, new { Success = false, Message = "Có lỗi xảy ra" });
-                //    }
-                //}
-
-                //[HttpGet("transaction/{orderId}/status")]
-                //public async Task<IActionResult> GetTransactionStatus(string orderId)
-                //{
-                //    try
-                //    {
-                //        var transaction = await _dbContext.Transactions
-                //            .Include(t => t.TransactionStatus)
-                //            .FirstOrDefaultAsync(t => t.Id == Guid.Parse(orderId) );
-
-                //        if (transaction == null)
-                //        {
-                //            return NotFound(new { Message = "Không tìm thấy giao dịch" });
-                //        }
-
-                //        return Ok(new
-                //        {
-                //            OrderId = orderId,
-                //            TransactionId = transaction.Id,
-                //            Status = transaction.TransactionStatus?.Id,
-                //            Amount = transaction.Amount,
-                //            PaymentDate = transaction.PayDate,
-                //            Description = transaction.Description,
-                //            CreatedAt = transaction.CreatedAt,
-                //            UpdatedAt = transaction.UpdatedAt
-                //        });
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        _logger.LogError(ex, "Lỗi khi lấy trạng thái giao dịch: {OrderId}", orderId);
-                //        return StatusCode(500, new { Message = "Có lỗi xảy ra" });
-                //    }
-                //}
-
-        private string GetClientIpAddress()
-        {
-            string ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-
-            // Kiểm tra header X-Forwarded-For (cho trường hợp sử dụng proxy)
-            if (HttpContext.Request.Headers.ContainsKey("X-Forwarded-For"))
-            {
-                ipAddress = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault()?.Split(',').FirstOrDefault()?.Trim();
-            }
-
-            // Nếu là localhost IPv6, chuyển về IPv4
-            if (ipAddress == "::1")
-            {
-                ipAddress = "127.0.0.1";
-            }
-
-            return ipAddress ?? "127.0.0.1";
-        }
-
-        private string GetResponseMessage(string responseCode)
-        {
-            return responseCode switch
-            {
-                "00" => "Giao dịch thành công",
-                "07" => "Trừ tiền thành công. Giao dịch bị nghi ngờ (liên quan tới lừa đảo, giao dịch bất thường)",
-                "09" => "Giao dịch không thành công do: Thẻ/Tài khoản của khách hàng chưa đăng ký dịch vụ InternetBanking tại ngân hàng",
-                "10" => "Giao dịch không thành công do: Khách hàng xác thực thông tin thẻ/tài khoản không đúng quá 3 lần",
-                "11" => "Giao dịch không thành công do: Đã hết hạn chờ thanh toán. Xin quý khách vui lòng thực hiện lại giao dịch",
-                "12" => "Giao dịch không thành công do: Thẻ/Tài khoản của khách hàng bị khóa",
-                "13" => "Giao dịch không thành công do Quý khách nhập sai mật khẩu xác thực giao dịch (OTP)",
-                "24" => "Giao dịch không thành công do: Khách hàng hủy giao dịch",
-                "51" => "Giao dịch không thành công do: Tài khoản của quý khách không đủ số dư để thực hiện giao dịch",
-                "65" => "Giao dịch không thành công do: Tài khoản của Quý khách đã vượt quá hạn mức giao dịch trong ngày",
-                "75" => "Ngân hàng thanh toán đang bảo trì",
-                "79" => "Giao dịch không thành công do: KH nhập sai mật khẩu thanh toán quá số lần quy định",
-                "99" => "Các lỗi khác (lỗi còn lại, không có trong danh sách mã lỗi đã liệt kê)",
-                _ => "Giao dịch không thành công"
-            };
-        }
+        
     }
+
     public class CreatePaymentRequest
     {
         [Required]

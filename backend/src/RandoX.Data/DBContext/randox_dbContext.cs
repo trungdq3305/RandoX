@@ -81,7 +81,7 @@ public partial class randox_dbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=garams.database.windows.net;Initial Catalog=randoxdb2;Persist Security Info=True;User ID=sa1;Password=TTt192004");
+        => optionsBuilder.UseSqlServer("Data Source=garams.database.windows.net;Initial Catalog=randoxdb2;Persist Security Info=True;User ID=sa1;Password=TTt192004;Encrypt=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -923,6 +923,7 @@ public partial class randox_dbContext : DbContext
                 .HasDefaultValue(false)
                 .HasColumnName("is_deleted");
             entity.Property(e => e.PayDate).HasColumnName("pay_date");
+            entity.Property(e => e.PayOsorderCode).HasColumnName("PayOSOrderCode");
             entity.Property(e => e.PaymentLocation).HasColumnName("payment_location");
             entity.Property(e => e.PaymentTypeId).HasColumnName("payment_type_id");
             entity.Property(e => e.TransactionStatusId).HasColumnName("transaction_status_id");

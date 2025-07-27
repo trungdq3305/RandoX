@@ -105,6 +105,12 @@ builder.Services.AddCors(options =>
 // VNPay Configuration
 builder.Services.Configure<VNPayConfig>(builder.Configuration.GetSection("VNPay"));
 builder.Services.AddScoped<IVNPayService, VNPayService>();
+// Configuration
+builder.Services.Configure<PayOSConfig>(builder.Configuration.GetSection("PayOS"));
+
+// HttpClient Factory registration
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<IPayOSService, PayOSService>();
 builder.Services.AddScoped<IAuctionHubService, AuctionHubService>();
 builder.Services.AddHostedService<AutoEndAuctionService>();
 builder.Services.AddSignalR();

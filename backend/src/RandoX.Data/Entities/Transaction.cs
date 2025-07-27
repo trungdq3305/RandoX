@@ -31,6 +31,8 @@ public partial class Transaction
 
     public bool? IsDeleted { get; set; }
 
+    public long? PayOsorderCode { get; set; }
+
     public virtual Order IdNavigation { get; set; }
 
     public virtual TransactionStatus TransactionStatus { get; set; }
