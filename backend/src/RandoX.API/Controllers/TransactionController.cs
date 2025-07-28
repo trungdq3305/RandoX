@@ -61,7 +61,7 @@ namespace RandoX.API.Controllers
                 var payOSRequest = new PayOSCreatePaymentRequest
                 {
                     OrderId = order.Id.ToString(),
-                    Amount = 3000,
+                    Amount = (decimal)order.TotalAmount,
                     Description = $"Thanh toan don hang {order.Id}",
                     ReturnUrl = "https://randoxfe.vercel.app/payment-success",
                     CancelUrl = "https://randoxfe.vercel.app/payment-cancel"

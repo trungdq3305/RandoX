@@ -219,17 +219,21 @@ namespace RandoX.Common
             transaction.Description = isSuccess
                 ? "PayOS - Thanh toán thành công"
                 : "PayOS - Thanh toán thất bại";
-            var transOrder = await _orderRepository.GetOrderByIdAsync(transaction.Id.ToString());
-            if (transOrder?.IsDeposit == true)
+            if (isSuccess)
             {
-                var wa = await dbContext.Wallets.FirstOrDefaultAsync(x => x.Id == userId);
-                if (wa != null)
+                var transOrder = await _orderRepository.GetOrderByIdAsync(transaction.Id.ToString());
+                if (transOrder?.IsDeposit == true)
                 {
-                    wa.Balance += (decimal)transaction.Amount*1000;
-                    await _walletRepository.UpdateWalletAsync(wa);
-                }
+                    var wa = await dbContext.Wallets.FirstOrDefaultAsync(x => x.Id == userId);
+                    if (wa != null)
+                    {
+                        wa.Balance += (decimal)transaction.Amount * 100;
+                        await _walletRepository.UpdateWalletAsync(wa);
+                    }
 
+                }
             }
+            
 
             await dbContext.SaveChangesAsync();
 
