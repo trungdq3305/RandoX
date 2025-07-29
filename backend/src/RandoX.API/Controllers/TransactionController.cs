@@ -63,8 +63,8 @@ namespace RandoX.API.Controllers
                     OrderId = order.Id.ToString(),
                     Amount = (decimal)order.TotalAmount,
                     Description = $"Thanh toan don hang {order.Id}",
-                    ReturnUrl = "https://randoxfe.vercel.app/payment-success",
-                    CancelUrl = "https://randoxfe.vercel.app/payment-cancel"
+                    ReturnUrl = "http://localhost:5713/payment-success",
+                    CancelUrl = "http://localhost:5713/payment-cancel"
                 };
 
                 // Gọi service tạo link thanh toán
